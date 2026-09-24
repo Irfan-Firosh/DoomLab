@@ -1,0 +1,33 @@
+[project]
+name = "doomlab"
+version = "0.1.0"
+description = "Agent harness that plays vizDoom through typed tool calls, with evals and human-corrected improvement"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "vizdoom==1.3.1",
+    "numpy>=2",
+    "httpx>=0.27",
+    "pydantic>=2.7",
+    "python-dotenv>=1.0",
+    "imageio>=2.34",
+    "pillow>=10",
+]
+
+[dependency-groups]
+dev = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+doomlab = "doomlab.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/doomlab"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = ["live: calls the real Purdue endpoint; runs only with DOOMLAB_LIVE=1"]
