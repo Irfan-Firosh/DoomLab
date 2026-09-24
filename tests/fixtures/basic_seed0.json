@@ -1,0 +1,30 @@
+{
+  "scenario": "basic",
+  "seed": 0,
+  "tic": 14,
+  "variables": {
+    "AMMO2": 50.0,
+    "POSITION_X": -384.0,
+    "POSITION_Y": 32.0,
+    "ANGLE": 0.0,
+    "KILLCOUNT": 0.0
+  },
+  "labels": [
+    {
+      "object_id": 0,
+      "name": "Cacodemon",
+      "x": 0.0,
+      "y": 51.85926818847656,
+      "screen_x": 138,
+      "screen_width": 26
+    },
+    {
+      "object_id": 1,
+      "name": "DoomPlayer",
+      "x": -384.0,
+      "y": 32.0,
+      "screen_x": 135,
+      "screen_width": 53
+    }
+  ]
+}

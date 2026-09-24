@@ -1,0 +1,31 @@
+{
+  "scenario": "defend_the_center",
+  "seed": 0,
+  "tic": 10,
+  "variables": {
+    "AMMO2": 26.0,
+    "HEALTH": 100.0,
+    "POSITION_X": 0.0,
+    "POSITION_Y": 0.0,
+    "ANGLE": 0.0,
+    "KILLCOUNT": 0.0
+  },
+  "labels": [
+    {
+      "object_id": 0,
+      "name": "MarineChainsawVzd",
+      "x": 743.0,
+      "y": 0.0,
+      "screen_x": 156,
+      "screen_width": 5
+    },
+    {
+      "object_id": 1,
+      "name": "DoomPlayer",
+      "x": 0.0,
+      "y": 0.0,
+      "screen_x": 148,
+      "screen_width": 30
+    }
+  ]
+}
