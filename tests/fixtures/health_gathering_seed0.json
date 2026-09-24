@@ -1,0 +1,22 @@
+{
+  "scenario": "health_gathering",
+  "seed": 0,
+  "tic": 1,
+  "variables": {
+    "HEALTH": 92.0,
+    "POSITION_X": 608.0,
+    "POSITION_Y": 608.0,
+    "ANGLE": 0.0,
+    "KILLCOUNT": 0.0
+  },
+  "labels": [
+    {
+      "object_id": 0,
+      "name": "Medikit",
+      "x": 871.1561737060547,
+      "y": 800.5139007568359,
+      "screen_x": 34,
+      "screen_width": 17
+    }
+  ]
+}
