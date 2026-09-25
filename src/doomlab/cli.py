@@ -6,12 +6,12 @@ import argparse
 import sys
 
 VARIANTS = ("react_single", "commander", "scripted", "random")
-SCENARIOS = ("basic", "defend_the_center", "health_gathering")
+SCENARIOS = ("basic", "defend_the_center", "health_gathering", "health_gathering_supreme")
 
 COMMANDS: dict[str, str] = {
     "preflight": "done",
-    "run": "scripted and react_single ready; random on Day 2",
-    "eval": "Day 2",
+    "run": "done",
+    "eval": "done",
     "review": "Day 3",
     "improve": "Day 3",
     "replay": "done",
@@ -30,6 +30,10 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--seeds", help="several seeds, e.g. 0-4 or 0,2,5 (overrides --seed)")
     evaluate = sub.add_parser("eval", help="Run a scenario x seed x variant suite")
     evaluate.add_argument("--split", choices=("dev", "validation", "test"), required=True)
+    evaluate.add_argument("--variants", default=",".join(VARIANTS), help="comma list; default: all four")
+    evaluate.add_argument("--scenarios", help="comma list; default: the benchmark three")
+    evaluate.add_argument("--out", help="results folder; rerunning with the same folder resumes (default runs/eval-<split>)")
+    evaluate.add_argument("--score-only", action="store_true", help="play nothing; rescore the traces already there")
     review = sub.add_parser("review", help="Step through an episode and record corrections")
     review.add_argument("episode")
     sub.add_parser("improve", help="Propose, validate and gate one policy patch")
@@ -83,10 +87,6 @@ def parse_seeds(text: str) -> list[int]:
 def _run(args: argparse.Namespace) -> int:
     import asyncio
 
-    implemented = ("scripted", "react_single")
-    if args.variant not in implemented:
-        print(f"doomlab run: variant {args.variant!r} not implemented yet ({COMMANDS['run']})", file=sys.stderr)
-        return 2
     seeds = parse_seeds(args.seeds) if args.seeds else [args.seed]
     try:
         results = asyncio.run(_run_episodes(args.variant, args.scenario, seeds))
@@ -106,55 +106,45 @@ async def _run_episodes(variant: str, scenario: str, seeds: list[int]) -> list:
     from contextlib import AsyncExitStack
     from datetime import datetime
 
-    from doomlab.agents.scripted import ScriptedAgent
     from doomlab.config import RUNS_DIR
     from doomlab.env.doom import DoomSession
     from doomlab.runner import arun_episode
     from doomlab.trace import TraceWriter
+    from doomlab.variants import open_agent_maker
 
     run_dir = RUNS_DIR / datetime.now().strftime("%Y%m%d-%H%M%S")
     async with AsyncExitStack() as stack:
-        make_agent = ScriptedAgent
-        if variant == "react_single":
-            make_agent = await _react_factory(stack, scenario)
+        make_agent = await open_agent_maker(stack, (variant,))
         results = []
         for seed in seeds:
             with DoomSession(scenario, seed=seed) as session, TraceWriter(run_dir / f"{scenario}-s{seed}-{variant}.jsonl") as trace:
-                results.append(await arun_episode(session, make_agent(), scenario=scenario, seed=seed, trace=trace))
+                agent = make_agent(variant, scenario, seed)
+                results.append(await arun_episode(session, agent, scenario=scenario, seed=seed, trace=trace))
         return results
 
 
-async def _react_factory(stack, scenario: str):
-    from doomlab.agents.react import ReactAgent
-    from doomlab.config import RUNS_DIR, load_settings
-    from doomlab.llm.budget import Budget
-    from doomlab.llm.client import RCACClient
-    from doomlab.llm.preflight import load_frozen_decoding
-
-    settings = load_settings()
-    decoding = load_frozen_decoding(RUNS_DIR / "preflight.json", settings.model_id)
-    client = await stack.enter_async_context(RCACClient(settings))
-    return lambda: ReactAgent(client, scenario=scenario, decoding=decoding, budget=Budget())
-
-
 def _print_results(variant: str, scenario: str, results: list) -> None:
+    from doomlab.runner import SCORES
+
+    score_name = SCORES.get(scenario, ("tics", False))[0]
     if len(results) == 1:
         r = results[0]
         for s in r.steps:
             call = f"{s.tool}({', '.join(f'{k}={v}' for k, v in s.args.items())})"
             status = f"ok   {s.message}" if s.ok else f"REJECTED {s.code}: {s.message}"
             llm = f"  llm {s.llm_seconds:.1f}s {s.llm_tokens if s.llm_tokens is not None else '?'} tok" if s.llm_calls else ""
-            print(f"step {s.step:<2} {call:<22} -> {status}  [{s.tics_used} tics]{llm}")
+            print(f"step {s.step:<3} {call:<24} -> {status}  [{s.tics_used} tics]{llm}")
+        stop = f" (agent stopped: {r.stop_reason})" if r.stop_reason else ""
         llm = f"   llm calls {r.llm_calls}   tokens {r.tokens if r.tokens is not None else 'unknown'}   llm time {r.llm_seconds:.1f}s" if r.llm_calls else ""
-        print(f"outcome: {r.outcome.upper()}   steps {len(r.steps)}   tics {r.tics}   kills {r.kills}   rejected calls {r.rejected}{llm}")
+        print(f"outcome: {r.outcome.upper()}{stop}   {score_name} {r.score:g}   steps {len(r.steps)}   tics {r.tics}   kills {r.kills}   rejected {r.rejected}{llm}")
         print(f"trace: {r.trace_path}")
         return
-    print(f"{'seed':<6}{'outcome':<14}{'steps':<7}{'tics':<6}{'rejected':<10}{'llm calls':<11}{'tokens':<8}{'llm s'}")
+    print(f"{'seed':<6}{'outcome':<10}{score_name:<15}{'stop':<20}{'steps':<7}{'tics':<6}{'rejected':<10}{'llm calls':<11}{'tokens':<8}")
     for r in results:
-        print(f"{r.seed:<6}{r.outcome:<14}{len(r.steps):<7}{r.tics:<6}{r.rejected:<10}{r.llm_calls:<11}{str(r.tokens):<8}{r.llm_seconds:.1f}")
+        print(f"{r.seed:<6}{r.outcome:<10}{r.score:<15g}{(r.stop_reason or '-'):<20}{len(r.steps):<7}{r.tics:<6}{r.rejected:<10}{r.llm_calls:<11}{str(r.tokens):<8}")
     wins = sum(r.outcome == "success" for r in results)
-    tics = sorted(r.tics for r in results)
-    print(f"{variant} on {scenario}: success {wins}/{len(results)}   median tics {tics[len(tics) // 2]}"
+    scores = sorted(r.score for r in results)
+    print(f"{variant} on {scenario}: success {wins}/{len(results)}   median {score_name} {scores[len(scores) // 2]:g}"
           f"   rejected {sum(r.rejected for r in results)}   llm calls {sum(r.llm_calls for r in results)}")
     print(f"traces: {results[0].trace_path.rsplit('/', 1)[0]}/")
 
@@ -183,6 +173,51 @@ def _replay(trace_path: str) -> int:
     return 0 if report.matches else 1
 
 
+def _eval(args: argparse.Namespace) -> int:
+    import asyncio
+    from contextlib import AsyncExitStack
+    from pathlib import Path
+
+    from doomlab.config import RUNS_DIR, ConfigError
+    from doomlab.eval.harness import BENCHMARK, SPLITS, format_table, plan, run_jobs, score_jobs, write_results
+    from doomlab.eval.scorers import summarize
+    from doomlab.llm.client import LLMError
+    from doomlab.variants import open_agent_maker
+
+    variants = tuple(v.strip() for v in args.variants.split(",") if v.strip())
+    scenarios = tuple(s.strip() for s in args.scenarios.split(",")) if args.scenarios else BENCHMARK
+    unknown = sorted((set(variants) - set(VARIANTS)) | (set(scenarios) - set(SCENARIOS)))
+    if unknown:
+        print(f"doomlab eval: unknown variant or scenario {unknown}", file=sys.stderr)
+        return 2
+    out_dir = Path(args.out) if args.out else RUNS_DIR / f"eval-{args.split}"
+    jobs = plan(SPLITS[args.split], scenarios, variants)
+
+    async def play() -> None:
+        async with AsyncExitStack() as stack:
+            make_agent = await open_agent_maker(stack, variants)
+            played, skipped = await run_jobs(jobs, out_dir, make_agent)
+            print(f"played {played}, skipped {skipped} already done")
+
+    if not args.score_only:
+        print(f"eval {args.split}: {len(jobs)} episodes -> {out_dir}  (rerun the same command to resume)")
+        try:
+            asyncio.run(play())
+        except (ConfigError, LLMError) as exc:
+            print(f"doomlab eval: {exc}  (finished episodes are kept; rerun to resume)", file=sys.stderr)
+            return 1
+    episodes = score_jobs(jobs, out_dir)
+    meta = {"split": args.split, "seeds": list(SPLITS[args.split]), "scenarios": list(scenarios),
+            "variants": list(variants), "label": "pilot" if args.split == "dev" else args.split}
+    csv_path, json_path = write_results(out_dir, episodes, meta)
+    print(format_table(summarize(episodes)))
+    missing = len(jobs) - len(episodes)
+    print(f"\n{len(episodes)} episodes scored{f', {missing} not played yet' if missing else ''}"
+          f"{' (dev split: pilot numbers, small samples)' if args.split == 'dev' else ''}")
+    print(f"wrote {csv_path}  and  {json_path}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "preflight":
@@ -191,6 +226,8 @@ def main(argv: list[str] | None = None) -> int:
         return _replay(args.trace)
     if args.command == "run":
         return _run(args)
+    if args.command == "eval":
+        return _eval(args)
     print(f"doomlab {args.command}: not implemented yet ({COMMANDS[args.command]})", file=sys.stderr)
     return 2
 

@@ -35,5 +35,6 @@ def test_run_scripted_prints_outcome(capsys):
     assert "attack" in out and "outcome: SUCCESS" in out
 
 
-def test_run_random_variant_not_ready_yet(capsys):
-    assert main(["run", "--variant", "random", "--scenario", "basic"]) == 2
+def test_run_random_variant_plays_a_real_episode(capsys):
+    assert main(["run", "--variant", "random", "--scenario", "basic", "--seed", "0"]) == 0
+    assert "outcome:" in capsys.readouterr().out

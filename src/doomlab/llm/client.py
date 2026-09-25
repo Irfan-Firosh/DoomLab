@@ -11,10 +11,13 @@ from typing import Any
 import httpx
 
 from doomlab.config import Settings
+from doomlab.llm.pacer import RequestPacer
 from doomlab.tools.registry import ToolCall
 
 DEFAULT_TIMEOUT_S = 60.0
 MAX_CONCURRENCY = 2
+MAX_REQUESTS_PER_MINUTE = 20
+RATE_LIMIT_TEXT = "rate limit"  # Purdue answers HTTP 400 with this in the body when rate limiting
 
 
 class LLMError(Exception):
@@ -49,6 +52,7 @@ class RCACClient:
         transport: httpx.AsyncBaseTransport | None = None,
         timeout_s: float = DEFAULT_TIMEOUT_S,
         max_concurrency: int = MAX_CONCURRENCY,
+        requests_per_minute: float | None = MAX_REQUESTS_PER_MINUTE,
     ) -> None:
         self._settings = settings
         self._http = httpx.AsyncClient(
@@ -57,6 +61,8 @@ class RCACClient:
             headers={"Authorization": f"Bearer {settings.api_key}"},
         )
         self._slots = asyncio.Semaphore(max_concurrency)
+        self.requests_per_minute = requests_per_minute
+        self._pacer = RequestPacer(requests_per_minute) if requests_per_minute else None
 
     async def __aenter__(self) -> RCACClient:
         return self
@@ -65,6 +71,7 @@ class RCACClient:
         await self._http.aclose()
 
     async def list_models(self) -> list[str]:
+        await self._pace()
         body = await self._request("GET", self._settings.models_url)
         return [m["id"] for m in body.get("data", []) if isinstance(m, dict) and "id" in m]
 
@@ -92,10 +99,15 @@ class RCACClient:
             payload["chat_template_kwargs"] = {"enable_thinking": False}
 
         async with self._slots:
+            await self._pace()  # before the clock starts: latency measures the model, not our own pacing
             started = time.monotonic()
             body = await self._request("POST", self._settings.chat_url, payload)
             finished = time.monotonic()
         return _parse_completion(body, started, finished)
+
+    async def _pace(self) -> None:
+        if self._pacer:
+            await self._pacer.wait()
 
     async def _request(self, method: str, url: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         try:
@@ -110,7 +122,10 @@ class RCACClient:
         if response.status_code == 429:
             raise LLMError("rate_limited", "HTTP 429 from the endpoint")
         if response.status_code >= 400:
-            raise LLMError("http", f"HTTP {response.status_code} from {url}: {_server_detail(response)}")
+            detail = _server_detail(response)
+            if RATE_LIMIT_TEXT in detail.lower():
+                raise LLMError("rate_limited", f"HTTP {response.status_code}: {detail}")
+            raise LLMError("http", f"HTTP {response.status_code} from {url}: {detail}")
         try:
             body = response.json()
         except ValueError as exc:
