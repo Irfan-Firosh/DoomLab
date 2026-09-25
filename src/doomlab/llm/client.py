@@ -16,7 +16,7 @@ from doomlab.tools.registry import ToolCall
 
 DEFAULT_TIMEOUT_S = 60.0
 MAX_CONCURRENCY = 2
-MAX_REQUESTS_PER_MINUTE = 20
+MAX_REQUESTS_PER_MINUTE = 18  # measured: 20 per ~minute is the real limit (data/rate_limit_probe.json)
 RATE_LIMIT_TEXT = "rate limit"  # Purdue answers HTTP 400 with this in the body when rate limiting
 
 

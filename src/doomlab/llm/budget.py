@@ -42,3 +42,17 @@ class Budget:
             self.tokens_known = False
         else:
             self.tokens += tokens
+
+
+# Per-scenario call budgets, equal for every LLM variant. Sized from measurements (2026-09-25):
+# scripted needs a median of 2 / 111 / 38 decisions (basic / defend / supreme), commander spends ~1.4 LLM
+# calls per decision, and at the measured rate limit (18 requests/min, data/rate_limit_probe.json) each call
+# costs ~3.3 s of wall-clock. Time and token caps follow from the call count so the call cap is what binds.
+CALLS_BY_SCENARIO = {"basic": 20, "defend_the_center": 150, "health_gathering": 80, "health_gathering_supreme": 80}
+SECONDS_PER_CALL = 4.5  # 3.3 s pacing + model latency, with margin
+TOKENS_PER_CALL = 1_500  # observed ~900 per call
+
+
+def budget_for(scenario: str) -> Budget:
+    calls = CALLS_BY_SCENARIO.get(scenario, DEFAULT_MAX_CALLS)
+    return Budget(max_calls=calls, max_tokens=calls * TOKENS_PER_CALL, max_seconds=calls * SECONDS_PER_CALL)

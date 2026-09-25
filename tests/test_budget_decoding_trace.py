@@ -58,3 +58,13 @@ def test_trace_writes_one_json_object_per_line(tmp_path):
     lines = [json.loads(line) for line in path.read_text().splitlines()]
     assert [l["event"] for l in lines] == ["episode_start", "episode_end"]
     assert lines[0]["buttons"] == ["MOVE_LEFT", "ATTACK"] and "t" in lines[0]
+
+
+def test_budgets_are_sized_per_scenario_and_the_call_cap_binds_first():
+    from doomlab.llm.budget import budget_for
+
+    calls = {s: budget_for(s).max_calls for s in ("basic", "defend_the_center", "health_gathering_supreme")}
+    assert calls == {"basic": 20, "defend_the_center": 150, "health_gathering_supreme": 80}
+    defend = budget_for("defend_the_center")
+    assert defend.max_seconds == 675.0 and defend.max_tokens == 225_000
+    assert defend.max_seconds / defend.max_calls > 60 / 18  # time cap never binds before the call cap at 18/min

@@ -136,9 +136,9 @@ async def test_pacer_spaces_request_starts_evenly():
     assert waits == [1.5]
 
 
-def test_client_paces_at_20_per_minute_by_default():
+def test_client_paces_at_18_per_minute_by_default():
     client = RCACClient(SETTINGS, transport=httpx.MockTransport(lambda r: httpx.Response(200)))
-    assert client.requests_per_minute == 20
+    assert client.requests_per_minute == 18
 
 
 async def test_pacing_wait_is_not_counted_as_model_latency():

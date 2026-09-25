@@ -62,7 +62,8 @@ Scripted baselines, dev seeds 0–4, measured 9/25:
 Other settled points:
 - **Aim cone is per enemy** (from `data/calibration_defend_aim.json`, 210 shots): Cacodemon 15u, Demon 15u, **MarineChainsawVzd 9u** (88% hits within 18u, ~0% beyond 24u), unknown enemies 9u.
 - **Stopping never freezes time.** If an agent gives up or runs out of steps or budget, the runner plays the rest of the episode standing still, so quitting can't dodge a death. Results carry `outcome` (what the game decided) and `stop_reason` (why the agent stopped).
-- **Equal budgets:** still to set per scenario after the pilot. Scripted needed 27–194 decisions on the long scenarios, so a 40-call LLM budget will run out on long episodes. Measure first, then freeze.
+- **Rate limit (measured 9/25, `data/rate_limit_probe.json`):** Purdue documents 60/min, but the 21st request in any ~60 s window is refused at every spacing tried; 18/min is sustainable (45/45 calls). The client paces at 18/min (~3.3 s per call).
+- **Equal budgets, per scenario:** basic 20 calls, defend 150, supreme 80 (the same for react_single and commander). Sized from scripted's decisions (median 2 / 111 / 38) × ~1.4 calls per decision for commander; time and token caps derive from the call count so the call cap binds first.
 - **Decision speed:** at ~0.7 s per Qwen call, 100+ decisions ≈ 1–2 min of LLM time per long episode. Check against the pilot's wall-clock before Day 3.
 
 ---

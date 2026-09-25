@@ -1,0 +1,44 @@
+{
+  "what": "Purdue GenAI Studio rate limit, measured with 1-token requests (qwen3.8:27b), 65 s cool-down before each phase",
+  "date": "2026-09-25",
+  "documented": "60 requests per minute per user (docs.rcac.purdue.edu/services/genai/api/)",
+  "refusal_signal": "HTTP 400 'Rate limit exceeded. Please try again later.'",
+  "phases": [
+    {
+      "phase": "A",
+      "spacing_s": 0.0,
+      "result": "refused on call 21 at 3.2 s"
+    },
+    {
+      "phase": "B",
+      "spacing_s": 1.091,
+      "per_min": 55,
+      "result": "refused on call 21 at 21.9 s"
+    },
+    {
+      "phase": "C",
+      "spacing_s": 1.0,
+      "per_min": 60,
+      "result": "refused on call 21 at 20.1 s"
+    },
+    {
+      "phase": "D",
+      "spacing_s": 3.0,
+      "per_min": 20,
+      "result": "refused on call 21 at 60.1 s"
+    },
+    {
+      "phase": "E",
+      "spacing_s": 2.5,
+      "per_min": 24,
+      "result": "refused on call 21 at 50.1 s"
+    },
+    {
+      "phase": "F",
+      "spacing_s": 3.333,
+      "per_min": 18,
+      "result": "45/45 ok over 150.1 s; latency p50 0.15 s, max 0.23 s"
+    }
+  ],
+  "conclusion": "Effective limit is 20 requests per rolling window slightly longer than 60 s, not 60/min. Exactly 20/min sits on the edge (phase D); 18/min is sustainable (phase F)."
+}
