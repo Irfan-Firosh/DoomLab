@@ -160,9 +160,6 @@ class Executor:
         self._last_look_tic = before.tic
         return "looked around"
 
-    def _do_report_back(self, args: dict[str, Any], before: Observation) -> str:
-        return f"handed back to the commander: {args['reason']}"
-
     def _do_aim_at(self, args: dict[str, Any], before: Observation) -> str:
         """Steer on the *predicted* stopping point so momentum doesn't carry us past the target."""
         target_id = args["target_id"]

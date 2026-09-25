@@ -24,7 +24,6 @@ class ToolSpec:
     description: str
     parameters: dict[str, Any]  # JSON Schema object, as sent to the LLM
     needs_any: tuple[frozenset[str], ...] = ()  # usable if the scenario has ANY one of these button sets
-    team_only: bool = False  # offered only to commander-topology specialists, never by `available_tools`
 
     def available(self, buttons: tuple[str, ...] | frozenset[str]) -> bool:
         have = set(buttons)
@@ -86,21 +85,12 @@ TOOLS: dict[str, ToolSpec] = {
             parameters=_object({"target_id": {"type": "integer", "description": "id of a visible item"}}, ("target_id",)),
             needs_any=(WALK,),
         ),
-        ToolSpec(
-            name="report_back",
-            description=(
-                "Hand control back to the commander, e.g. when your job is done or the other specialist is needed. "
-                "Uses no game time."
-            ),
-            parameters=_object({"reason": {"type": "string", "description": "one short sentence"}}, ("reason",)),
-            team_only=True,
-        ),
     )
 }
 
 
 def available_tools(buttons: tuple[str, ...]) -> tuple[ToolSpec, ...]:
-    return tuple(spec for spec in TOOLS.values() if spec.available(buttons) and not spec.team_only)
+    return tuple(spec for spec in TOOLS.values() if spec.available(buttons))
 
 
 def to_openai(specs: tuple[ToolSpec, ...]) -> list[dict[str, Any]]:
