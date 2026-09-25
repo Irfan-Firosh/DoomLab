@@ -28,7 +28,7 @@ def fake_rcac(thinking_switch_works=True, listed=True):
         usage = {"prompt_tokens": 300, "completion_tokens": 40 if off else 250, "total_tokens": 340 if off else 550}
         return httpx.Response(200, json={"choices": [{"message": message}], "usage": usage})
 
-    return RCACClient(SETTINGS, transport=httpx.MockTransport(handler))
+    return RCACClient(SETTINGS, transport=httpx.MockTransport(handler), requests_per_minute=None)  # no pacing in unit tests
 
 
 async def test_preflight_report_all_checks_pass(tmp_path):

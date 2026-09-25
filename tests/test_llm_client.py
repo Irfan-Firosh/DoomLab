@@ -21,7 +21,7 @@ def completion(tool_calls=None, content="", usage=None, reasoning=None):
 
 
 def client_with(handler):
-    return RCACClient(SETTINGS, transport=httpx.MockTransport(handler))
+    return RCACClient(SETTINGS, transport=httpx.MockTransport(handler), requests_per_minute=None)  # no pacing in unit tests
 
 
 async def test_list_models_returns_ids_and_sends_bearer():
@@ -106,3 +106,47 @@ async def test_error_includes_server_detail():
         with pytest.raises(LLMError) as err:
             await client.chat([{"role": "user", "content": "hi"}])
     assert err.value.kind == "http" and "Model not found" in str(err.value)
+
+
+async def test_purdue_rate_limit_message_on_http_400_is_rate_limited():
+    def handler(request):
+        return httpx.Response(400, json={"detail": "Rate limit exceeded. Please try again later."})
+
+    async with client_with(handler) as client:
+        with pytest.raises(LLMError) as err:
+            await client.chat([{"role": "user", "content": "hi"}], tools=TOOLS)
+    assert err.value.kind == "rate_limited"
+
+
+async def test_pacer_spaces_request_starts_evenly():
+    from doomlab.llm.pacer import RequestPacer
+
+    now, waits = [100.0], []
+
+    async def fake_sleep(seconds):
+        waits.append(round(seconds, 3))
+        now[0] += seconds
+
+    pacer = RequestPacer(per_minute=30, clock=lambda: now[0], sleep=fake_sleep)
+    await pacer.wait()  # first request: no wait
+    now[0] += 0.5  # the call took 0.5 s
+    await pacer.wait()  # next start must be 2 s after the first
+    now[0] += 3.0  # a slow call: already past the interval
+    await pacer.wait()
+    assert waits == [1.5]
+
+
+def test_client_paces_at_20_per_minute_by_default():
+    client = RCACClient(SETTINGS, transport=httpx.MockTransport(lambda r: httpx.Response(200)))
+    assert client.requests_per_minute == 20
+
+
+async def test_pacing_wait_is_not_counted_as_model_latency():
+    def handler(request):
+        return httpx.Response(200, json=completion(content="hi"))
+
+    client = RCACClient(SETTINGS, transport=httpx.MockTransport(handler), requests_per_minute=600)  # 0.1 s apart
+    async with client:
+        await client.chat([{"role": "user", "content": "a"}])
+        second = await client.chat([{"role": "user", "content": "b"}])  # waits ~0.1 s for the pacer
+    assert second.latency_s < 0.05
