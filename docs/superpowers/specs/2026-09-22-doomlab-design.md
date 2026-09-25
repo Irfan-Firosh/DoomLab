@@ -23,9 +23,10 @@ Success is honest, reproducible evidence. The multi-agent topology does not have
 
 ## 2. Verified environment facts (spike, 2026-09-22)
 
-- `vizdoom==1.3.1` installs on macOS arm64 / Python 3.12 and runs headless. Bundled scenarios include `basic`, `defend_the_center`, `health_gathering`, `deadly_corridor`, `my_way_home`, `take_cover`, `defend_the_line`.
+- `vizdoom==1.3.1` installs on macOS arm64 (Python 3.12 and 3.14; the project uses 3.14) and runs headless. Bundled scenarios include `basic`, `defend_the_center`, `health_gathering`, `deadly_corridor`, `my_way_home`, `take_cover`, `defend_the_line`.
 - `set_labels_buffer_enabled(True)` yields per-object labels: `object_name`, `object_id`, screen box, and world position. The player itself appears as `DoomPlayer` and must be filtered.
 - Purdue RCAC `qwen3.6:27b` is listed at `/api/models` and supports OpenAI-style native `tools`: a probe returned `turn_to(target_id=7)` in 3.2 s with `usage` reported. Reasoning ("thinking") output is on by default and dominated completion tokens; it must be capped or disabled via decoding config.
+- **Update 2026-09-23:** Purdue retired `qwen3.6:27b`. The project now uses **`qwen3.8:27b`**. `doomlab preflight` passed: native tool call `turn_to(target_id=7)` in 1.2 s, `chat_template_kwargs.enable_thinking=false` works (completion tokens 73 → 27), usage reported, two requests overlapped 0.75 s. Evidence: `runs/preflight.json`.
 - `.env` sets `RCAC_BASE_URL` ending in `/api`; the client must normalize this (no `/api/api/...`).
 
 ## 3. Architecture
@@ -48,7 +49,7 @@ eval harness ─► episode runner ─► graph engine ─► agents (LLM) ─�
 | `memory.py` | Immutable episode memory: facts, last-seen enemies/items, health/ammo history, recent failures | schemas |
 | `graph/engine.py` | Minimal typed state-graph: nodes, conditional edges, step limit, per-node checkpoint to trace | schemas, trace |
 | `graph/router.py` | Deterministic routing: STOP / RECOVER / CONTINUE / PLAN with fixed priority | memory |
-| `agents/` | `react` (all tools), `commander` (classifies situation → specialist), `navigator` (move, go_to, use), `combat` (turn_to, attack), `analyst` (offline) | llm client, registry |
+| `agents/` | `react` (all tools), `commander` (classifies situation → specialist), `navigator` (move, go_to, use), `combat` (aim_at, attack), `analyst` (offline) | llm client, registry |
 | `llm/client.py` | RCAC client: httpx async, base-URL normalization, semaphore 2, 30 rpm limiter, ≤2 attempts, timeout, usage capture, redacted errors | config |
 | `llm/budget.py` | Per-episode request/token ledger with atomic reservations | — |
 | `trace.py` | Append-only JSONL spans: run › episode › step › llm_call / tool_call, with parent IDs and monotonic timing | schemas |
@@ -63,7 +64,7 @@ eval harness ─► episode runner ─► graph engine ─► agents (LLM) ─�
 | Tool | Args | Preconditions (code-checked) | Verified result |
 |---|---|---|---|
 | `observe` | — | — | refreshed facts |
-| `turn_to` | `target_id` | target visible in memory | new bearing to target |
+| `aim_at` | `target_id` | target visible in memory; scenario has turn or strafe buttons | lateral offset / bearing to target (turns if TURN buttons exist, else strafes — `basic` has only MOVE_LEFT/RIGHT) |
 | `turn` | `degrees` (−180..180) | — | heading delta |
 | `move` | `direction` (forward/back/left/right), `steps` 1–10 | — | position delta; `NO_EFFECT` if blocked |
 | `go_to` | `target_id` | target known (item/door) | distance delta; arrival flag |
@@ -127,7 +128,7 @@ Fixed-priority router each step: (1) episode finished/budget exhausted → STOP;
 1. MCP server exposing game tools; agents consume via MCP client.
 2. LangGraph port of `commander`; written comparison with the custom engine.
 3. Next.js + FastAPI dashboard: run monitoring, frame-by-frame replay, click-to-correct, approval button.
-4. Vision ablation: screenshots to `qwen3.6:27b` vs symbolic-only.
+4. Vision ablation: screenshots to the vision-capable model (verify `qwen3.8:27b` accepts images, else `qwen3-vl:32b`) vs symbolic-only.
 5. Trajectory LLM-judge calibrated against human correction labels (agreement rate reported).
 6. Live intervention: pause an episode, override the next tool call.
 7. Harder scenarios, CI eval on recorded fixtures, public write-up.
