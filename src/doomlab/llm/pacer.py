@@ -1,8 +1,8 @@
 """Space request starts evenly so we stay under the endpoint's rate limit.
 
-Purdue publishes 60 requests/minute/user; we pace at 20 (one start every 3 s). Even spacing, rather than a
-rolling-window count, also keeps us under any shorter window the server may enforce: a live run was refused
-after 20 requests in 8 seconds, well inside one minute.
+Purdue documents 60 requests/minute/user, but measured on 2026-09-25 (data/rate_limit_probe.json) the 21st
+request inside any ~60 s window is refused, whatever the spacing; exactly 20/min sits on the edge and 18/min
+is sustainable. Even spacing keeps us under that rolling window at all times.
 """
 
 from __future__ import annotations
