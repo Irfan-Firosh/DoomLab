@@ -72,7 +72,8 @@ def test_missing_variables_are_none_not_zero():
 
 @pytest.mark.parametrize(
     ("name", "kind"),
-    [("Cacodemon", "enemy"), ("MarineChainsawVzd", "enemy"), ("Medikit", "item"), ("SomethingNew", "other")],
+    [("Cacodemon", "enemy"), ("MarineChainsawVzd", "enemy"), ("Medikit", "item"), ("CustomMedikit", "item"),
+     ("Poison", "hazard"), ("SomethingNew", "other")],
 )
 def test_classify(name, kind):
     assert classify(name) == kind

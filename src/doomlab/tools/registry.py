@@ -7,6 +7,7 @@ from typing import Any
 
 STRAFE = frozenset({"MOVE_LEFT", "MOVE_RIGHT"})
 TURN = frozenset({"TURN_LEFT", "TURN_RIGHT"})
+WALK = frozenset({"TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD"})
 
 
 @dataclass(frozen=True)
@@ -23,6 +24,7 @@ class ToolSpec:
     description: str
     parameters: dict[str, Any]  # JSON Schema object, as sent to the LLM
     needs_any: tuple[frozenset[str], ...] = ()  # usable if the scenario has ANY one of these button sets
+    team_only: bool = False  # offered only to commander-topology specialists, never by `available_tools`
 
     def available(self, buttons: tuple[str, ...] | frozenset[str]) -> bool:
         have = set(buttons)
@@ -43,7 +45,10 @@ TOOLS: dict[str, ToolSpec] = {
     for spec in (
         ToolSpec(
             name="observe",
-            description="Look again and get fresh facts about what is visible. Uses no game time.",
+            description=(
+                "Look again. Uses no game time, and the game is paused between your calls, "
+                "so the facts you were just given are already current."
+            ),
             parameters=_object(),
         ),
         ToolSpec(
@@ -57,16 +62,45 @@ TOOLS: dict[str, ToolSpec] = {
         ),
         ToolSpec(
             name="attack",
-            description="Fire the weapon `burst` times. Only allowed when an enemy is in the aim cone.",
+            description=(
+                "Fire the weapon `burst` times. One hit usually kills an enemy. Each shot uses one bullet and "
+                "about 14 tics during which you stand still. Only allowed when an enemy is in the aim cone."
+            ),
             parameters=_object({"burst": {"type": "integer", "minimum": 1, "maximum": 5}}, ("burst",)),
             needs_any=(frozenset({"ATTACK"}),),
+        ),
+        ToolSpec(
+            name="turn",
+            description="Turn in place to look around: positive degrees = left, negative = right. Use it when nothing useful is visible.",
+            parameters=_object(
+                {"degrees": {"type": "integer", "minimum": -180, "maximum": 180, "not": {"const": 0}}}, ("degrees",)
+            ),
+            needs_any=(TURN,),
+        ),
+        ToolSpec(
+            name="go_to",
+            description=(
+                "Walk to a visible item (by its id), e.g. a medikit, to pick it up. "
+                "Stops when it is picked up, reached, lost from view, or you are blocked."
+            ),
+            parameters=_object({"target_id": {"type": "integer", "description": "id of a visible item"}}, ("target_id",)),
+            needs_any=(WALK,),
+        ),
+        ToolSpec(
+            name="report_back",
+            description=(
+                "Hand control back to the commander, e.g. when your job is done or the other specialist is needed. "
+                "Uses no game time."
+            ),
+            parameters=_object({"reason": {"type": "string", "description": "one short sentence"}}, ("reason",)),
+            team_only=True,
         ),
     )
 }
 
 
 def available_tools(buttons: tuple[str, ...]) -> tuple[ToolSpec, ...]:
-    return tuple(spec for spec in TOOLS.values() if spec.available(buttons))
+    return tuple(spec for spec in TOOLS.values() if spec.available(buttons) and not spec.team_only)
 
 
 def to_openai(specs: tuple[ToolSpec, ...]) -> list[dict[str, Any]]:
@@ -92,8 +126,14 @@ def validate_args(spec: ToolSpec, args: dict[str, Any]) -> str | None:
         rule = properties[name]
         if rule.get("type") == "integer" and (isinstance(value, bool) or not isinstance(value, int)):
             return f"{name} must be an integer"
+        if rule.get("type") == "string" and not isinstance(value, str):
+            return f"{name} must be a string"
+        if "enum" in rule and value not in rule["enum"]:
+            return f"{name} must be one of {rule['enum']}"
         if "minimum" in rule and value < rule["minimum"]:
             return f"{name} must be >= {rule['minimum']}"
         if "maximum" in rule and value > rule["maximum"]:
             return f"{name} must be <= {rule['maximum']}"
+        if "not" in rule and value == rule["not"].get("const"):
+            return f"{name} must not be {rule['not']['const']}"
     return None
