@@ -37,7 +37,7 @@ async def _open_llm(stack: AsyncExitStack) -> Callable[[str, str], Agent]:
     from doomlab.agents.commander import CommanderTeam
     from doomlab.agents.react import ReactAgent
     from doomlab.config import RUNS_DIR, load_settings
-    from doomlab.llm.budget import Budget
+    from doomlab.llm.budget import budget_for
     from doomlab.llm.client import RCACClient
     from doomlab.llm.preflight import load_frozen_decoding
 
@@ -47,6 +47,6 @@ async def _open_llm(stack: AsyncExitStack) -> Callable[[str, str], Agent]:
 
     def make(variant: str, scenario: str) -> Agent:
         agent_class = CommanderTeam if variant == "commander" else ReactAgent
-        return agent_class(client, scenario=scenario, decoding=decoding, budget=Budget())  # a fresh budget per episode
+        return agent_class(client, scenario=scenario, decoding=decoding, budget=budget_for(scenario))  # fresh per episode
 
     return make
