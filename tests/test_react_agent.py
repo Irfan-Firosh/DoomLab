@@ -95,3 +95,31 @@ async def test_events_record_latency_and_tokens():
     assert event["latency_s"] == 0.5 and event["usage"]["total_tokens"] == 380
     assert event["tool_calls"] == [{"name": "aim_at", "arguments": {"target_id": 0}}]
     assert a.drain_events() == []  # drained
+
+
+def test_prompt_leads_with_the_rejection_to_recover_from():
+    from doomlab.agents.base import StepRecord
+    from doomlab.agents.prompting import turn_prompt
+    from doomlab.env.perception import Observation
+
+    rejected = StepRecord(step=1, tool="attack", args={"burst": 1}, ok=False, code="NO_ENEMY_IN_CONE",
+                          message="aim first", tics_used=0)
+    prompt = turn_prompt(Observation(tic=1, facts=(), health=100.0, ammo=5.0, kills=0.0), (rejected,))
+    assert prompt.splitlines()[0] == "YOUR LAST CALL WAS REJECTED: attack(burst=1) -> NO_ENEMY_IN_CONE: aim first"
+    assert "1 of 3" in prompt
+    ok = StepRecord(step=2, tool="observe", args={}, ok=True, code=None, message="looked around", tics_used=0)
+    assert "REJECTED:" not in turn_prompt(Observation(tic=1, facts=(), health=100.0, ammo=5.0, kills=0.0), (rejected, ok))
+
+
+def test_every_scored_scenario_tells_the_model_how_it_is_scored():
+    from doomlab.agents.prompting import system_prompt
+    from doomlab.runner import SCORES
+
+    for scenario, (score, higher_is_better) in SCORES.items():
+        prompt = system_prompt(scenario)
+        assert "Score:" in prompt
+        assert ("more is better" if higher_is_better else "fewer is better") in prompt, scenario
+
+
+def test_attack_description_says_one_hit_usually_kills():
+    assert "One hit usually kills" in TOOLS["attack"].description

@@ -24,11 +24,21 @@ class ChatClient(Protocol):
 class ReactAgent:
     name = "react_single"
 
-    def __init__(self, client: ChatClient, *, scenario: str, decoding: Decoding, budget: Budget) -> None:
+    def __init__(
+        self,
+        client: ChatClient,
+        *,
+        scenario: str,
+        decoding: Decoding,
+        budget: Budget,
+        system: str | None = None,
+        role: str | None = None,
+    ) -> None:
         self._client = client
         self._decoding = decoding
         self._budget = budget
-        self._system = system_prompt(scenario)
+        self._system = system or system_prompt(scenario)
+        self._role = role  # tags trace events when this agent is one member of a team
         self._events: list[dict[str, Any]] = []
         self.config = {
             "model": decoding.model_id,
@@ -46,9 +56,13 @@ class ReactAgent:
     async def decide(
         self, observation: Observation, tools: tuple[ToolSpec, ...], history: tuple[StepRecord, ...]
     ) -> ToolCall:
+        return await self.ask(turn_prompt(observation, history), tools)
+
+    async def ask(self, prompt: str, tools: tuple[ToolSpec, ...]) -> ToolCall:
+        """One decision from a prepared prompt: retries once on a text reply or a transient error."""
         messages = [
             {"role": "system", "content": self._system},
-            {"role": "user", "content": turn_prompt(observation, history)},
+            {"role": "user", "content": prompt},
         ]
         payload = to_openai(tools)
         for attempt in range(1, MAX_ATTEMPTS + 1):
@@ -74,7 +88,7 @@ class ReactAgent:
                 disable_thinking=self._decoding.disable_thinking,
             )
         except LLMError as exc:
-            self._events.append({"event": "llm_error", "attempt": attempt, "kind": exc.kind, "message": str(exc)})
+            self._events.append({"event": "llm_error", **self._tag(), "attempt": attempt, "kind": exc.kind, "message": str(exc)})
             if exc.kind == "auth":
                 raise
             if attempt == MAX_ATTEMPTS:
@@ -85,6 +99,7 @@ class ReactAgent:
         self._events.append(
             {
                 "event": "llm_call",
+                **self._tag(),
                 "attempt": attempt,
                 "latency_s": round(result.latency_s, 3),
                 "usage": result.usage,
@@ -94,3 +109,6 @@ class ReactAgent:
             }
         )
         return result
+
+    def _tag(self) -> dict[str, str]:
+        return {"role": self._role} if self._role else {}
