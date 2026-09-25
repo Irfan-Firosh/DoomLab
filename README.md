@@ -2,11 +2,11 @@
 
 An agent runtime that plays vizDoom through **typed tool calls**, then evaluates itself and improves from failures and human corrections.
 
-Status: **Day 1 (Wed 9/23) in progress.** Design and schedule are done; code is being scaffolded.
+Status: **Day 1 done** (commit `d37d4bf`): Qwen plays `basic` through typed tool calls, with traces and verified replays. **Day 2 in progress:** blocks 1–5 done (new tools, graph runner with recovery, commander topology, random baseline, `doomlab eval`); the pilot run is next.
 
 - Spec: [`docs/superpowers/specs/2026-09-22-doomlab-design.md`](docs/superpowers/specs/2026-09-22-doomlab-design.md)
 - Schedule (Wed → Fri): [`docs/superpowers/plans/2026-09-23-doomlab-schedule.md`](docs/superpowers/plans/2026-09-23-doomlab-schedule.md)
-- Day 1 plan and walkthrough: [`schedule/day1.md`](schedule/day1.md)
+- Day 1 plan and walkthrough: [`schedule/day1.md`](schedule/day1.md) · Day 2 plan: [`schedule/day2.md`](schedule/day2.md)
 - Full architecture diagram (Lucid, 2 pages): [runtime loop + evals/improvement](https://lucid.app/lucidchart/cfc18bb2-f111-478e-a9fd-f9d1de1d6a1d/edit)
 
 ## Day 1: single-agent loop on `basic`
