@@ -6,6 +6,7 @@ from collections.abc import Callable
 from contextlib import AsyncExitStack
 
 from doomlab.agents.base import Agent
+from doomlab.policy import Policy, load_policy
 
 VARIANTS = ("random", "scripted", "react_single", "commander")  # also the order an eval plays them: free ones first
 LLM_VARIANTS = frozenset({"react_single", "commander"})
@@ -13,7 +14,7 @@ LLM_VARIANTS = frozenset({"react_single", "commander"})
 AgentMaker = Callable[[str, str, int], Agent]  # (variant, scenario, seed) -> a fresh agent for one episode
 
 
-async def open_agent_maker(stack: AsyncExitStack, variants: tuple[str, ...]) -> AgentMaker:
+async def open_agent_maker(stack: AsyncExitStack, variants: tuple[str, ...], policy: Policy | None = None) -> AgentMaker:
     """Opens the LLM client only when an LLM variant is requested, so free runs need no key or network."""
     from doomlab.agents.random_agent import RandomAgent
     from doomlab.agents.scripted import ScriptedAgent
@@ -21,7 +22,7 @@ async def open_agent_maker(stack: AsyncExitStack, variants: tuple[str, ...]) -> 
     unknown = sorted(set(variants) - set(VARIANTS))
     if unknown:
         raise ValueError(f"unknown variant(s) {unknown}; choose from {list(VARIANTS)}")
-    llm_maker = await _open_llm(stack) if LLM_VARIANTS & set(variants) else None
+    llm_maker = await _open_llm(stack, policy or load_policy()) if LLM_VARIANTS & set(variants) else None
 
     def make(variant: str, scenario: str, seed: int) -> Agent:
         if variant == "random":
@@ -33,7 +34,7 @@ async def open_agent_maker(stack: AsyncExitStack, variants: tuple[str, ...]) -> 
     return make
 
 
-async def _open_llm(stack: AsyncExitStack) -> Callable[[str, str], Agent]:
+async def _open_llm(stack: AsyncExitStack, policy: Policy) -> Callable[[str, str], Agent]:
     from doomlab.agents.commander import CommanderTeam
     from doomlab.agents.react import ReactAgent
     from doomlab.config import RUNS_DIR, load_settings
@@ -47,6 +48,7 @@ async def _open_llm(stack: AsyncExitStack) -> Callable[[str, str], Agent]:
 
     def make(variant: str, scenario: str) -> Agent:
         agent_class = CommanderTeam if variant == "commander" else ReactAgent
-        return agent_class(client, scenario=scenario, decoding=decoding, budget=budget_for(scenario))  # fresh per episode
+        return agent_class(client, scenario=scenario, decoding=decoding, budget=budget_for(scenario),  # fresh per episode
+                           lessons=policy.lessons)
 
     return make

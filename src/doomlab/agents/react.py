@@ -33,11 +33,12 @@ class ReactAgent:
         budget: Budget,
         system: str | None = None,
         role: str | None = None,
+        lessons: tuple[str, ...] = (),
     ) -> None:
         self._client = client
         self._decoding = decoding
         self._budget = budget
-        self._system = system or system_prompt(scenario)
+        self._system = system or system_prompt(scenario, lessons=lessons)
         self._role = role  # tags trace events when this agent is one member of a team
         self._events: list[dict[str, Any]] = []
         self.config = {
