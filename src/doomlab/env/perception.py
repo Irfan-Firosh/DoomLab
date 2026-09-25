@@ -22,8 +22,9 @@ ENEMIES = frozenset(
     }
 )
 ITEMS = frozenset(
-    {"Medikit", "Stimpack", "HealthBonus", "ArmorBonus", "GreenArmor", "BlueArmor", "Clip", "ClipBox", "Shell", "ShellBox"}
+    {"Medikit", "CustomMedikit", "Stimpack", "HealthBonus", "ArmorBonus", "GreenArmor", "BlueArmor", "Clip", "ClipBox", "Shell", "ShellBox"}
 )
+HAZARDS = frozenset({"Poison"})  # health_gathering_supreme: walking over it hurts
 CENTRED_OFFSET = 4.0  # units; below this a fact reads as CENTER rather than LEFT/RIGHT
 
 
@@ -59,6 +60,7 @@ class Observation:
     health: float | None
     ammo: float | None
     kills: float | None
+    dead: bool = False
 
 
 def classify(name: str) -> str:
@@ -66,6 +68,8 @@ def classify(name: str) -> str:
         return "enemy"
     if name in ITEMS:
         return "item"
+    if name in HAZARDS:
+        return "hazard"
     return "other"
 
 
@@ -108,6 +112,7 @@ def perceive(state: RawState) -> Observation:
         health=v.get("HEALTH"),
         ammo=v.get("AMMO2"),
         kills=v.get("KILLCOUNT"),
+        dead=state.dead,
     )
 
 

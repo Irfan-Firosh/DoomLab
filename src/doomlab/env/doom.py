@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import vizdoom as vzd
 
-SCENARIOS = ("basic", "defend_the_center", "health_gathering")
+SCENARIOS = ("basic", "defend_the_center", "health_gathering", "health_gathering_supreme")
 
 # Our own instrumentation, added on top of each scenario's built-in variables.
 INSTRUMENT_VARIABLES = (
@@ -42,6 +42,7 @@ class RawState:
     variables: dict[str, float]
     finished: bool
     frame: np.ndarray | None = field(default=None, compare=False, repr=False)
+    dead: bool = False
 
 
 @dataclass(frozen=True)
@@ -94,7 +95,7 @@ class DoomSession:
         if game.is_episode_finished():
             # get_state() is None after the episode ends, but final variables stay readable (e.g. KILLCOUNT).
             final = {name: float(game.get_game_variable(getattr(vzd.GameVariable, name))) for name in self.info.variables}
-            return RawState(tic=tic, labels=(), variables=final, finished=True)
+            return RawState(tic=tic, labels=(), variables=final, finished=True, dead=game.is_player_dead())
         state = game.get_state()
         variables = dict(zip(self.info.variables, (float(v) for v in state.game_variables)))
         labels = tuple(
@@ -108,4 +109,6 @@ class DoomSession:
             )
             for label in state.labels
         )
-        return RawState(tic=tic, labels=labels, variables=variables, finished=False, frame=state.screen_buffer)
+        return RawState(
+            tic=tic, labels=labels, variables=variables, finished=False, frame=state.screen_buffer, dead=game.is_player_dead()
+        )

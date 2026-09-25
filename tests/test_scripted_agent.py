@@ -36,9 +36,33 @@ def test_does_not_attack_without_ammo():
     assert decide(obs(fact(0, offset=0.0), ammo=0.0)) is None
 
 
-def test_gives_up_when_no_enemy_visible():
-    assert decide(obs()) is None
+def test_gives_up_in_basic_when_no_enemy_visible():
+    basic_tools = (TOOLS["observe"], TOOLS["aim_at"], TOOLS["attack"])  # basic cannot turn
+    assert decide(obs(), tools=basic_tools) is None
 
 
 def test_never_calls_a_tool_the_scenario_lacks():
     assert decide(obs(fact(0, offset=0.0)), tools=NO_ATTACK) is None
+
+
+TURNING = (TOOLS["observe"], TOOLS["aim_at"], TOOLS["attack"], TOOLS["turn"])
+WALKING = (TOOLS["observe"], TOOLS["aim_at"], TOOLS["turn"], TOOLS["go_to"])
+
+
+def test_scans_with_turn_when_nothing_visible():
+    assert decide(obs(), tools=TURNING) == ToolCall("turn", {"degrees": 90})
+
+
+def test_goes_to_nearest_medikit():
+    far = fact(11, offset=50.0, distance=500.0, kind="item", name="Medikit")
+    near = fact(12, offset=-20.0, distance=150.0, kind="item", name="Medikit")
+    assert decide(obs(far, near), tools=WALKING) == ToolCall("go_to", {"target_id": 12})
+
+
+def test_never_attacks_in_health_gathering():
+    assert decide(obs(fact(0, offset=0.0)), tools=WALKING).name != "attack"
+
+
+def test_uses_per_enemy_cone():
+    marine = fact(0, offset=12.0, name="MarineChainsawVzd")
+    assert decide(obs(marine), tools=TURNING) == ToolCall("aim_at", {"target_id": 0})  # 12u is outside a marine's 9u cone

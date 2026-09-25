@@ -37,3 +37,21 @@ def test_aim_at_turns_in_defend_the_center():
         result = ex.execute("aim_at", {"target_id": target.id})
         assert result.ok
         assert all(b[2] == 0 for b in result.buttons)  # aiming never fires
+
+
+def test_turn_changes_the_real_angle():
+    with DoomSession("defend_the_center", seed=0) as session:
+        ex = Executor(session)
+        start = session.read_state().variables["ANGLE"]
+        result = ex.execute("turn", {"degrees": 90})
+        end = session.read_state().variables["ANGLE"]
+    assert result.ok and abs(((end - start) % 360) - 90) <= 4  # turning speeds up mid-turn; we stop within a tic
+
+
+def test_go_to_picks_up_a_real_medikit():
+    with DoomSession("health_gathering", seed=0) as session:  # starts at 92 health, medikit visible
+        ex = Executor(session)
+        medikit = next(f for f in ex.observe().facts if f.name == "Medikit")
+        result = ex.execute("go_to", {"target_id": medikit.id})
+    assert result.ok and "picked up" in result.message, result.message
+    assert result.after.health > result.before.health

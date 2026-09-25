@@ -1,0 +1,1478 @@
+{
+ "scenario": "defend_the_center",
+ "vizdoom": "1.3.1",
+ "signal": "HITCOUNT increase within 14 tics of one pistol shot",
+ "method": "turn toward random target offsets in [-45,45]u, fire once",
+ "rows": [
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -15.8,
+   "distance": 775,
+   "hit": true
+  },
+  {
+   "seed": 0,
+   "enemy": "Demon",
+   "offset": -19.4,
+   "distance": 480,
+   "hit": true
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -5.7,
+   "distance": 484,
+   "hit": true
+  },
+  {
+   "seed": 0,
+   "enemy": "Demon",
+   "offset": -13.3,
+   "distance": 51,
+   "hit": true
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -44.3,
+   "distance": 623,
+   "hit": false
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": 5.2,
+   "distance": 560,
+   "hit": true
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -22.0,
+   "distance": 270,
+   "hit": false
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": 3.3,
+   "distance": 238,
+   "hit": false
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -2.7,
+   "distance": 206,
+   "hit": true
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -40.4,
+   "distance": 525,
+   "hit": false
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": 29.6,
+   "distance": 453,
+   "hit": false
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -0.4,
+   "distance": 425,
+   "hit": false
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -5.8,
+   "distance": 391,
+   "hit": true
+  },
+  {
+   "seed": 0,
+   "enemy": "MarineChainsawVzd",
+   "offset": -12.7,
+   "distance": 603,
+   "hit": true
+  },
+  {
+   "seed": 0,
+   "enemy": "Demon",
+   "offset": 26.8,
+   "distance": 49,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": -7.0,
+   "distance": 736,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "Demon",
+   "offset": -20.5,
+   "distance": 233,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": -23.0,
+   "distance": 445,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 24.9,
+   "distance": 414,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 31.9,
+   "distance": 383,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 26.2,
+   "distance": 360,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": -13.3,
+   "distance": 323,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "Demon",
+   "offset": -32.5,
+   "distance": 635,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "Demon",
+   "offset": 7.6,
+   "distance": 291,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 24.2,
+   "distance": 91,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 30.0,
+   "distance": 51,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": -23.9,
+   "distance": 50,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 2.5,
+   "distance": 56,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "Demon",
+   "offset": 9.0,
+   "distance": 729,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "Demon",
+   "offset": 9.4,
+   "distance": 53,
+   "hit": true
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": -17.1,
+   "distance": 543,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 35.5,
+   "distance": 515,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 14.7,
+   "distance": 492,
+   "hit": false
+  },
+  {
+   "seed": 1,
+   "enemy": "MarineChainsawVzd",
+   "offset": 28.0,
+   "distance": 465,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 46.1,
+   "distance": 751,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": -32.7,
+   "distance": 741,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 5.6,
+   "distance": 714,
+   "hit": true
+  },
+  {
+   "seed": 2,
+   "enemy": "Demon",
+   "offset": 30.5,
+   "distance": 296,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "Demon",
+   "offset": 9.4,
+   "distance": 222,
+   "hit": true
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 39.1,
+   "distance": 406,
+   "hit": true
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": -2.7,
+   "distance": 388,
+   "hit": true
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": -17.4,
+   "distance": 357,
+   "hit": true
+  },
+  {
+   "seed": 2,
+   "enemy": "Demon",
+   "offset": -23.5,
+   "distance": 711,
+   "hit": true
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": -65.8,
+   "distance": 718,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 35.3,
+   "distance": 687,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 31.0,
+   "distance": 512,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 6.9,
+   "distance": 480,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 15.9,
+   "distance": 436,
+   "hit": true
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 41.9,
+   "distance": 194,
+   "hit": false
+  },
+  {
+   "seed": 2,
+   "enemy": "MarineChainsawVzd",
+   "offset": 35.4,
+   "distance": 166,
+   "hit": false
+  },
+  {
+   "seed": 3,
+   "enemy": "MarineChainsawVzd",
+   "offset": 31.8,
+   "distance": 775,
+   "hit": false
+  },
+  {
+   "seed": 3,
+   "enemy": "MarineChainsawVzd",
+   "offset": 29.5,
+   "distance": 736,
+   "hit": false
+  },
+  {
+   "seed": 3,
+   "enemy": "MarineChainsawVzd",
+   "offset": -42.6,
+   "distance": 696,
+   "hit": false
+  },
+  {
+   "seed": 3,
+   "enemy": "MarineChainsawVzd",
+   "offset": -4.3,
+   "distance": 679,
+   "hit": false
+  },
+  {
+   "seed": 3,
+   "enemy": "MarineChainsawVzd",
+   "offset": 11.1,
+   "distance": 509,
+   "hit": true
+  },
+  {
+   "seed": 3,
+   "enemy": "Demon",
+   "offset": -1.7,
+   "distance": 102,
+   "hit": true
+  },
+  {
+   "seed": 3,
+   "enemy": "Demon",
+   "offset": -8.7,
+   "distance": 52,
+   "hit": true
+  },
+  {
+   "seed": 3,
+   "enemy": "MarineChainsawVzd",
+   "offset": 6.6,
+   "distance": 255,
+   "hit": true
+  },
+  {
+   "seed": 3,
+   "enemy": "MarineChainsawVzd",
+   "offset": -4.2,
+   "distance": 596,
+   "hit": true
+  },
+  {
+   "seed": 3,
+   "enemy": "MarineChainsawVzd",
+   "offset": -40.2,
+   "distance": 57,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 15.8,
+   "distance": 775,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "Demon",
+   "offset": 2.4,
+   "distance": 459,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": -5.7,
+   "distance": 484,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "Demon",
+   "offset": 44.1,
+   "distance": 76,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 6.4,
+   "distance": 672,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "Demon",
+   "offset": -24.0,
+   "distance": 55,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 1.4,
+   "distance": 348,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "Demon",
+   "offset": 23.3,
+   "distance": 346,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": -31.6,
+   "distance": 422,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 42.3,
+   "distance": 318,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 10.4,
+   "distance": 278,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 46.6,
+   "distance": 351,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": -25.2,
+   "distance": 311,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 36.3,
+   "distance": 271,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 24.9,
+   "distance": 239,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": -3.4,
+   "distance": 199,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "Demon",
+   "offset": 36.3,
+   "distance": 53,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": -11.5,
+   "distance": 592,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "Demon",
+   "offset": -20.6,
+   "distance": 681,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 43.1,
+   "distance": 649,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": -7.5,
+   "distance": 133,
+   "hit": true
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 31.8,
+   "distance": 556,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": -42.2,
+   "distance": 511,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": 35.3,
+   "distance": 477,
+   "hit": false
+  },
+  {
+   "seed": 4,
+   "enemy": "MarineChainsawVzd",
+   "offset": -20.3,
+   "distance": 454,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -18.6,
+   "distance": 747,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "Demon",
+   "offset": 20.8,
+   "distance": 386,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -30.4,
+   "distance": 468,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": 33.1,
+   "distance": 437,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -35.4,
+   "distance": 376,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": 9.0,
+   "distance": 345,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -16.4,
+   "distance": 308,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "Demon",
+   "offset": 45.9,
+   "distance": 556,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "Demon",
+   "offset": -17.8,
+   "distance": 466,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "Demon",
+   "offset": 32.6,
+   "distance": 376,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": 18.5,
+   "distance": 513,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": 46.8,
+   "distance": 485,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -6.2,
+   "distance": 450,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -9.7,
+   "distance": 56,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "Demon",
+   "offset": 11.5,
+   "distance": 173,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -30.2,
+   "distance": 515,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": 24.8,
+   "distance": 494,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -35.4,
+   "distance": 473,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -39.7,
+   "distance": 448,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -37.7,
+   "distance": 419,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -22.3,
+   "distance": 391,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": 22.9,
+   "distance": 359,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": 4.5,
+   "distance": 322,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -17.8,
+   "distance": 294,
+   "hit": true
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -30.0,
+   "distance": 454,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": -42.3,
+   "distance": 434,
+   "hit": false
+  },
+  {
+   "seed": 5,
+   "enemy": "MarineChainsawVzd",
+   "offset": 6.7,
+   "distance": 389,
+   "hit": true
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": 23.5,
+   "distance": 767,
+   "hit": false
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": 29.5,
+   "distance": 736,
+   "hit": false
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": -6.1,
+   "distance": 679,
+   "hit": true
+  },
+  {
+   "seed": 6,
+   "enemy": "Demon",
+   "offset": -3.6,
+   "distance": 126,
+   "hit": true
+  },
+  {
+   "seed": 6,
+   "enemy": "Demon",
+   "offset": -21.8,
+   "distance": 74,
+   "hit": true
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": -17.8,
+   "distance": 383,
+   "hit": true
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": -40.7,
+   "distance": 321,
+   "hit": false
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": 1.0,
+   "distance": 296,
+   "hit": true
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": -12.2,
+   "distance": 678,
+   "hit": true
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": 40.1,
+   "distance": 334,
+   "hit": true
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": 8.3,
+   "distance": 319,
+   "hit": false
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": -36.3,
+   "distance": 283,
+   "hit": false
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": 44.9,
+   "distance": 219,
+   "hit": false
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": 41.6,
+   "distance": 180,
+   "hit": false
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": -37.5,
+   "distance": 146,
+   "hit": false
+  },
+  {
+   "seed": 6,
+   "enemy": "MarineChainsawVzd",
+   "offset": -24.7,
+   "distance": 117,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": -38.1,
+   "distance": 736,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": -26.1,
+   "distance": 713,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": 7.0,
+   "distance": 690,
+   "hit": true
+  },
+  {
+   "seed": 7,
+   "enemy": "Demon",
+   "offset": -31.0,
+   "distance": 126,
+   "hit": true
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": 27.9,
+   "distance": 418,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "Demon",
+   "offset": 31.8,
+   "distance": 50,
+   "hit": true
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": -34.5,
+   "distance": 385,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": -40.7,
+   "distance": 356,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": 10.0,
+   "distance": 321,
+   "hit": true
+  },
+  {
+   "seed": 7,
+   "enemy": "Demon",
+   "offset": 1.7,
+   "distance": 477,
+   "hit": true
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": -25.8,
+   "distance": 500,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": -37.3,
+   "distance": 137,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": -23.9,
+   "distance": 105,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": 30.1,
+   "distance": 58,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": 23.6,
+   "distance": 52,
+   "hit": false
+  },
+  {
+   "seed": 7,
+   "enemy": "MarineChainsawVzd",
+   "offset": -20.3,
+   "distance": 53,
+   "hit": false
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": -38.1,
+   "distance": 736,
+   "hit": false
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": -37.5,
+   "distance": 713,
+   "hit": false
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": 18.3,
+   "distance": 679,
+   "hit": false
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": -19.5,
+   "distance": 657,
+   "hit": false
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": 33.2,
+   "distance": 611,
+   "hit": false
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": 4.1,
+   "distance": 538,
+   "hit": true
+  },
+  {
+   "seed": 8,
+   "enemy": "Demon",
+   "offset": -33.8,
+   "distance": 56,
+   "hit": true
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": 43.5,
+   "distance": 303,
+   "hit": false
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": -7.3,
+   "distance": 265,
+   "hit": true
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": -41.9,
+   "distance": 275,
+   "hit": false
+  },
+  {
+   "seed": 8,
+   "enemy": "MarineChainsawVzd",
+   "offset": -30.6,
+   "distance": 254,
+   "hit": false
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 15.8,
+   "distance": 775,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -4.9,
+   "distance": 466,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 4.3,
+   "distance": 445,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 42.5,
+   "distance": 338,
+   "hit": false
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": -13.1,
+   "distance": 301,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -19.7,
+   "distance": 537,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -36.4,
+   "distance": 627,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 12.4,
+   "distance": 407,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": -17.4,
+   "distance": 142,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -19.2,
+   "distance": 735,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -20.1,
+   "distance": 417,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": -8.0,
+   "distance": 343,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -79.3,
+   "distance": 735,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 7.9,
+   "distance": 207,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -5.7,
+   "distance": 190,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": -13.9,
+   "distance": 594,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 34.6,
+   "distance": 574,
+   "hit": false
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 20.1,
+   "distance": 553,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -34.2,
+   "distance": 613,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": -10.2,
+   "distance": 320,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "Demon",
+   "offset": -16.2,
+   "distance": 674,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": -14.1,
+   "distance": 357,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 32.5,
+   "distance": 450,
+   "hit": false
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": -7.7,
+   "distance": 410,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": -6.2,
+   "distance": 468,
+   "hit": true
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 21.2,
+   "distance": 631,
+   "hit": false
+  },
+  {
+   "seed": 9,
+   "enemy": "MarineChainsawVzd",
+   "offset": 42.1,
+   "distance": 558,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": 39.8,
+   "distance": 775,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -26.9,
+   "distance": 725,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -23.2,
+   "distance": 675,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -41.2,
+   "distance": 651,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -13.2,
+   "distance": 606,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": 10.1,
+   "distance": 59,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": -24.7,
+   "distance": 216,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": -13.5,
+   "distance": 156,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": -10.1,
+   "distance": 86,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -16.1,
+   "distance": 782,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": 0.2,
+   "distance": 92,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -23.3,
+   "distance": 81,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": -39.4,
+   "distance": 339,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": 33.4,
+   "distance": 219,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": 31.2,
+   "distance": 50,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": 46.6,
+   "distance": 640,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -28.2,
+   "distance": 604,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -15.1,
+   "distance": 527,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": 16.4,
+   "distance": 626,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -49.4,
+   "distance": 464,
+   "hit": false
+  },
+  {
+   "seed": 10,
+   "enemy": "MarineChainsawVzd",
+   "offset": -3.1,
+   "distance": 344,
+   "hit": true
+  },
+  {
+   "seed": 10,
+   "enemy": "Demon",
+   "offset": -16.0,
+   "distance": 151,
+   "hit": true
+  },
+  {
+   "seed": 11,
+   "enemy": "MarineChainsawVzd",
+   "offset": 38.1,
+   "distance": 736,
+   "hit": false
+  },
+  {
+   "seed": 11,
+   "enemy": "MarineChainsawVzd",
+   "offset": 26.9,
+   "distance": 702,
+   "hit": false
+  },
+  {
+   "seed": 11,
+   "enemy": "MarineChainsawVzd",
+   "offset": 10.5,
+   "distance": 572,
+   "hit": true
+  },
+  {
+   "seed": 11,
+   "enemy": "Demon",
+   "offset": 11.0,
+   "distance": 47,
+   "hit": true
+  },
+  {
+   "seed": 11,
+   "enemy": "MarineChainsawVzd",
+   "offset": 3.3,
+   "distance": 277,
+   "hit": true
+  },
+  {
+   "seed": 11,
+   "enemy": "Demon",
+   "offset": 47.2,
+   "distance": 58,
+   "hit": false
+  }
+ ]
+}

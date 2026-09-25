@@ -12,11 +12,11 @@ def test_basic_offers_observe_aim_attack():
 
 
 def test_defend_the_center_aims_by_turning():
-    assert names(("TURN_LEFT", "TURN_RIGHT", "ATTACK")) == ["observe", "aim_at", "attack"]
+    assert names(("TURN_LEFT", "TURN_RIGHT", "ATTACK")) == ["observe", "aim_at", "attack", "turn"]
 
 
 def test_health_gathering_has_no_attack():
-    assert names(("TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD")) == ["observe", "aim_at"]
+    assert "attack" not in names(("TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD"))
 
 
 def test_openai_tools_payload_shape():
@@ -43,3 +43,18 @@ def test_openai_tools_payload_shape():
 )
 def test_validate_args(tool, args, ok):
     assert (validate_args(TOOLS[tool], args) is None) == ok
+
+
+def test_turn_offered_only_where_turn_buttons_exist():
+    assert "turn" not in names(("MOVE_LEFT", "MOVE_RIGHT", "ATTACK"))
+    assert "turn" in names(("TURN_LEFT", "TURN_RIGHT", "ATTACK"))
+
+
+def test_go_to_needs_forward_and_turn():
+    assert names(("TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD")) == ["observe", "aim_at", "turn", "go_to"]
+    assert "go_to" not in names(("TURN_LEFT", "TURN_RIGHT", "ATTACK"))
+
+
+@pytest.mark.parametrize(("args", "ok"), [({"degrees": 90}, True), ({"degrees": -180}, True), ({"degrees": 200}, False), ({"degrees": 0}, False)])
+def test_turn_argument_range(args, ok):
+    assert (validate_args(TOOLS["turn"], args) is None) == ok
