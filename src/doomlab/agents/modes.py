@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from doomlab.tools.registry import TOOLS, ToolSpec
+from doomlab.tools.registry import ToolSpec
 
 FIGHT, NAVIGATE = "fight", "navigate"
 ROLE_TOOL_NAMES = {FIGHT: ("observe", "aim_at", "attack"), NAVIGATE: ("observe", "turn", "go_to")}
-HANDOFF_TOOL = "report_back"
 
 
 def available_modes(tools: tuple[ToolSpec, ...]) -> tuple[str, ...]:
@@ -16,5 +15,5 @@ def available_modes(tools: tuple[ToolSpec, ...]) -> tuple[str, ...]:
 
 
 def role_tools(mode: str, tools: tuple[ToolSpec, ...]) -> tuple[ToolSpec, ...]:
-    """The specialist's menu: its role's tools that this scenario supports, plus the hand-back tool."""
-    return (*(t for t in tools if t.name in ROLE_TOOL_NAMES[mode]), TOOLS[HANDOFF_TOOL])
+    """The specialist's menu: its role's tools that this scenario supports."""
+    return tuple(t for t in tools if t.name in ROLE_TOOL_NAMES[mode])

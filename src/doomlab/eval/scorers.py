@@ -21,7 +21,7 @@ INFRA_OUTCOMES = frozenset({"llm_error"})  # the endpoint failed, not the agent:
 Z95 = 1.959964
 TRIGGERS = (  # commander trigger text -> short key
     ("no mode yet", "start"),
-    ("reported back", "report_back"),
+    ("reported back", "report_back"),  # hand-back tool, dropped after the dev pilot; kept to score old traces
     ("no enemy visible", "no_enemy"),
     ("out of ammo", "no_ammo"),
     ("enemy appeared", "enemy_appeared"),

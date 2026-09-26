@@ -94,7 +94,7 @@ wrote runs/eval-dev-…/episodes.csv, summary.json
 - [x] `commander` topology with role-restricted tools; a traced mode switch (block 3: live `defend_the_center` seed 0 switched navigate <-> fight 7 times, replay matches; `OUT_OF_ROLE` tested). Also fixed from the live run: repeated `observe` is rejected as `NOTHING_CHANGED` (the game is paused, so it can never show anything new), and the client now paces requests at 30/min (Purdue answered HTTP 400 "Rate limit exceeded" after 20 calls in 8 s)
 - [x] `random` baseline (block 4: seeded, schema-valid calls, no LLM; dev seeds 0-4 — basic 5/5 at the same tics as scripted, defend median 346 survived, supreme median 832)
 - [x] `doomlab eval --split dev` → `episodes.csv` + `summary.json` (pilot, clearly labeled) — block 5 built and checked on the free variants (`runs/eval-dev-free/`: 30 episodes, numbers match `doomlab run` seed for seed, rerun resumes in 0.3 s); the LLM half runs in block 6
-- [ ] Frozen config (prompt, budget and model hashes) committed
+- [x] Frozen config (prompt, budget and model hashes) committed — done as Day 3 block 0 (`configs/frozen.json`, tag `frozen-v0`)
 - [ ] Carry-overs from Day 1: CodeRabbit review of `d37d4bf`; `git push`
 
 ## 7. Cut lines

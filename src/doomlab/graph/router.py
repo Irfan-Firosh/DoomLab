@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from doomlab.agents.base import StepRecord
-from doomlab.agents.modes import FIGHT, HANDOFF_TOOL, NAVIGATE
+from doomlab.agents.modes import FIGHT, NAVIGATE
 from doomlab.env.perception import Observation
 
 # Rejected calls use no game time, so a streak of rejections is by definition a streak without progress.
@@ -80,9 +80,6 @@ def commander_trigger(
         return "no mode yet"
     if len(modes) < 2:
         return None  # nothing to switch to
-    last = history[-1] if history else None
-    if last is not None and last.ok and last.tool == HANDOFF_TOOL:
-        return f"{mode} specialist reported back: {last.args.get('reason', '')}"
     enemy = any(f.kind == "enemy" for f in observation.facts)
     if mode == FIGHT and not enemy:
         return "fight mode but no enemy visible"

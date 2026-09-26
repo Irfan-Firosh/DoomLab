@@ -46,28 +46,31 @@ Goal: {goal}"""
 
 
 ROLES = {
-    FIGHT: "You are the Combat specialist: aim at and shoot enemies. "
-    "When no enemy is left to fight, or you cannot fight, call report_back.",
-    NAVIGATE: "You are the Navigator: turn to look around and walk to items. "
-    "When an enemy needs fighting or you are stuck, call report_back.",
+    FIGHT: "You are the Combat specialist: aim at and shoot enemies.",
+    NAVIGATE: "You are the Navigator: turn to look around and walk to items.",
 }
 
 COMMANDER_SYSTEM = """You command a two-specialist team playing the game Doom. You never act in the game yourself.
 Choose which specialist acts next by calling choose_mode:
 - fight: the Combat specialist aims at and shoots visible enemies.
 - navigate: the Navigator turns to look around and walks to items.
-You are asked again when the situation changes or a specialist reports back.
+You are asked again when the situation changes.
 
 Goal: {goal}"""
 
 
-def system_prompt(scenario: str, role: str | None = None) -> str:
+def system_prompt(scenario: str, role: str | None = None, lessons: tuple[str, ...] = ()) -> str:
     role_line = f"\n{ROLES[role]}" if role else ""
-    return SYSTEM_TEMPLATE.format(goal=GOALS.get(scenario, "Play well."), role=role_line)
+    return SYSTEM_TEMPLATE.format(goal=GOALS.get(scenario, "Play well."), role=role_line) + _lessons(lessons)
 
 
-def commander_system_prompt(scenario: str) -> str:
-    return COMMANDER_SYSTEM.format(goal=GOALS.get(scenario, "Play well."))
+def commander_system_prompt(scenario: str, lessons: tuple[str, ...] = ()) -> str:
+    return COMMANDER_SYSTEM.format(goal=GOALS.get(scenario, "Play well.")) + _lessons(lessons)
+
+
+def _lessons(lessons: tuple[str, ...]) -> str:
+    """The policy's lessons (see policy.py). None in v0, so v0 prompts are exactly the pilot's."""
+    return "\n\nLessons from earlier games:\n" + "\n".join(f"- {lesson}" for lesson in lessons) if lessons else ""
 
 
 def commander_prompt(observation: Observation, history: tuple[StepRecord, ...], *, trigger: str, current: str | None) -> str:

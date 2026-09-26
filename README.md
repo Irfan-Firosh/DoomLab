@@ -6,7 +6,7 @@ Status: **Day 1 done** (commit `d37d4bf`): Qwen plays `basic` through typed tool
 
 - Spec: [`docs/superpowers/specs/2026-09-22-doomlab-design.md`](docs/superpowers/specs/2026-09-22-doomlab-design.md)
 - Schedule (Wed → Fri): [`docs/superpowers/plans/2026-09-23-doomlab-schedule.md`](docs/superpowers/plans/2026-09-23-doomlab-schedule.md)
-- Day 1 plan and walkthrough: [`schedule/day1.md`](schedule/day1.md) · Day 2 plan: [`schedule/day2.md`](schedule/day2.md)
+- Day 1 plan and walkthrough: [`schedule/day1.md`](schedule/day1.md) · Day 2 plan: [`schedule/day2.md`](schedule/day2.md) · Day 3 plan: [`schedule/day3.md`](schedule/day3.md)
 - Full architecture diagram (Lucid, 2 pages): [runtime loop + evals/improvement](https://lucid.app/lucidchart/cfc18bb2-f111-478e-a9fd-f9d1de1d6a1d/edit)
 
 ## Day 1: single-agent loop on `basic`

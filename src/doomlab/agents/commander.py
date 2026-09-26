@@ -48,12 +48,14 @@ def choose_mode_spec(modes: tuple[str, ...]) -> ToolSpec:
 class CommanderTeam:
     name = "commander"
 
-    def __init__(self, client: ChatClient, *, scenario: str, decoding: Decoding, budget: Budget) -> None:
+    def __init__(
+        self, client: ChatClient, *, scenario: str, decoding: Decoding, budget: Budget, lessons: tuple[str, ...] = ()
+    ) -> None:
         def member(role: str, system: str) -> ReactAgent:
             return ReactAgent(client, scenario=scenario, decoding=decoding, budget=budget, system=system, role=role)
 
-        self._boss = member("commander", commander_system_prompt(scenario))
-        self._specialists = {mode: member(mode, system_prompt(scenario, mode)) for mode in (FIGHT, NAVIGATE)}
+        self._boss = member("commander", commander_system_prompt(scenario, lessons))
+        self._specialists = {mode: member(mode, system_prompt(scenario, mode, lessons)) for mode in (FIGHT, NAVIGATE)}
         self.config = {**self._boss.config, "topology": "commander"}
 
     def specialist(self, mode: str) -> ReactAgent:

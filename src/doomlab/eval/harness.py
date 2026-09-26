@@ -16,6 +16,7 @@ from typing import Any
 
 from doomlab.env.doom import DoomSession
 from doomlab.eval.scorers import INFRA_OUTCOMES, EpisodeMetrics, csv_row, score_trace, summarize
+from doomlab.freeze import FreezeError
 from doomlab.runner import SCORES, arun_episode
 from doomlab.tools.executor import Session
 from doomlab.trace import TraceWriter
@@ -64,6 +65,7 @@ async def run_jobs(
     *,
     make_session: Callable[[str, int], Session] = DoomSession,
     progress: Callable[[str], None] = print,
+    config_hash: str | None = None,
 ) -> tuple[int, int]:
     """Play every job that is not done yet. Returns (played, skipped)."""
     played = skipped = 0
@@ -79,7 +81,8 @@ async def run_jobs(
         try:
             with TraceWriter(path) as trace:
                 agent = make_agent(job.variant, job.scenario, job.seed)
-                result = await arun_episode(session, agent, scenario=job.scenario, seed=job.seed, trace=trace)
+                result = await arun_episode(session, agent, scenario=job.scenario, seed=job.seed, trace=trace,
+                                            config_hash=config_hash)
         finally:
             close = getattr(session, "close", None)
             if close:
@@ -87,6 +90,16 @@ async def run_jobs(
         played += 1
         progress(f"{label} {result.outcome:<8} score {result.score:g}  llm calls {result.llm_calls}")
     return played, skipped
+
+
+def check_folder(out_dir: Path, config_hash: str) -> None:
+    """Refuse to add episodes to a folder whose traces came from a different recipe (or from before the freeze)."""
+    for path in sorted(out_dir.glob("*.jsonl")):
+        first = path.read_text().split("\n", 1)[0]
+        found = json.loads(first).get("config_hash") if first.strip() else None
+        if found != config_hash:
+            raise FreezeError(f"{out_dir} holds traces from another recipe ({path.name}: {found or 'no hash'}); "
+                              f"use --out for a new folder")
 
 
 def score_jobs(jobs: list[Job], out_dir: Path) -> list[EpisodeMetrics]:

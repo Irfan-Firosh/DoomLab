@@ -5,7 +5,7 @@ from fake_llm import FakeLLM, reply
 from fakes import FakeSession
 
 from doomlab.agents.base import AgentStop, StepRecord
-from doomlab.agents.commander import CommanderTeam
+from doomlab.agents.commander import CommanderTeam, choose_mode_spec
 from doomlab.agents.modes import FIGHT, NAVIGATE, available_modes, role_tools
 from doomlab.env.perception import Fact, Observation
 from doomlab.graph.router import commander_trigger, route
@@ -44,21 +44,18 @@ def test_modes_offered_per_scenario():
     assert available_modes(available_tools(HEALTH)) == (NAVIGATE,)
 
 
-def test_each_specialist_sees_only_its_own_tools_plus_report_back():
+def test_each_specialist_sees_only_its_own_tools():
     defend = available_tools(DEFEND)
-    assert names(role_tools(FIGHT, defend)) == ["observe", "aim_at", "attack", "report_back"]
-    assert names(role_tools(NAVIGATE, defend)) == ["observe", "turn", "report_back"]  # no go_to: cannot walk here
-    assert names(role_tools(NAVIGATE, available_tools(HEALTH))) == ["observe", "turn", "go_to", "report_back"]
-
-
-def test_report_back_is_never_offered_to_a_single_agent():
-    assert "report_back" not in names(available_tools(DEFEND))
+    assert names(role_tools(FIGHT, defend)) == ["observe", "aim_at", "attack"]
+    assert names(role_tools(NAVIGATE, defend)) == ["observe", "turn"]  # no go_to: cannot walk here
+    assert names(role_tools(NAVIGATE, available_tools(HEALTH))) == ["observe", "turn", "go_to"]
 
 
 def test_string_and_enum_arguments_are_checked():
-    spec = TOOLS["report_back"]
-    assert validate_args(spec, {"reason": "enemy spotted"}) is None
-    assert validate_args(spec, {"reason": 3}) == "reason must be a string"
+    spec = choose_mode_spec(("fight", "navigate"))
+    assert validate_args(spec, {"mode": "fight", "reason": "enemy spotted"}) is None
+    assert validate_args(spec, {"mode": "fight", "reason": 3}) == "reason must be a string"
+    assert validate_args(spec, {"mode": "dance"}) == "mode must be one of ['fight', 'navigate']"
 
 
 # ------------------------------------------------------------ executor: roles
@@ -78,13 +75,6 @@ def test_tool_missing_from_the_scenario_is_unavailable_not_out_of_role():
     assert result.code == "UNAVAILABLE_TOOL"
 
 
-def test_report_back_uses_no_game_time_and_only_works_for_a_specialist():
-    executor = Executor(FakeSession(buttons=DEFEND, target_y=None, health=100.0, timeout=2100))
-    handed = executor.execute("report_back", {"reason": "nothing here"}, allowed=role_tools(NAVIGATE, executor.tools))
-    assert (handed.ok, handed.tics_used, handed.message) == (True, 0, "handed back to the commander: nothing here")
-    assert executor.execute("report_back", {"reason": "x"}).code == "UNAVAILABLE_TOOL"
-
-
 # ------------------------------------------------------------ triggers and router
 
 
@@ -101,8 +91,6 @@ def test_trigger_rules():
     assert commander_trigger(FIGHT, BOTH, (), obs(ENEMY, ammo=0.0), enemy_at_choice=True) == "fight mode but out of ammo"
     assert commander_trigger(FIGHT, BOTH, (), obs(ENEMY), enemy_at_choice=True) is None
     assert commander_trigger(NAVIGATE, BOTH, (), obs(ENEMY), enemy_at_choice=False) == "enemy appeared while navigating"
-    reported = (_step("report_back", reason="all clear"),)
-    assert commander_trigger(NAVIGATE, BOTH, reported, obs(), enemy_at_choice=False) == "navigate specialist reported back: all clear"
 
 
 def test_navigating_past_an_enemy_the_commander_already_saw_does_not_re_ask():
@@ -183,25 +171,23 @@ async def test_trace_shows_fight_then_navigate_switch(tmp_path):
         reply("attack", {"burst": 1}),                      # kill: the demon disappears
         reply("choose_mode", {"mode": "navigate", "reason": "look for more"}),
         reply("turn", {"degrees": 90}),
-        reply("report_back", {"reason": "nothing here"}),
-        reply("choose_mode", {"mode": "navigate", "reason": "keep looking"}),
+        reply("turn", {"degrees": 90}),
     ])
-    result, events = await _play(session, llm, "defend_the_center", tmp_path, Budget(max_calls=7))
+    result, events = await _play(session, llm, "defend_the_center", tmp_path, Budget(max_calls=6))
     assert result.kills == 1 and result.stop_reason == "budget"
     modes = [(e["mode"], e["trigger"]) for e in events if e["event"] == "mode"]
     assert modes == [
         ("fight", "no mode yet"),
         ("navigate", "fight mode but no enemy visible"),
-        ("navigate", "navigate specialist reported back: nothing here"),
     ]
     roles = [e["role"] for e in events if e["event"] == "llm_call"]
-    assert roles == ["commander", "fight", "fight", "commander", "navigate", "navigate", "commander"]
+    assert roles == ["commander", "fight", "fight", "commander", "navigate", "navigate"]
     hops = [(e["from"], e["to"], e.get("why")) for e in events if e["event"] == "transition"]
     assert ("route", "plan", "stay in fight mode") in hops  # CONTINUE: the attack needed no commander call
     assert ("route", "commander", "fight mode but no enemy visible") in hops
     offered = [[t["function"]["name"] for t in r["tools"]] for r in llm.requests]
-    assert offered[1] == ["observe", "aim_at", "attack", "report_back"]
-    assert offered[4] == ["observe", "turn", "report_back"]
+    assert offered[1] == ["observe", "aim_at", "attack"]
+    assert offered[4] == ["observe", "turn"]
     assert [s.tool for s in result.steps][-1] == "wait_until_end"
 
 

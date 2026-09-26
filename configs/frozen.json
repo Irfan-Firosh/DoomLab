@@ -1,0 +1,244 @@
+{
+  "name": "frozen-v0",
+  "hash": "af2ab05f5f7c928d131da176f1ff69102605f27193e58278671b73200953a068",
+  "frozen_at": "2026-09-26T07:39:33.423200+00:00",
+  "recipe": {
+    "model": {
+      "model_id": "qwen3.8:27b",
+      "temperature": 0.0,
+      "max_tokens": 512,
+      "thinking": "off"
+    },
+    "rate": {
+      "requests_per_minute": 18,
+      "concurrency": 2
+    },
+    "budgets": {
+      "calls": {
+        "basic": 20,
+        "defend_the_center": 150,
+        "health_gathering": 80,
+        "health_gathering_supreme": 80
+      },
+      "seconds_per_call": 4.5,
+      "tokens_per_call": 1500
+    },
+    "policy": {
+      "version": "v0",
+      "lessons": []
+    },
+    "prompts": {
+      "system": {
+        "basic": "You control a player in the game Doom by calling tools.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: Kill the single monster. Score: tics until the kill, fewer is better. The episode ends at 300 tics without a kill.",
+        "defend_the_center": "You control a player in the game Doom by calling tools.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: You stand in the centre and cannot move; enemies approach from all sides. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success). You start with 26 bullets; kills are reported but only survival is scored.",
+        "health_gathering": "You control a player in the game Doom by calling tools.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: The floor hurts you. Collect medikits to stay alive. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success).",
+        "health_gathering_supreme": "You control a player in the game Doom by calling tools.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: The floor hurts you and medikits are scarce in a larger area; Poison (hazard) hurts you too. Collect medikits to stay alive. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success)."
+      },
+      "specialist": {
+        "basic": {
+          "fight": "You control a player in the game Doom by calling tools.\nYou are the Combat specialist: aim at and shoot enemies.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: Kill the single monster. Score: tics until the kill, fewer is better. The episode ends at 300 tics without a kill.",
+          "navigate": "You control a player in the game Doom by calling tools.\nYou are the Navigator: turn to look around and walk to items.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: Kill the single monster. Score: tics until the kill, fewer is better. The episode ends at 300 tics without a kill."
+        },
+        "defend_the_center": {
+          "fight": "You control a player in the game Doom by calling tools.\nYou are the Combat specialist: aim at and shoot enemies.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: You stand in the centre and cannot move; enemies approach from all sides. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success). You start with 26 bullets; kills are reported but only survival is scored.",
+          "navigate": "You control a player in the game Doom by calling tools.\nYou are the Navigator: turn to look around and walk to items.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: You stand in the centre and cannot move; enemies approach from all sides. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success). You start with 26 bullets; kills are reported but only survival is scored."
+        },
+        "health_gathering": {
+          "fight": "You control a player in the game Doom by calling tools.\nYou are the Combat specialist: aim at and shoot enemies.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: The floor hurts you. Collect medikits to stay alive. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success).",
+          "navigate": "You control a player in the game Doom by calling tools.\nYou are the Navigator: turn to look around and walk to items.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: The floor hurts you. Collect medikits to stay alive. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success)."
+        },
+        "health_gathering_supreme": {
+          "fight": "You control a player in the game Doom by calling tools.\nYou are the Combat specialist: aim at and shoot enemies.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: The floor hurts you and medikits are scarce in a larger area; Poison (hazard) hurts you too. Collect medikits to stay alive. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success).",
+          "navigate": "You control a player in the game Doom by calling tools.\nYou are the Navigator: turn to look around and walk to items.\nEvery turn you receive what is visible right now and the results of your recent actions.\nCall exactly one tool per turn.\n\nRules:\n- Use only target ids from the Visible list.\n- attack only works when an enemy is marked IN AIM CONE: yes. Otherwise call aim_at on it first.\n- If a call was REJECTED, read the reason and choose differently.\n\nGoal: The floor hurts you and medikits are scarce in a larger area; Poison (hazard) hurts you too. Collect medikits to stay alive. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success)."
+        }
+      },
+      "commander": {
+        "basic": "You command a two-specialist team playing the game Doom. You never act in the game yourself.\nChoose which specialist acts next by calling choose_mode:\n- fight: the Combat specialist aims at and shoots visible enemies.\n- navigate: the Navigator turns to look around and walks to items.\nYou are asked again when the situation changes.\n\nGoal: Kill the single monster. Score: tics until the kill, fewer is better. The episode ends at 300 tics without a kill.",
+        "defend_the_center": "You command a two-specialist team playing the game Doom. You never act in the game yourself.\nChoose which specialist acts next by calling choose_mode:\n- fight: the Combat specialist aims at and shoots visible enemies.\n- navigate: the Navigator turns to look around and walks to items.\nYou are asked again when the situation changes.\n\nGoal: You stand in the centre and cannot move; enemies approach from all sides. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success). You start with 26 bullets; kills are reported but only survival is scored.",
+        "health_gathering": "You command a two-specialist team playing the game Doom. You never act in the game yourself.\nChoose which specialist acts next by calling choose_mode:\n- fight: the Combat specialist aims at and shoots visible enemies.\n- navigate: the Navigator turns to look around and walks to items.\nYou are asked again when the situation changes.\n\nGoal: The floor hurts you. Collect medikits to stay alive. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success).",
+        "health_gathering_supreme": "You command a two-specialist team playing the game Doom. You never act in the game yourself.\nChoose which specialist acts next by calling choose_mode:\n- fight: the Combat specialist aims at and shoots visible enemies.\n- navigate: the Navigator turns to look around and walks to items.\nYou are asked again when the situation changes.\n\nGoal: The floor hurts you and medikits are scarce in a larger area; Poison (hazard) hurts you too. Collect medikits to stay alive. Score: tics survived, more is better, up to the time limit of 2100 tics (surviving to it is success)."
+      },
+      "turn_example": "YOUR LAST CALL WAS REJECTED: attack(burst=1) -> NO_ENEMY_IN_CONE: no enemy inside its aim cone\nDo not repeat it; choose a different call. Rejections in a row: 1 of 3 (at 3 you lose control for the rest of the episode).\nStatus: tic 70, health 100, ammo 25, kills 1\nVisible:\n[id 3] Demon (enemy): 280u ahead, 60u LEFT, bearing +12°, distance 286u  IN AIM CONE: no\nYour recent actions:\n- step 1: attack(burst=1) -> REJECTED NO_ENEMY_IN_CONE: no enemy inside its aim cone\nChoose your next tool call.",
+      "commander_example": "You are asked because: no mode yet.\nCurrent mode: none.\nYOUR LAST CALL WAS REJECTED: attack(burst=1) -> NO_ENEMY_IN_CONE: no enemy inside its aim cone\nDo not repeat it; choose a different call. Rejections in a row: 1 of 3 (at 3 you lose control for the rest of the episode).\nStatus: tic 70, health 100, ammo 25, kills 1\nVisible:\n[id 3] Demon (enemy): 280u ahead, 60u LEFT, bearing +12°, distance 286u  IN AIM CONE: no\nYour recent actions:\n- step 1: attack(burst=1) -> REJECTED NO_ENEMY_IN_CONE: no enemy inside its aim cone\nChoose the next mode with choose_mode.",
+      "reminder": "You must respond with exactly one tool call, not text."
+    },
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "observe",
+          "description": "Look again. Uses no game time, and the game is paused between your calls, so the facts you were just given are already current.",
+          "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": false
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "aim_at",
+          "description": "Line up a visible target (by its id) in the crosshair by turning or strafing. Stops when the target is centred, lost from view, or a time cap is reached.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "target_id": {
+                "type": "integer",
+                "description": "id from the visible list"
+              }
+            },
+            "required": [
+              "target_id"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "attack",
+          "description": "Fire the weapon `burst` times. One hit usually kills an enemy. Each shot uses one bullet and about 14 tics during which you stand still. Only allowed when an enemy is in the aim cone.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "burst": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              }
+            },
+            "required": [
+              "burst"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "turn",
+          "description": "Turn in place to look around: positive degrees = left, negative = right. Use it when nothing useful is visible.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "degrees": {
+                "type": "integer",
+                "minimum": -180,
+                "maximum": 180,
+                "not": {
+                  "const": 0
+                }
+              }
+            },
+            "required": [
+              "degrees"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "go_to",
+          "description": "Walk to a visible item (by its id), e.g. a medikit, to pick it up. Stops when it is picked up, reached, lost from view, or you are blocked.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "target_id": {
+                "type": "integer",
+                "description": "id of a visible item"
+              }
+            },
+            "required": [
+              "target_id"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "choose_mode",
+          "description": "Choose which specialist acts next.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "fight",
+                  "navigate"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "description": "one short sentence"
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    ],
+    "harness": {
+      "max_steps": 200,
+      "max_consecutive_rejections": 3,
+      "history_turns": 5,
+      "llm_attempts_per_decision": 2,
+      "commander_attempts": 2,
+      "role_tools": {
+        "fight": [
+          "observe",
+          "aim_at",
+          "attack"
+        ],
+        "navigate": [
+          "observe",
+          "turn",
+          "go_to"
+        ]
+      },
+      "aim_cones": {
+        "Cacodemon": 15.0,
+        "Demon": 15.0,
+        "MarineChainsawVzd": 9.0,
+        "default": 9.0
+      }
+    },
+    "code": {
+      "src/doomlab/agents/__init__.py": "002ae75da4e3db14428f8fb847f6cd4806d82301305c67c451276fbe74d2465b",
+      "src/doomlab/agents/base.py": "4125f2afaf1931cac6545f16af7166ed4f6ff0cf1b59da14a1e8a90025f6cb99",
+      "src/doomlab/agents/commander.py": "86e6a0174e3abf92a626d875f14c0c5e28b7b860c1c6779d5697ae6980dcf360",
+      "src/doomlab/agents/modes.py": "0f720f87ac4d283c8889d23cfe89791233c69e06f71d0e85572cb1c33026a4b0",
+      "src/doomlab/agents/prompting.py": "877881410b6119e8266d3eb70aa65fe5acfb454e690ab593620081d46db61d14",
+      "src/doomlab/agents/random_agent.py": "f6f2c1da000a956a8d4f2887e18396310252f08d5c2d96fa89c2e9b4f3b88be8",
+      "src/doomlab/agents/react.py": "becea79a2413862c2c8a883b73717855f6d075e81ad5b142d23c4e3b58c42d4b",
+      "src/doomlab/agents/scripted.py": "18af63fe92116144f72605466e367ed3863a6c48cd4383aa822b935e6f315426",
+      "src/doomlab/env/__init__.py": "f71be80651771375f9004858399efcd37cf0cf0f81627e21e07f01b3e9b0257a",
+      "src/doomlab/env/doom.py": "23d697fcfdcfd5ba0318b3009c2c7a4674ff20fc3fb48a5e3598ece63b4135e9",
+      "src/doomlab/env/perception.py": "dc27eb75c07d0a9552a06d2ec8b81da081e80afed03f5b3365ef4e67c6c2c48d",
+      "src/doomlab/graph/__init__.py": "deffc26fbca516418364f3c269bded71a9502bc3a47df1893358739e564b2838",
+      "src/doomlab/graph/engine.py": "dede4c49d149d8b1d24051f8dc9c82b090b03691a78769f921cda6888bbc0561",
+      "src/doomlab/graph/router.py": "8ec5687024a40c0ead840c086b79a7e8ae4ef3ffbc2064166fcd0d44041c87ec",
+      "src/doomlab/llm/__init__.py": "2816d70cab37449ebe76dc07e26745eb406bea11c9a5bb06e85637a53d9596fe",
+      "src/doomlab/llm/budget.py": "6af743ddfb6f51cca4d5c69312e7c5b5bf62f00b87d5f7fe89d1f8ba889d1b5c",
+      "src/doomlab/llm/client.py": "5c831f5d7ed574b4506cdd933779afd1803dc4b0830e6da7de45c43bddbcf0b0",
+      "src/doomlab/llm/pacer.py": "fccdc8f07d919135df2c961bbf42964efb3f7dbdd986b43e455858f7b8151f92",
+      "src/doomlab/llm/preflight.py": "e1330e3a37b488019b7e44163f882b975325899c236f409cbad903c11fb243fb",
+      "src/doomlab/tools/__init__.py": "6a986a1d778f616a6f1938e705e2dc2f76e3e3e6f211f9e9bd578a0598f0ea47",
+      "src/doomlab/tools/executor.py": "ffb0ff3d8987956bae518c7f442fd9680fa1616b3242984e30070e5ea9a5d700",
+      "src/doomlab/tools/registry.py": "7534dd8a3281f4555a1c27f6412db3e96392c2a4a5ed6f81efb2d93e1adf8349",
+      "src/doomlab/runner.py": "446092835d53a1a77dde37a58cbd25735467e94df18b5196d6db051472b1091c",
+      "src/doomlab/policy.py": "b514a47771cc1afdaee6e2abe62077f789b28e54595c83ead4f88123baf5569b"
+    }
+  }
+}
