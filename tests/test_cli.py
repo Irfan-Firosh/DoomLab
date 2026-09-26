@@ -4,7 +4,7 @@ from doomlab.cli import COMMANDS, build_parser, main
 
 
 def test_cli_exposes_planned_commands():
-    assert set(COMMANDS) == {"preflight", "run", "eval", "review", "improve", "replay", "report"}
+    assert set(COMMANDS) == {"preflight", "freeze", "run", "eval", "review", "improve", "replay", "report"}
 
 
 def test_run_accepts_variant_scenario_seed():
@@ -38,3 +38,12 @@ def test_run_scripted_prints_outcome(capsys):
 def test_run_random_variant_plays_a_real_episode(capsys):
     assert main(["run", "--variant", "random", "--scenario", "basic", "--seed", "0"]) == 0
     assert "outcome:" in capsys.readouterr().out
+
+
+def test_test_split_refuses_an_unfrozen_recipe(capsys, monkeypatch, tmp_path):
+    import doomlab.freeze as freeze
+
+    monkeypatch.setattr(freeze, "FROZEN_PATH", tmp_path / "missing.json")
+    monkeypatch.setattr(freeze.load_frozen, "__defaults__", (tmp_path / "missing.json",))
+    assert main(["eval", "--split", "test", "--variants", "scripted", "--out", str(tmp_path / "out")]) == 2
+    assert "only on the frozen recipe" in capsys.readouterr().err

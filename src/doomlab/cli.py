@@ -10,6 +10,7 @@ SCENARIOS = ("basic", "defend_the_center", "health_gathering", "health_gathering
 
 COMMANDS: dict[str, str] = {
     "preflight": "done",
+    "freeze": "done",
     "run": "done",
     "eval": "done",
     "review": "Day 3",
@@ -23,6 +24,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="doomlab", description="Agent harness for vizDoom")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("preflight", help="Check the model endpoint and record runs/preflight.json")
+    freeze = sub.add_parser("freeze", help="Lock the current recipe into configs/frozen.json and print its hash")
+    freeze.add_argument("--name", default="frozen-v0")
     run = sub.add_parser("run", help="Play one episode with a chosen variant")
     run.add_argument("--variant", choices=VARIANTS, required=True)
     run.add_argument("--scenario", choices=SCENARIOS, required=True)
@@ -112,14 +115,18 @@ async def _run_episodes(variant: str, scenario: str, seeds: list[int]) -> list:
     from doomlab.trace import TraceWriter
     from doomlab.variants import open_agent_maker
 
+    from doomlab.freeze import current
+
     run_dir = RUNS_DIR / datetime.now().strftime("%Y%m%d-%H%M%S")
+    _, config_hash = current()
     async with AsyncExitStack() as stack:
         make_agent = await open_agent_maker(stack, (variant,))
         results = []
         for seed in seeds:
             with DoomSession(scenario, seed=seed) as session, TraceWriter(run_dir / f"{scenario}-s{seed}-{variant}.jsonl") as trace:
                 agent = make_agent(variant, scenario, seed)
-                results.append(await arun_episode(session, agent, scenario=scenario, seed=seed, trace=trace))
+                results.append(await arun_episode(session, agent, scenario=scenario, seed=seed, trace=trace,
+                                                  config_hash=config_hash))
         return results
 
 
@@ -181,6 +188,7 @@ def _eval(args: argparse.Namespace) -> int:
     from doomlab.config import RUNS_DIR, ConfigError
     from doomlab.eval.harness import BENCHMARK, SPLITS, format_table, plan, run_jobs, score_jobs, write_results
     from doomlab.eval.scorers import summarize
+    from doomlab.freeze import FreezeError
     from doomlab.llm.client import LLMError
     from doomlab.variants import open_agent_maker
 
@@ -193,16 +201,21 @@ def _eval(args: argparse.Namespace) -> int:
     out_dir = Path(args.out) if args.out else RUNS_DIR / f"eval-{args.split}"
     jobs = plan(SPLITS[args.split], scenarios, variants)
 
-    async def play() -> None:
+    async def play(config_hash: str) -> None:
         async with AsyncExitStack() as stack:
             make_agent = await open_agent_maker(stack, variants)
-            played, skipped = await run_jobs(jobs, out_dir, make_agent)
+            played, skipped = await run_jobs(jobs, out_dir, make_agent, config_hash=config_hash)
             print(f"played {played}, skipped {skipped} already done")
 
     if not args.score_only:
+        try:
+            config_hash = _check_recipe(args.split, out_dir)
+        except FreezeError as exc:
+            print(f"doomlab eval: {exc}", file=sys.stderr)
+            return 2
         print(f"eval {args.split}: {len(jobs)} episodes -> {out_dir}  (rerun the same command to resume)")
         try:
-            asyncio.run(play())
+            asyncio.run(play(config_hash))
         except (ConfigError, LLMError) as exc:
             print(f"doomlab eval: {exc}  (finished episodes are kept; rerun to resume)", file=sys.stderr)
             return 1
@@ -218,10 +231,50 @@ def _eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def _check_recipe(split: str, out_dir) -> str:
+    """The current recipe's hash, after checking it may run here. The test split runs only on the frozen recipe."""
+    from doomlab.eval.harness import check_folder
+    from doomlab.freeze import FreezeError, current, load_frozen
+
+    _, config_hash = current()
+    frozen = load_frozen()
+    matches = frozen is not None and frozen["hash"] == config_hash
+    status = f"matches {frozen['name']}" if matches else "NOT the frozen recipe"
+    print(f"recipe {config_hash[:12]}  ({status})")
+    if split == "test" and not matches:
+        raise FreezeError("the test split runs only on the frozen recipe; run `doomlab freeze` (and commit) first")
+    if out_dir.exists():
+        check_folder(out_dir, config_hash)
+    return config_hash
+
+
+def _freeze(name: str) -> int:
+    from doomlab.freeze import FROZEN_PATH, current, write_frozen
+
+    value, _ = current()
+    if value["model"] is None:
+        print("doomlab freeze: no passing preflight; run `doomlab preflight` first", file=sys.stderr)
+        return 1
+    frozen = write_frozen(value, name=name)
+    model = value["model"]
+    print(f"froze {name}: {frozen['hash']}")
+    print(f"  model {model['model_id']}  temperature {model['temperature']}  max_tokens {model['max_tokens']}  "
+          f"thinking {model['thinking']}")
+    print(f"  budgets {value['budgets']['calls']}  pacing {value['rate']['requests_per_minute']}/min  "
+          f"policy {value['policy']['version']} ({len(value['policy']['lessons'])} lessons)")
+    print(f"  {len(value['code'])} behaviour files hashed -> {FROZEN_PATH}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if reconfigure:
+        reconfigure(line_buffering=True)  # progress shows live even through `| tee`
     args = build_parser().parse_args(argv)
     if args.command == "preflight":
         return _preflight()
+    if args.command == "freeze":
+        return _freeze(args.name)
     if args.command == "replay":
         return _replay(args.trace)
     if args.command == "run":

@@ -98,12 +98,14 @@ async def arun_episode(
     seed: int,
     max_steps: int = MAX_STEPS,
     trace: TraceWriter | None = None,
+    config_hash: str | None = None,
 ) -> EpisodeResult:
     emit = trace.write if trace else (lambda event, **fields: None)
     executor = Executor(session)
     tally = _LLMTally()
     emit("episode_start", scenario=scenario, seed=seed, agent=agent.name, buttons=session.info.buttons,
-         tools=[t.name for t in executor.tools], config=getattr(agent, "config", {}))
+         tools=[t.name for t in executor.tools], config=getattr(agent, "config", {}),
+         **({"config_hash": config_hash} if config_hash else {}))
 
     graph = _episode_graph(session, agent, executor, tally, emit, max_steps)
     state = await graph.run("route", _EpisodeState(), on_transition=lambda src, dst, s: emit(
