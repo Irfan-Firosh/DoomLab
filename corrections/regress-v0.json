@@ -1,0 +1,95 @@
+{
+  "policy": "v0",
+  "passed": 4,
+  "total": 11,
+  "results": [
+    {
+      "id": "rc-001",
+      "author": "human",
+      "label": "missed_pickup",
+      "expect": "must call go_to(target_id=33)",
+      "chose": "go_to(target_id=33)",
+      "passed": true
+    },
+    {
+      "id": "rc-002",
+      "author": "human",
+      "label": "missed_pickup",
+      "expect": "must call go_to(target_id=53)",
+      "chose": "go_to(target_id=53)",
+      "passed": true
+    },
+    {
+      "id": "rc-003",
+      "author": "assistant",
+      "label": "missed_pickup",
+      "expect": "must call go_to(target_id=50)",
+      "chose": "observe()",
+      "passed": false
+    },
+    {
+      "id": "rc-004",
+      "author": "assistant",
+      "label": "wrong_tool",
+      "expect": "must call turn()",
+      "chose": "turn(degrees=90)",
+      "passed": true
+    },
+    {
+      "id": "rc-005",
+      "author": "assistant",
+      "label": "premature_attack",
+      "expect": "must not call attack",
+      "chose": "attack(burst=3)",
+      "passed": false
+    },
+    {
+      "id": "rc-006",
+      "author": "assistant",
+      "label": "premature_attack",
+      "expect": "must call turn()",
+      "chose": "observe()",
+      "passed": false
+    },
+    {
+      "id": "rc-007",
+      "author": "assistant",
+      "label": "wrong_target",
+      "expect": "must call aim_at(target_id=6)",
+      "chose": "observe()",
+      "passed": false
+    },
+    {
+      "id": "rc-008",
+      "author": "assistant",
+      "label": "wrong_target",
+      "expect": "must call aim_at(target_id=21)",
+      "chose": "turn(degrees=-90)",
+      "passed": false
+    },
+    {
+      "id": "rc-009",
+      "author": "assistant",
+      "label": "wrong_tool",
+      "expect": "must call aim_at(target_id=7)",
+      "chose": "turn(degrees=90)",
+      "passed": false
+    },
+    {
+      "id": "rc-010",
+      "author": "assistant",
+      "label": "other",
+      "expect": "must call attack(burst=1)",
+      "chose": "attack(burst=1)",
+      "passed": true
+    },
+    {
+      "id": "rc-011",
+      "author": "assistant",
+      "label": "stuck_loop",
+      "expect": "must call turn()",
+      "chose": "observe()",
+      "passed": false
+    }
+  ]
+}
