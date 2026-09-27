@@ -8,6 +8,7 @@ Status: **Day 1 done** (commit `d37d4bf`): Qwen plays `basic` through typed tool
 - Schedule (Wed → Fri): [`docs/superpowers/plans/2026-09-23-doomlab-schedule.md`](docs/superpowers/plans/2026-09-23-doomlab-schedule.md)
 - Day 1 plan and walkthrough: [`schedule/day1.md`](schedule/day1.md) · Day 2 plan: [`schedule/day2.md`](schedule/day2.md) · Day 3 plan: [`schedule/day3.md`](schedule/day3.md)
 - Finding: [one LLM call in five was spent looking at a paused game](findings/2026-09-27-needless-observe.md)
+- Finding: [the lesson fixed the metric, not the game](findings/2026-09-27-fixed-the-metric-not-the-game.md) (improvement trial: gate said promote, reviewer rejected)
 - Full architecture diagram (Lucid, 2 pages): [runtime loop + evals/improvement](https://lucid.app/lucidchart/cfc18bb2-f111-478e-a9fd-f9d1de1d6a1d/edit)
 
 ## Day 1: single-agent loop on `basic`
