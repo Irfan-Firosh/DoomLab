@@ -1,0 +1,120 @@
+{
+  "source": "runs/eval-dev",
+  "episodes": 30,
+  "decisions": 1712,
+  "signatures": [
+    {
+      "name": "observe_loop",
+      "meaning": "called observe, which shows nothing new while the game is paused",
+      "occurrences": 322,
+      "episodes": 20,
+      "by_variant": {
+        "commander": 138,
+        "react_single": 184
+      },
+      "examples": [
+        "defend_the_center-s0-commander.jsonl#4",
+        "defend_the_center-s0-react_single.jsonl#2",
+        "defend_the_center-s1-commander.jsonl#2"
+      ]
+    },
+    {
+      "name": "blind_attack",
+      "meaning": "attacked with no enemy in the aim cone (rejected)",
+      "occurrences": 23,
+      "episodes": 6,
+      "by_variant": {
+        "commander": 1,
+        "react_single": 22
+      },
+      "examples": [
+        "defend_the_center-s0-react_single.jsonl#22",
+        "defend_the_center-s1-react_single.jsonl#10",
+        "defend_the_center-s2-react_single.jsonl#15"
+      ]
+    },
+    {
+      "name": "turned_from_enemy",
+      "meaning": "turned away from the nearest enemy while able to fight",
+      "occurrences": 19,
+      "episodes": 5,
+      "by_variant": {
+        "react_single": 19
+      },
+      "examples": [
+        "defend_the_center-s0-react_single.jsonl#12",
+        "defend_the_center-s1-react_single.jsonl#42",
+        "defend_the_center-s2-react_single.jsonl#42"
+      ]
+    },
+    {
+      "name": "medikit_ignored",
+      "meaning": "did not go to a visible medikit at health below 50",
+      "occurrences": 16,
+      "episodes": 3,
+      "by_variant": {
+        "commander": 3,
+        "react_single": 13
+      },
+      "examples": [
+        "health_gathering_supreme-s0-react_single.jsonl#26",
+        "health_gathering_supreme-s2-react_single.jsonl#60",
+        "health_gathering_supreme-s3-commander.jsonl#46"
+      ]
+    },
+    {
+      "name": "wasteful_burst",
+      "meaning": "fired more than one shot although one hit usually kills",
+      "occurrences": 15,
+      "episodes": 8,
+      "by_variant": {
+        "commander": 7,
+        "react_single": 8
+      },
+      "examples": [
+        "basic-s0-react_single.jsonl#2",
+        "basic-s1-react_single.jsonl#2",
+        "basic-s2-react_single.jsonl#2"
+      ]
+    },
+    {
+      "name": "budget_exhausted",
+      "meaning": "ran out of LLM calls and stood still until the end",
+      "occurrences": 7,
+      "episodes": 7,
+      "by_variant": {
+        "commander": 3,
+        "react_single": 4
+      },
+      "examples": [
+        "defend_the_center-s1-react_single.jsonl",
+        "defend_the_center-s2-commander.jsonl",
+        "defend_the_center-s3-commander.jsonl"
+      ]
+    },
+    {
+      "name": "early_death",
+      "meaning": "died before 600 tics",
+      "occurrences": 1,
+      "episodes": 1,
+      "by_variant": {
+        "commander": 1
+      },
+      "examples": [
+        "defend_the_center-s1-commander.jsonl"
+      ]
+    },
+    {
+      "name": "other_rejection",
+      "meaning": "a call the executor refused for another reason",
+      "occurrences": 1,
+      "episodes": 1,
+      "by_variant": {
+        "commander": 1
+      },
+      "examples": [
+        "health_gathering_supreme-s3-commander.jsonl#50"
+      ]
+    }
+  ]
+}

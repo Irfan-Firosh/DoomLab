@@ -22,7 +22,7 @@ async def open_agent_maker(stack: AsyncExitStack, variants: tuple[str, ...], pol
     unknown = sorted(set(variants) - set(VARIANTS))
     if unknown:
         raise ValueError(f"unknown variant(s) {unknown}; choose from {list(VARIANTS)}")
-    llm_maker = await _open_llm(stack, policy or load_policy()) if LLM_VARIANTS & set(variants) else None
+    llm_maker = await open_llm_maker(stack, policy or load_policy()) if LLM_VARIANTS & set(variants) else None
 
     def make(variant: str, scenario: str, seed: int) -> Agent:
         if variant == "random":
@@ -34,7 +34,8 @@ async def open_agent_maker(stack: AsyncExitStack, variants: tuple[str, ...], pol
     return make
 
 
-async def _open_llm(stack: AsyncExitStack, policy: Policy) -> Callable[[str, str], Agent]:
+async def open_llm_maker(stack: AsyncExitStack, policy: Policy) -> Callable[[str, str], Agent]:
+    """(variant, scenario) -> a fresh react_single agent or commander team, with the policy's lessons."""
     from doomlab.agents.commander import CommanderTeam
     from doomlab.agents.react import ReactAgent
     from doomlab.config import RUNS_DIR, load_settings

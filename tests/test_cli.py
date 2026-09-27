@@ -4,7 +4,7 @@ from doomlab.cli import COMMANDS, build_parser, main
 
 
 def test_cli_exposes_planned_commands():
-    assert set(COMMANDS) == {"preflight", "freeze", "run", "eval", "review", "improve", "replay", "report"}
+    assert set(COMMANDS) == {"preflight", "freeze", "run", "eval", "review", "regress", "mine", "improve", "replay", "report"}
 
 
 def test_run_accepts_variant_scenario_seed():

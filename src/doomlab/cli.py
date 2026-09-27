@@ -13,7 +13,9 @@ COMMANDS: dict[str, str] = {
     "freeze": "done",
     "run": "done",
     "eval": "done",
-    "review": "Day 3",
+    "review": "done",
+    "regress": "done",
+    "mine": "done",
     "improve": "Day 3",
     "replay": "done",
     "report": "Day 3",
@@ -37,8 +39,14 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--scenarios", help="comma list; default: the benchmark three")
     evaluate.add_argument("--out", help="results folder; rerunning with the same folder resumes (default runs/eval-<split>)")
     evaluate.add_argument("--score-only", action="store_true", help="play nothing; rescore the traces already there")
-    review = sub.add_parser("review", help="Step through an episode and record corrections")
-    review.add_argument("episode")
+    review = sub.add_parser("review", help="Correct flagged decisions from dev episodes (saved to corrections/)")
+    review.add_argument("episode", nargs="?", help="one trace to review; default: every LLM episode in --from")
+    review.add_argument("--from", dest="source", default=None, help="folder of dev traces (default runs/eval-dev)")
+    regress = sub.add_parser("regress", help="Ask a policy what it would do at each corrected moment")
+    regress.add_argument("--policy", default=None, help="policy file (default policies/v0.json)")
+    regress.add_argument("--repeats", type=int, default=None, help="asks per case (default: the gate rules, 3)")
+    mine = sub.add_parser("mine", help="Count recurring failure signatures across dev traces")
+    mine.add_argument("--from", dest="source", default=None, help="folder of dev traces (default runs/eval-dev)")
     sub.add_parser("improve", help="Propose, validate and gate one policy patch")
     replay = sub.add_parser("replay", help="Rebuild a GIF from a saved trace")
     replay.add_argument("trace")
@@ -266,6 +274,117 @@ def _freeze(name: str) -> int:
     return 0
 
 
+def _review(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from doomlab.config import RUNS_DIR
+    from doomlab.review.corrections import CORRECTIONS
+    from doomlab.review.flags import shortlist
+    from doomlab.review.session import run_review
+    from doomlab.variants import LLM_VARIANTS
+
+    if args.episode:
+        paths = [Path(args.episode)]
+    else:
+        source = Path(args.source) if args.source else RUNS_DIR / "eval-dev"
+        paths = sorted(p for p in source.glob("*.jsonl") if p.stem.rsplit("-", 1)[-1] in LLM_VARIANTS)
+    if not paths:
+        print("doomlab review: no LLM traces found; run `doomlab eval --split dev` first", file=sys.stderr)
+        return 1
+    try:
+        flags = shortlist(paths)
+    except ValueError as exc:
+        print(f"doomlab review: {exc}", file=sys.stderr)
+        return 2
+    try:
+        run_review(flags, CORRECTIONS)
+    except (KeyboardInterrupt, EOFError):
+        print("\nstopped; everything answered so far is saved")
+    return 0
+
+
+def _regress(args: argparse.Namespace) -> int:
+    import asyncio
+    import json
+    from contextlib import AsyncExitStack
+    from pathlib import Path
+
+    from doomlab.config import ConfigError
+    from doomlab.improve.gate import load_rules
+    from doomlab.llm.client import LLMError
+    from doomlab.policy import DEFAULT_POLICY, load_policy
+    from doomlab.review.corrections import CORRECTIONS, cases
+    from doomlab.review.regress import run_regression
+    from doomlab.variants import open_llm_maker
+
+    policy = load_policy(Path(args.policy) if args.policy else DEFAULT_POLICY)
+    rules, _ = load_rules()
+    repeats = args.repeats or rules.regression_repeats
+    votes = min(rules.regression_votes_to_pass, repeats)
+    saved = cases(CORRECTIONS)
+    if not saved:
+        print("doomlab regress: no corrections yet; run `doomlab review` first", file=sys.stderr)
+        return 1
+
+    async def go() -> list:
+        async with AsyncExitStack() as stack:
+            make = await open_llm_maker(stack, policy)
+
+            def agent_for(case: dict):
+                snap = case["snapshot"]
+                agent = make(snap["variant"], snap["scenario"])
+                return agent.specialist(snap["mode"]) if snap["mode"] else agent
+
+            return await run_regression(saved, agent_for, repeats=repeats, votes_to_pass=votes)
+
+    try:
+        results = asyncio.run(go())
+    except (ConfigError, LLMError) as exc:
+        print(f"doomlab regress: {exc}", file=sys.stderr)
+        return 1
+    for r in results:
+        print(f"{r['id']}  {r['author']:<9} {r['label']:<17} {r['expect']:<32} "
+              f"{'PASS' if r['passed'] else 'FAIL'} {r['votes']}/{r['asked']}   {policy.version} chose {r['chose']}")
+    passed = sum(r["passed"] for r in results)
+    print(f"{policy.version} passes {passed}/{len(results)} cases ({votes} of {repeats} votes needed per case)")
+    out = CORRECTIONS.parent / f"regress-{policy.version}.json"
+    out.write_text(json.dumps({"policy": policy.version, "repeats": repeats, "votes_to_pass": votes, "passed": passed,
+                               "total": len(results), "results": results}, indent=2) + "\n")
+    print(f"wrote {out}")
+    return 0
+
+
+def _mine(args: argparse.Namespace) -> int:
+    import json
+    from pathlib import Path
+
+    from doomlab.config import REPO_ROOT, RUNS_DIR
+    from doomlab.improve.miner import mine
+    from doomlab.variants import LLM_VARIANTS
+
+    source = Path(args.source) if args.source else RUNS_DIR / "eval-dev"
+    paths = sorted(p for p in source.glob("*.jsonl") if p.stem.rsplit("-", 1)[-1] in LLM_VARIANTS)
+    if not paths:
+        print(f"doomlab mine: no LLM traces in {source}", file=sys.stderr)
+        return 1
+    try:
+        report = mine(paths)
+    except ValueError as exc:
+        print(f"doomlab mine: {exc}", file=sys.stderr)
+        return 2
+    print(f"{report['episodes']} dev LLM episodes, {report['decisions']} decisions\n")
+    print(f"{'signature':<20}{'occurrences':>12}{'episodes':>10}   by variant                      example")
+    for s in report["signatures"]:
+        variants = ", ".join(f"{k} {v}" for k, v in s["by_variant"].items())
+        print(f"{s['name']:<20}{s['occurrences']:>12}{s['episodes']:>7}/{report['episodes']:<3}  {variants:<32}{s['examples'][0]}")
+    out = REPO_ROOT / "improve" / "miner_report.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps({"source": str(source.relative_to(REPO_ROOT)) if source.is_relative_to(REPO_ROOT)
+                               else str(source), **report}, indent=2) + "\n")
+    print(f"\nwrote {out}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     reconfigure = getattr(sys.stdout, "reconfigure", None)
     if reconfigure:
@@ -281,6 +400,12 @@ def main(argv: list[str] | None = None) -> int:
         return _run(args)
     if args.command == "eval":
         return _eval(args)
+    if args.command == "review":
+        return _review(args)
+    if args.command == "regress":
+        return _regress(args)
+    if args.command == "mine":
+        return _mine(args)
     print(f"doomlab {args.command}: not implemented yet ({COMMANDS[args.command]})", file=sys.stderr)
     return 2
 
