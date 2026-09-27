@@ -16,7 +16,7 @@ COMMANDS: dict[str, str] = {
     "review": "done",
     "regress": "done",
     "mine": "done",
-    "improve": "Day 3",
+    "improve": "done",
     "replay": "done",
     "report": "Day 3",
 }
@@ -47,7 +47,13 @@ def build_parser() -> argparse.ArgumentParser:
     regress.add_argument("--repeats", type=int, default=None, help="asks per case (default: the gate rules, 3)")
     mine = sub.add_parser("mine", help="Count recurring failure signatures across dev traces")
     mine.add_argument("--from", dest="source", default=None, help="folder of dev traces (default runs/eval-dev)")
-    sub.add_parser("improve", help="Propose, validate and gate one policy patch")
+    improve = sub.add_parser("improve", help="Propose lessons (v1), test them against v0, and gate the result")
+    improve.add_argument("--scenario", default="health_gathering_supreme", choices=SCENARIOS)
+    improve.add_argument("--variant", default="react_single", choices=("react_single", "commander"))
+    improve.add_argument("--new-proposal", action="store_true", help="ask the Analyst again even if policies/v1.json exists")
+    improve.add_argument("--decide", choices=("approve", "reject"), help="record your decision on the last trial")
+    improve.add_argument("--note", default="", help="why you decided so (saved with the decision)")
+    improve.add_argument("--override", action="store_true", help="approve although the gate did not say promote")
     replay = sub.add_parser("replay", help="Rebuild a GIF from a saved trace")
     replay.add_argument("trace")
     sub.add_parser("report", help="Build metrics and charts from saved runs")
@@ -330,12 +336,7 @@ def _regress(args: argparse.Namespace) -> int:
         async with AsyncExitStack() as stack:
             make = await open_llm_maker(stack, policy)
 
-            def agent_for(case: dict):
-                snap = case["snapshot"]
-                agent = make(snap["variant"], snap["scenario"])
-                return agent.specialist(snap["mode"]) if snap["mode"] else agent
-
-            return await run_regression(saved, agent_for, repeats=repeats, votes_to_pass=votes)
+            return await run_regression(saved, _case_agent(make), repeats=repeats, votes_to_pass=votes)
 
     try:
         results = asyncio.run(go())
@@ -351,6 +352,101 @@ def _regress(args: argparse.Namespace) -> int:
     out.write_text(json.dumps({"policy": policy.version, "repeats": repeats, "votes_to_pass": votes, "passed": passed,
                                "total": len(results), "results": results}, indent=2) + "\n")
     print(f"wrote {out}")
+    return 0
+
+
+def _case_agent(make):
+    """The agent that faced a corrected moment: react_single, or the commander's specialist in that mode."""
+    def agent_for(case: dict):
+        snap = case["snapshot"]
+        agent = make(snap["variant"], snap["scenario"])
+        return agent.specialist(snap["mode"]) if snap["mode"] else agent
+    return agent_for
+
+
+def _improve(args: argparse.Namespace) -> int:
+    import asyncio
+    import json
+    from contextlib import AsyncExitStack
+
+    from doomlab.config import REPO_ROOT, RUNS_DIR, ConfigError
+    from doomlab.eval.harness import SPLITS
+    from doomlab.freeze import FreezeError, preflight_decoding
+    from doomlab.improve.analyst import AnalystError, propose
+    from doomlab.improve.gate import load_rules
+    from doomlab.improve.trial import record_decision, run_trial
+    from doomlab.llm.budget import Budget
+    from doomlab.llm.client import LLMError
+    from doomlab.policy import DEFAULT_POLICY, load_policy
+    from doomlab.policy_registry import active_policy_path
+    from doomlab.review.corrections import CORRECTIONS, cases
+    from doomlab.review.regress import run_regression
+    from doomlab.variants import llm_maker, open_llm_client
+
+    trial_dir = REPO_ROOT / "improve" / "trial-v1"
+    if args.decide:
+        try:
+            result = record_decision(trial_dir / "gate_result.json", args.decide, note=args.note, override=args.override)
+        except (ValueError, FileNotFoundError) as exc:
+            print(f"doomlab improve: {exc}", file=sys.stderr)
+            return 2
+        print(f"recorded: {args.decide} (gate said {result['verdict']})")
+        if args.decide == "approve":
+            print(f"new runs now use {result['candidate']['file']} (policies/active.json)")
+        return 0
+
+    report_path = REPO_ROOT / "improve" / "miner_report.json"
+    saved = cases(CORRECTIONS)
+    if not report_path.exists() or not saved:
+        print("doomlab improve: needs improve/miner_report.json (doomlab mine) and corrections (doomlab review)", file=sys.stderr)
+        return 1
+    report = json.loads(report_path.read_text())
+    rules, rules_fingerprint = load_rules()
+    parent = load_policy(active_policy_path())
+    candidate_path = DEFAULT_POLICY.parent / "v1.json"
+
+    async def go() -> dict:
+        async with AsyncExitStack() as stack:
+            client, decoding = await open_llm_client(stack)
+            if candidate_path.exists() and not args.new_proposal:
+                candidate = load_policy(candidate_path)
+                print(f"using the existing proposal {candidate_path.name} (--new-proposal to ask the Analyst again)")
+            else:
+                print("the Analyst is reading the miner report and corrections...")
+                candidate = await propose(client, decoding, Budget(max_calls=4), report, saved, scenario=args.scenario,
+                                          variant=args.variant, parent=parent, out=candidate_path)
+            evidence = json.loads(candidate_path.read_text()).get("evidence", [])
+            for i, lesson in enumerate(candidate.lessons):
+                cited = ", ".join(evidence[i]) if i < len(evidence) else "-"
+                print(f"  lesson {i + 1}: {lesson}\n            evidence: {cited}")
+            makers = {p.version: llm_maker(client, decoding, p) for p in (parent, candidate)}
+
+            async def regress(policy):
+                return await run_regression(saved, _case_agent(makers[policy.version]), repeats=rules.regression_repeats,
+                                            votes_to_pass=rules.regression_votes_to_pass)
+
+            return await run_trial(
+                parent=parent, candidate=candidate, scenario=args.scenario, variant=args.variant,
+                seeds=SPLITS["validation"], rules=rules, rules_fingerprint=rules_fingerprint, corrections=saved,
+                out_dir=trial_dir, traces_dir=RUNS_DIR / "improve-trial-v1",
+                make_agent=lambda policy, variant, scenario, seed: makers[policy.version](variant, scenario),
+                regress=regress, decoding=preflight_decoding())
+
+    try:
+        result = asyncio.run(go())
+    except (ConfigError, LLMError, AnalystError, FreezeError) as exc:
+        print(f"doomlab improve: {exc}  (rerun to resume: finished A/B episodes are kept)", file=sys.stderr)
+        return 1
+    print(f"\nA/B on {args.scenario}, {args.variant}, validation seeds {result['seeds']}:")
+    print(f"  {'seed':<6}{result['parent']['policy']:>10}{result['candidate']['policy']:>10}")
+    for a, b in zip(result["ab"][result["parent"]["policy"]], result["ab"][result["candidate"]["policy"]]):
+        print(f"  {a['seed']:<6}{a['score']:>10g}{b['score']:>10g}")
+    print("\ngate checks:")
+    for c in result["checks"]:
+        mark = {True: "pass", False: "FAIL", None: "unknown"}[c["passed"]]
+        print(f"  {c['name']:<16}{mark:<9}{c['detail']}")
+    print(f"\nGATE: {result['verdict'].upper()}   -> {trial_dir / 'gate_result.json'}")
+    print("your decision: doomlab improve --decide approve|reject --note \"why\"")
     return 0
 
 
@@ -406,6 +502,8 @@ def main(argv: list[str] | None = None) -> int:
         return _regress(args)
     if args.command == "mine":
         return _mine(args)
+    if args.command == "improve":
+        return _improve(args)
     print(f"doomlab {args.command}: not implemented yet ({COMMANDS[args.command]})", file=sys.stderr)
     return 2
 

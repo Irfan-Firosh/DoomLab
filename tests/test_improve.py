@@ -59,11 +59,11 @@ def test_miner_counts_signatures_with_evidence(tmp_path):
     ], scenario="health_gathering_supreme", seed=1, agent="commander", tools=("observe", "turn", "go_to"), tics=1500)
     report = mine([a, b])
     sig = {s["name"]: s for s in report["signatures"]}
-    assert (sig["observe_loop"]["occurrences"], sig["observe_loop"]["episodes"]) == (2, 1)
+    assert (sig["needless_observe"]["occurrences"], sig["needless_observe"]["episodes"]) == (2, 1)
     assert sig["blind_attack"]["occurrences"] == 1 and sig["turned_from_enemy"]["occurrences"] == 1
     assert sig["medikit_ignored"]["by_variant"] == {"commander": 1}
     assert sig["budget_exhausted"]["episodes"] == 1 and sig["early_death"]["episodes"] == 1
-    assert sig["observe_loop"]["examples"][0] == "defend_the_center-s0-react_single.jsonl#1"
+    assert sig["needless_observe"]["examples"][0] == "defend_the_center-s0-react_single.jsonl#1"
     assert report["episodes"] == 2 and report["decisions"] == 5
     assert [s["occurrences"] for s in report["signatures"]] == sorted((s["occurrences"] for s in report["signatures"]), reverse=True)
 
@@ -152,3 +152,11 @@ def test_votes_decide_a_regression_pass():
 def test_committed_rules_load_with_a_fingerprint():
     rules, fingerprint = load_rules()
     assert rules == GateRules() and len(fingerprint) == 64
+
+
+def test_the_automatic_play_out_is_not_counted_as_a_decision(tmp_path):
+    a = trace(tmp_path / "defend_the_center-s0-react_single.jsonl", [
+        observe(1, []), exe(1, "turn", {"degrees": 90}),
+        observe(2, []), exe(2, "wait_until_end", {}),
+    ], stop_reason="budget")
+    assert mine([a])["decisions"] == 1
