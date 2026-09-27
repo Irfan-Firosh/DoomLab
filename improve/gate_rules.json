@@ -1,5 +1,9 @@
 {
-  "note": "Frozen before any candidate policy exists (Day 3 block 3). See src/doomlab/improve/gate.py for how each rule is applied.",
+  "version": 2,
+  "note": "Version 2, written on 2026-09-27 AFTER trial-v1 and applying only to later trials. Version 1 (improve/gate_rules_v1.json, fingerprint recorded in improve/trial-v1/gate_result.json) decided trial-v1.",
+  "changes_in_v2": [
+    "Added guard no_broad_decline (max_seeds_worse = 1): trial-v1 was promoted on one extra success (seed 103) although v1 scored lower on 4 of 5 seeds (median -36%). With 5 seeds and rare successes, one success must not outweigh worse play on most seeds."
+  ],
   "adapted_from_spec": [
     "Cost is measured per tic survived, not per episode: in survival scenarios a better agent lives longer and makes more calls.",
     "A paired-score route is added to 'better play': survival scenarios rarely reach full success, so 5 seeds seldom differ in successes.",
@@ -16,6 +20,7 @@
     "min_median_gain": 0.1,
     "max_calls_per_tic_ratio": 1.1,
     "max_tokens_per_tic_ratio": 1.25,
-    "max_latency_p50_ratio": 1.25
+    "max_latency_p50_ratio": 1.25,
+    "max_seeds_worse": 1
   }
 }
