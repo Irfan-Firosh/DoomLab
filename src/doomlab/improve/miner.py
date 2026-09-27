@@ -25,7 +25,8 @@ def _medikit_ignored(s: Step) -> bool:
 
 # name -> (what it means, test on one decision)
 STEP_SIGNATURES: dict[str, tuple[str, Callable[[Step], bool]]] = {
-    "observe_loop": ("called observe, which shows nothing new while the game is paused", lambda s: s.call.name == "observe"),
+    "needless_observe": ("called observe, which shows nothing new while the game is paused",
+                         lambda s: s.call.name == "observe"),
     "blind_attack": ("attacked with no enemy in the aim cone (rejected)", lambda s: s.code == "NO_ENEMY_IN_CONE"),
     "turned_from_enemy": ("turned away from the nearest enemy while able to fight", turned_away),
     "medikit_ignored": (f"did not go to a visible medikit at health below {LOW_HEALTH:g}", _medikit_ignored),

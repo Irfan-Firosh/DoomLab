@@ -74,8 +74,9 @@ def fingerprint(value: dict[str, Any]) -> str:
 def current() -> tuple[dict[str, Any], str]:
     """The recipe this checkout would run with right now, and its fingerprint."""
     from doomlab.policy import load_policy
+    from doomlab.policy_registry import active_policy_path
 
-    r = recipe(preflight_decoding(), load_policy())
+    r = recipe(preflight_decoding(), load_policy(active_policy_path()))
     return r, fingerprint(r)
 
 

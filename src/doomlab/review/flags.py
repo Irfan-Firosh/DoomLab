@@ -20,6 +20,7 @@ TEST_SEEDS = range(1000, 1010)  # eval.harness.SPLITS["test"]; kept here to avoi
 LOW_HEALTH = 50.0
 BEFORE_DEATH_STEPS = 3
 MAX_FLAGS = 40
+PLAY_OUT = "wait_until_end"  # the runner standing still after the agent stopped: not a decision
 TURN_TOLERANCE_DEG = 5.0  # a turn must bring the enemy at least this much closer to centre to count as toward it
 
 # (reason, priority): lower number = shown first
@@ -66,7 +67,8 @@ def episode_steps(path: Path) -> tuple[list[Step], dict[str, Any]]:
     observed = {e["step"]: e for e in events if e["event"] == "observe"}
     steps: list[Step] = []
     history: list[StepRecord] = []
-    for e in (e for e in events if e["event"] == "tool_exec" and e["step"] in observed):
+    decisions = (e for e in events if e["event"] == "tool_exec" and e["step"] in observed and e["tool"] != PLAY_OUT)
+    for e in decisions:
         mode = e.get("mode")
         tools = tuple(t for t in start["tools"] if mode is None or t in ROLE_TOOL_NAMES[mode])
         steps.append(Step(

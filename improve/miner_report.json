@@ -1,10 +1,10 @@
 {
   "source": "runs/eval-dev",
   "episodes": 30,
-  "decisions": 1712,
+  "decisions": 1705,
   "signatures": [
     {
-      "name": "observe_loop",
+      "name": "needless_observe",
       "meaning": "called observe, which shows nothing new while the game is paused",
       "occurrences": 322,
       "episodes": 20,
