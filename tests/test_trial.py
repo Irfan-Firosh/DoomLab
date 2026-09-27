@@ -119,6 +119,7 @@ def test_approving_a_promoted_policy_points_new_runs_at_it(tmp_path):
     record_decision(_gate(tmp_path, "promote"), "approve", note="fewer wasted calls", active=active)
     decided = json.loads((tmp_path / "gate_result.json").read_text())["human_decision"]
     assert decided["decision"] == "approve" and decided["note"] == "fewer wasted calls"
+    assert decided["agreed_with_gate"] is True
     assert json.loads(active.read_text())["active"] == "v1.json"
 
 
@@ -126,6 +127,7 @@ def test_rejecting_leaves_the_registry_alone(tmp_path):
     active = tmp_path / "active.json"
     record_decision(_gate(tmp_path, "promote"), "reject", note="", active=active)
     assert not active.exists()
+    assert json.loads((tmp_path / "gate_result.json").read_text())["human_decision"]["agreed_with_gate"] is False
 
 
 def test_approving_against_the_gate_needs_an_explicit_override(tmp_path):
