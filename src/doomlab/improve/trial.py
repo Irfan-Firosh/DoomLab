@@ -94,8 +94,10 @@ def record_decision(gate_path: Path, decision: str, *, note: str, active: Path =
     result = json.loads(gate_path.read_text())
     if decision == "approve" and result["verdict"] != "promote" and not override:
         raise ValueError(f"the gate said {result['verdict']}; approving anyway needs --override and a note")
-    result["human_decision"] = {"decision": decision, "note": note, "overrode_gate": decision == "approve"
-                                and result["verdict"] != "promote", "at": datetime.now(timezone.utc).isoformat()}
+    result["human_decision"] = {"decision": decision, "note": note,
+                                "agreed_with_gate": (decision == "approve") == (result["verdict"] == "promote"),
+                                "overrode_gate": decision == "approve" and result["verdict"] != "promote",
+                                "at": datetime.now(timezone.utc).isoformat()}
     gate_path.write_text(json.dumps(result, indent=2) + "\n")
     if decision == "approve":
         active.parent.mkdir(parents=True, exist_ok=True)

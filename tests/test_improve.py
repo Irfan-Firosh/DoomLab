@@ -160,3 +160,23 @@ def test_the_automatic_play_out_is_not_counted_as_a_decision(tmp_path):
         observe(2, []), exe(2, "wait_until_end", {}),
     ], stop_reason="budget")
     assert mine([a])["decisions"] == 1
+
+
+def test_rules_v2_reject_a_single_lucky_success_when_most_seeds_got_worse():
+    # trial-v1's real A/B numbers (validation seeds 100-104, survived tics)
+    parent = [ep(100, 704, calls=33), ep(101, 1088, calls=34), ep(102, 1438, calls=55), ep(103, 992, calls=38),
+              ep(104, 1041, calls=43)]
+    candidate = [ep(100, 448, calls=23), ep(101, 416, calls=14), ep(102, 736, calls=26), ep(103, 2100, True, calls=80),
+                 ep(104, 960, calls=40)]
+    better_cases = {"rc-001": True, "rc-002": True, "rc-003": False}
+    v1_rules = GateRules(max_seeds_worse=None)
+    assert decide(v1_rules, REG_PARENT, better_cases, parent, candidate)["verdict"] == "promote"  # what happened
+    result = decide(GateRules(), REG_PARENT, better_cases, parent, candidate)
+    assert result["verdict"] == "reject" and "no_broad_decline" in result["failed"]
+
+
+def test_rules_v1_file_still_loads_as_version_1():
+    from doomlab.config import REPO_ROOT
+
+    rules, _ = load_rules(REPO_ROOT / "improve" / "gate_rules_v1.json")
+    assert rules.max_seeds_worse is None

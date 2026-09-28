@@ -1,0 +1,400 @@
+{
+  "trial": "v1",
+  "scenario": "health_gathering_supreme",
+  "variant": "react_single",
+  "seeds": [
+    100,
+    101,
+    102,
+    103,
+    104
+  ],
+  "parent": {
+    "policy": "v0",
+    "lessons": [],
+    "recipe_hash": "af2ab05f5f7c928d131da176f1ff69102605f27193e58278671b73200953a068"
+  },
+  "candidate": {
+    "policy": "v1",
+    "file": "v1.json",
+    "lessons": [
+      "Never call observe: the game is paused so it shows nothing new. Instead, turn to search for medikits or enemies.",
+      "When health is below 50, walk to the nearest visible medikit immediately; do not turn away or look around.",
+      "Aim at the nearest enemy before attacking, and fire only one shot (one hit kills). Never turn away from a visible enemy."
+    ],
+    "recipe_hash": "866acad9c2e360775894bc84154e71a6a0a7edd318b18b20f935df39021661b9"
+  },
+  "gate_rules_fingerprint": "ca0201d5829faf3b384f90736a2f735d27ca3252ab1b0e425184b2e2efcb34e1",
+  "corrections": {
+    "total": 11,
+    "human": 2,
+    "assistant_drafted": 9,
+    "approved_by_human": 2
+  },
+  "regression": {
+    "passed": {
+      "v0": 3,
+      "v1": 7
+    },
+    "cases": {
+      "v0": [
+        {
+          "id": "rc-001",
+          "author": "human",
+          "label": "missed_pickup",
+          "expect": "must call go_to(target_id=33)",
+          "chose": "turn(degrees=-90) | turn(degrees=-90) | turn(degrees=-90)",
+          "votes": 0,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-002",
+          "author": "human",
+          "label": "missed_pickup",
+          "expect": "must call go_to(target_id=53)",
+          "chose": "aim_at(target_id=53) | turn(degrees=-45) | aim_at(target_id=53)",
+          "votes": 0,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-003",
+          "author": "assistant",
+          "label": "missed_pickup",
+          "expect": "must call go_to(target_id=50)",
+          "chose": "turn(degrees=45) | go_to(target_id=50) | turn(degrees=45)",
+          "votes": 1,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-004",
+          "author": "assistant",
+          "label": "wrong_tool",
+          "expect": "must call turn()",
+          "chose": "turn(degrees=180) | turn(degrees=90) | turn(degrees=90)",
+          "votes": 3,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-005",
+          "author": "assistant",
+          "label": "premature_attack",
+          "expect": "must not call attack",
+          "chose": "attack(burst=3) | aim_at(target_id=14) | attack(burst=3)",
+          "votes": 1,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-006",
+          "author": "assistant",
+          "label": "premature_attack",
+          "expect": "must call turn()",
+          "chose": "attack(burst=1) | attack(burst=1) | attack(burst=1)",
+          "votes": 0,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-007",
+          "author": "assistant",
+          "label": "wrong_target",
+          "expect": "must call aim_at(target_id=6)",
+          "chose": "aim_at(target_id=6) | aim_at(target_id=6) | aim_at(target_id=6)",
+          "votes": 3,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-008",
+          "author": "assistant",
+          "label": "wrong_target",
+          "expect": "must call aim_at(target_id=21)",
+          "chose": "observe() | turn(degrees=-90) | turn(degrees=-90)",
+          "votes": 0,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-009",
+          "author": "assistant",
+          "label": "wrong_tool",
+          "expect": "must call aim_at(target_id=7)",
+          "chose": "turn(degrees=90) | turn(degrees=90) | turn(degrees=90)",
+          "votes": 0,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-010",
+          "author": "assistant",
+          "label": "other",
+          "expect": "must call attack(burst=1)",
+          "chose": "attack(burst=1) | observe() | attack(burst=1)",
+          "votes": 2,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-011",
+          "author": "assistant",
+          "label": "stuck_loop",
+          "expect": "must call turn()",
+          "chose": "aim_at(target_id=2) | observe() | observe()",
+          "votes": 0,
+          "asked": 3,
+          "passed": false
+        }
+      ],
+      "v1": [
+        {
+          "id": "rc-001",
+          "author": "human",
+          "label": "missed_pickup",
+          "expect": "must call go_to(target_id=33)",
+          "chose": "go_to(target_id=33) | go_to(target_id=33) | turn(degrees=-90)",
+          "votes": 2,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-002",
+          "author": "human",
+          "label": "missed_pickup",
+          "expect": "must call go_to(target_id=53)",
+          "chose": "turn(degrees=-45) | go_to(target_id=53) | turn(degrees=-10)",
+          "votes": 1,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-003",
+          "author": "assistant",
+          "label": "missed_pickup",
+          "expect": "must call go_to(target_id=50)",
+          "chose": "go_to(target_id=50) | go_to(target_id=50) | go_to(target_id=50)",
+          "votes": 3,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-004",
+          "author": "assistant",
+          "label": "wrong_tool",
+          "expect": "must call turn()",
+          "chose": "turn(degrees=90) | turn(degrees=90) | turn(degrees=90)",
+          "votes": 3,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-005",
+          "author": "assistant",
+          "label": "premature_attack",
+          "expect": "must not call attack",
+          "chose": "attack(burst=1) | attack(burst=1) | attack(burst=1)",
+          "votes": 0,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-006",
+          "author": "assistant",
+          "label": "premature_attack",
+          "expect": "must call turn()",
+          "chose": "attack(burst=1) | attack(burst=1) | attack(burst=1)",
+          "votes": 0,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-007",
+          "author": "assistant",
+          "label": "wrong_target",
+          "expect": "must call aim_at(target_id=6)",
+          "chose": "aim_at(target_id=6) | aim_at(target_id=6) | aim_at(target_id=6)",
+          "votes": 3,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-008",
+          "author": "assistant",
+          "label": "wrong_target",
+          "expect": "must call aim_at(target_id=21)",
+          "chose": "aim_at(target_id=21) | turn(degrees=90) | observe()",
+          "votes": 1,
+          "asked": 3,
+          "passed": false
+        },
+        {
+          "id": "rc-009",
+          "author": "assistant",
+          "label": "wrong_tool",
+          "expect": "must call aim_at(target_id=7)",
+          "chose": "aim_at(target_id=7) | aim_at(target_id=7) | turn(degrees=90)",
+          "votes": 2,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-010",
+          "author": "assistant",
+          "label": "other",
+          "expect": "must call attack(burst=1)",
+          "chose": "attack(burst=1) | attack(burst=1) | attack(burst=1)",
+          "votes": 3,
+          "asked": 3,
+          "passed": true
+        },
+        {
+          "id": "rc-011",
+          "author": "assistant",
+          "label": "stuck_loop",
+          "expect": "must call turn()",
+          "chose": "turn(degrees=90) | turn(degrees=90) | turn(degrees=90)",
+          "votes": 3,
+          "asked": 3,
+          "passed": true
+        }
+      ]
+    }
+  },
+  "ab": {
+    "v0": [
+      {
+        "seed": 100,
+        "outcome": "died",
+        "score": 704.0,
+        "llm_calls": 33,
+        "tokens": 33119,
+        "rejected": 1
+      },
+      {
+        "seed": 101,
+        "outcome": "died",
+        "score": 1088.0,
+        "llm_calls": 34,
+        "tokens": 35504,
+        "rejected": 1
+      },
+      {
+        "seed": 102,
+        "outcome": "died",
+        "score": 1438.0,
+        "llm_calls": 55,
+        "tokens": 60518,
+        "rejected": 0
+      },
+      {
+        "seed": 103,
+        "outcome": "died",
+        "score": 992.0,
+        "llm_calls": 38,
+        "tokens": 40748,
+        "rejected": 1
+      },
+      {
+        "seed": 104,
+        "outcome": "died",
+        "score": 1041.0,
+        "llm_calls": 43,
+        "tokens": 48960,
+        "rejected": 2
+      }
+    ],
+    "v1": [
+      {
+        "seed": 100,
+        "outcome": "died",
+        "score": 448.0,
+        "llm_calls": 23,
+        "tokens": 24744,
+        "rejected": 0
+      },
+      {
+        "seed": 101,
+        "outcome": "died",
+        "score": 416.0,
+        "llm_calls": 14,
+        "tokens": 15072,
+        "rejected": 0
+      },
+      {
+        "seed": 102,
+        "outcome": "died",
+        "score": 736.0,
+        "llm_calls": 26,
+        "tokens": 29017,
+        "rejected": 0
+      },
+      {
+        "seed": 103,
+        "outcome": "success",
+        "score": 2100.0,
+        "llm_calls": 80,
+        "tokens": 93759,
+        "rejected": 0
+      },
+      {
+        "seed": 104,
+        "outcome": "died",
+        "score": 960.0,
+        "llm_calls": 40,
+        "tokens": 49994,
+        "rejected": 0
+      }
+    ]
+  },
+  "verdict": "promote",
+  "checks": [
+    {
+      "name": "regression_kept",
+      "passed": true,
+      "detail": "cases v0 passed but v1 failed: none"
+    },
+    {
+      "name": "no_seed_lost",
+      "passed": true,
+      "detail": "seeds v0 won and v1 lost: none"
+    },
+    {
+      "name": "calls_per_tic",
+      "passed": true,
+      "detail": "v1/v0 = 1.02 (limit 1.10)"
+    },
+    {
+      "name": "tokens_per_tic",
+      "passed": true,
+      "detail": "v1/v0 = 1.10 (limit 1.25)"
+    },
+    {
+      "name": "latency_p50",
+      "passed": true,
+      "detail": "v1/v0 = 0.87 (limit 1.25)"
+    },
+    {
+      "name": "regression_gain",
+      "passed": true,
+      "detail": "correction cases passed: v0 3/11, v1 7/11"
+    },
+    {
+      "name": "better_play",
+      "passed": true,
+      "detail": "successes +1; calls on common successes -0%; higher score on 1/5 seeds, median gain -36%; met: ['more successes']"
+    }
+  ],
+  "failed": [],
+  "unknown": [],
+  "decided_at": "2026-09-27T09:00:47.929071+00:00",
+  "human_decision": {
+    "decision": "reject",
+    "note": "Passes 7/11 corrections and cut observe 32 to 1, but survival fell on 4 of 5 seeds (median -36%); it traded observe for back-and-forth turning. Gate promoted on one extra success.",
+    "overrode_gate": false,
+    "at": "2026-09-28T03:09:24.477925+00:00",
+    "agreed_with_gate": false
+  }
+}

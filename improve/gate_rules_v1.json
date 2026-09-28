@@ -1,0 +1,21 @@
+{
+  "note": "Frozen before any candidate policy exists (Day 3 block 3). See src/doomlab/improve/gate.py for how each rule is applied.",
+  "adapted_from_spec": [
+    "Cost is measured per tic survived, not per episode: in survival scenarios a better agent lives longer and makes more calls.",
+    "A paired-score route is added to 'better play': survival scenarios rarely reach full success, so 5 seeds seldom differ in successes.",
+    "Regression cases are asked 3 times and pass on 2 votes: the hosted model is not fully repeatable at temperature 0 (seen 9/27).",
+    "v1 must keep every case v0 passes and fix at least one more, instead of passing all cases (v0 passes 4/11)."
+  ],
+  "rules": {
+    "regression_repeats": 3,
+    "regression_votes_to_pass": 2,
+    "min_extra_regression_passes": 1,
+    "min_extra_successes": 1,
+    "min_call_reduction": 0.15,
+    "min_paired_wins": 4,
+    "min_median_gain": 0.1,
+    "max_calls_per_tic_ratio": 1.1,
+    "max_tokens_per_tic_ratio": 1.25,
+    "max_latency_p50_ratio": 1.25
+  }
+}

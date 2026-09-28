@@ -6,6 +6,7 @@ Guards (any failure -> REJECT, any unknown -> INCONCLUSIVE):
   calls_per_tic     LLM calls per tic survived <= 110% of v0  (per tic: living longer must not count as cost)
   tokens_per_tic    tokens per tic <= 125% of v0              (unknown usage -> inconclusive)
   latency_p50       median call latency <= 125% of v0
+  no_broad_decline  v1 scores lower than v0 on at most `max_seeds_worse` paired seeds   (added in rules v2)
 Improvement (all guards pass, then both needed -> PROMOTE, else INCONCLUSIVE):
   regression_gain   v1 passes at least 1 more correction case than v0
   better_play       >= 1 more success, or >= 15% fewer calls on common successes,
@@ -27,7 +28,7 @@ from doomlab.eval.scorers import EpisodeMetrics
 from doomlab.freeze import fingerprint
 
 RULES_PATH = REPO_ROOT / "improve" / "gate_rules.json"
-GUARDS = ("regression_kept", "no_seed_lost", "calls_per_tic", "tokens_per_tic", "latency_p50")
+GUARDS = ("regression_kept", "no_seed_lost", "calls_per_tic", "tokens_per_tic", "latency_p50", "no_broad_decline")
 
 
 @dataclass(frozen=True)
@@ -42,12 +43,19 @@ class GateRules:
     max_calls_per_tic_ratio: float = 1.10
     max_tokens_per_tic_ratio: float = 1.25
     max_latency_p50_ratio: float = 1.25
+    # v2 (after trial-v1): one extra success must not outweigh worse play on most seeds. None = rules v1.
+    max_seeds_worse: int | None = 1
 
 
 def load_rules(path: Path = RULES_PATH) -> tuple[GateRules, str]:
     data = json.loads(path.read_text())
-    rules = GateRules(**{f.name: data["rules"][f.name] for f in fields(GateRules)})
-    return rules, fingerprint(asdict(rules))
+    rules = GateRules(**{f.name: data["rules"].get(f.name) for f in fields(GateRules)})
+    return rules, rules_fingerprint(rules)
+
+
+def rules_fingerprint(rules: GateRules) -> str:
+    """Unset (None) rules are left out, so adding a rule never changes an older rule set's fingerprint."""
+    return fingerprint({k: v for k, v in asdict(rules).items() if v is not None})
 
 
 def passed_by_votes(results: list[dict[str, Any]], rules: GateRules) -> dict[str, bool]:
@@ -67,6 +75,7 @@ def decide(rules: GateRules, reg_parent: dict[str, bool], reg_candidate: dict[st
         _ratio("tokens_per_tic", _per_tic(ab_candidate, "tokens"), _per_tic(ab_parent, "tokens"),
                rules.max_tokens_per_tic_ratio),
         _ratio("latency_p50", _latency(ab_candidate), _latency(ab_parent), rules.max_latency_p50_ratio),
+        *([_no_broad_decline(parent, candidate, seeds, rules.max_seeds_worse)] if rules.max_seeds_worse is not None else []),
         _regression_gain(reg_parent, reg_candidate, rules),
         _better_play(parent, candidate, seeds, rules),
     ]
@@ -100,6 +109,13 @@ def _regression_gain(parent: dict[str, bool], candidate: dict[str, bool], rules:
 def _no_seed_lost(parent: dict[int, EpisodeMetrics], candidate: dict[int, EpisodeMetrics], seeds: list[int]) -> dict[str, Any]:
     lost = [s for s in seeds if parent[s].success and not candidate[s].success]
     return _check("no_seed_lost", not lost, f"seeds v0 won and v1 lost: {lost or 'none'}")
+
+
+def _no_broad_decline(parent: dict[int, EpisodeMetrics], candidate: dict[int, EpisodeMetrics], seeds: list[int],
+                      limit: int) -> dict[str, Any]:
+    worse = [s for s in seeds if candidate[s].score < parent[s].score]
+    return _check("no_broad_decline", len(worse) <= limit, f"v1 scored lower on {len(worse)}/{len(seeds)} seeds "
+                  f"{worse or ''} (limit {limit})")
 
 
 def _better_play(parent: dict[int, EpisodeMetrics], candidate: dict[int, EpisodeMetrics], seeds: list[int],

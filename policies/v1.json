@@ -1,0 +1,39 @@
+{
+  "version": "v1",
+  "parent": "v0",
+  "lessons": [
+    "Never call observe: the game is paused so it shows nothing new. Instead, turn to search for medikits or enemies.",
+    "When health is below 50, walk to the nearest visible medikit immediately; do not turn away or look around.",
+    "Aim at the nearest enemy before attacking, and fire only one shot (one hit kills). Never turn away from a visible enemy."
+  ],
+  "evidence": [
+    [
+      "needless_observe",
+      "rc-003",
+      "rc-004",
+      "rc-011"
+    ],
+    [
+      "medikit_ignored",
+      "rc-001",
+      "rc-002",
+      "rc-003"
+    ],
+    [
+      "blind_attack",
+      "turned_from_enemy",
+      "wasteful_burst",
+      "rc-005",
+      "rc-007",
+      "rc-008",
+      "rc-009",
+      "rc-010"
+    ]
+  ],
+  "analyst": {
+    "model": "qwen3.8:27b",
+    "calls": 1,
+    "tokens": 1668
+  },
+  "created": "2026-09-27T08:35:34.651184+00:00"
+}
