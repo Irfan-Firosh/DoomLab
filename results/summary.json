@@ -1,0 +1,2384 @@
+{
+  "corrections": {
+    "assistant_drafted": 9,
+    "human": 2,
+    "total": 11
+  },
+  "dev": {
+    "episodes": 60,
+    "groups": {
+      "basic": {
+        "commander": {
+          "commander": {
+            "commander_calls": {
+              "max": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "q1": 0.0,
+              "q3": 0.0
+            },
+            "continue_share": {
+              "max": 0.5,
+              "median": 0.5,
+              "min": 0.5,
+              "q1": 0.5,
+              "q3": 0.5
+            },
+            "mode_switches": {
+              "max": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "q1": 0.0,
+              "q3": 0.0
+            },
+            "triggers": {}
+          },
+          "infra_failures": 0,
+          "kills": {
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 10,
+            "p50": 0.538,
+            "p95": 0.656
+          },
+          "llm_calls": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "n": 5,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 52.0,
+            "median": 43.0,
+            "min": 27.0,
+            "name": "tics",
+            "q1": 42.0,
+            "q3": 51.0
+          },
+          "score_per_llm_call": {
+            "max": 26.0,
+            "median": 21.5,
+            "min": 13.5,
+            "q1": 21.0,
+            "q3": 25.5
+          },
+          "steps": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "stop_reasons": {
+            "-": 5
+          },
+          "success_ci95": [
+            0.566,
+            1.0
+          ],
+          "successes": 5,
+          "tokens": {
+            "max": 1669.0,
+            "median": 1668.0,
+            "min": 1667.0,
+            "q1": 1668.0,
+            "q3": 1668.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          }
+        },
+        "random": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 5,
+          "recovered": 4,
+          "recoveries": 4,
+          "rejected": 6,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 4,
+            "NO_ENEMY_IN_CONE": 2
+          },
+          "rejection_rate": 0.207,
+          "score": {
+            "max": 52.0,
+            "median": 43.0,
+            "min": 27.0,
+            "name": "tics",
+            "q1": 42.0,
+            "q3": 51.0
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 10.0,
+            "median": 5.0,
+            "min": 3.0,
+            "q1": 5.0,
+            "q3": 6.0
+          },
+          "stop_reasons": {
+            "-": 5
+          },
+          "success_ci95": [
+            0.566,
+            1.0
+          ],
+          "successes": 5,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          }
+        },
+        "react_single": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 10,
+            "p50": 0.548,
+            "p95": 0.583
+          },
+          "llm_calls": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "n": 5,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 52.0,
+            "median": 43.0,
+            "min": 27.0,
+            "name": "tics",
+            "q1": 42.0,
+            "q3": 51.0
+          },
+          "score_per_llm_call": {
+            "max": 26.0,
+            "median": 21.5,
+            "min": 13.5,
+            "q1": 21.0,
+            "q3": 25.5
+          },
+          "steps": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "stop_reasons": {
+            "-": 5
+          },
+          "success_ci95": [
+            0.566,
+            1.0
+          ],
+          "successes": 5,
+          "tokens": {
+            "max": 1439.0,
+            "median": 1437.0,
+            "min": 1436.0,
+            "q1": 1437.0,
+            "q3": 1437.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          }
+        },
+        "scripted": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 5,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 52.0,
+            "median": 43.0,
+            "min": 27.0,
+            "name": "tics",
+            "q1": 42.0,
+            "q3": 51.0
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "stop_reasons": {
+            "-": 5
+          },
+          "success_ci95": [
+            0.566,
+            1.0
+          ],
+          "successes": 5,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          }
+        }
+      },
+      "defend_the_center": {
+        "commander": {
+          "commander": {
+            "commander_calls": {
+              "max": 28.0,
+              "median": 20.0,
+              "min": 7.0,
+              "q1": 16.0,
+              "q3": 27.0
+            },
+            "continue_share": {
+              "max": 0.875,
+              "median": 0.8347107438016529,
+              "min": 0.6744186046511628,
+              "q1": 0.773109243697479,
+              "q3": 0.8541666666666666
+            },
+            "mode_switches": {
+              "max": 27.0,
+              "median": 19.0,
+              "min": 6.0,
+              "q1": 15.0,
+              "q3": 26.0
+            },
+            "triggers": {
+              "enemy_appeared": 45,
+              "no_ammo": 1,
+              "no_enemy": 47,
+              "start": 5
+            }
+          },
+          "infra_failures": 0,
+          "kills": {
+            "max": 24.0,
+            "median": 21.0,
+            "min": 3.0,
+            "q1": 21.0,
+            "q3": 23.0
+          },
+          "latency_s": {
+            "n": 624,
+            "p50": 0.625,
+            "p95": 2.584
+          },
+          "llm_calls": {
+            "max": 150.0,
+            "median": 150.0,
+            "min": 56.0,
+            "q1": 118.0,
+            "q3": 150.0
+          },
+          "n": 5,
+          "recovered": 27,
+          "recoveries": 27,
+          "rejected": 27,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 26,
+            "NO_ENEMY_IN_CONE": 1
+          },
+          "rejection_rate": 0.051,
+          "score": {
+            "max": 1319.0,
+            "median": 1140.0,
+            "min": 306.0,
+            "name": "survived_tics",
+            "q1": 1099.0,
+            "q3": 1266.0
+          },
+          "score_per_llm_call": {
+            "max": 9.313559322033898,
+            "median": 8.44,
+            "min": 5.464285714285714,
+            "q1": 7.6,
+            "q3": 8.793333333333333
+          },
+          "steps": {
+            "max": 134.0,
+            "median": 123.0,
+            "min": 49.0,
+            "q1": 90.0,
+            "q3": 130.0
+          },
+          "stop_reasons": {
+            "-": 2,
+            "budget": 3
+          },
+          "success_ci95": [
+            0.0,
+            0.434
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 149993.0,
+            "median": 143552.0,
+            "min": 53569.0,
+            "q1": 109733.0,
+            "q3": 148631.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 8.0,
+            "median": 5.0,
+            "min": 1.0,
+            "q1": 3.0,
+            "q3": 8.0
+          }
+        },
+        "random": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 4.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 2.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 5,
+          "recovered": 26,
+          "recoveries": 28,
+          "rejected": 39,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 12,
+            "NO_ENEMY_IN_CONE": 27
+          },
+          "rejection_rate": 0.285,
+          "score": {
+            "max": 454.0,
+            "median": 346.0,
+            "min": 280.0,
+            "name": "survived_tics",
+            "q1": 336.0,
+            "q3": 360.0
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 50.0,
+            "median": 25.0,
+            "min": 14.0,
+            "q1": 18.0,
+            "q3": 30.0
+          },
+          "stop_reasons": {
+            "-": 3,
+            "recovery_exhausted": 2
+          },
+          "success_ci95": [
+            0.0,
+            0.434
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 12.0,
+            "median": 4.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 6.0
+          }
+        },
+        "react_single": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 24.0,
+            "median": 18.0,
+            "min": 16.0,
+            "q1": 17.0,
+            "q3": 18.0
+          },
+          "latency_s": {
+            "n": 637,
+            "p50": 0.649,
+            "p95": 2.426
+          },
+          "llm_calls": {
+            "max": 150.0,
+            "median": 150.0,
+            "min": 81.0,
+            "q1": 106.0,
+            "q3": 150.0
+          },
+          "n": 5,
+          "recovered": 44,
+          "recoveries": 44,
+          "rejected": 51,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 29,
+            "NO_ENEMY_IN_CONE": 22
+          },
+          "rejection_rate": 0.08,
+          "score": {
+            "max": 1567.0,
+            "median": 996.0,
+            "min": 808.0,
+            "name": "survived_tics",
+            "q1": 965.0,
+            "q3": 1076.0
+          },
+          "score_per_llm_call": {
+            "max": 10.446666666666667,
+            "median": 9.10377358490566,
+            "min": 6.64,
+            "q1": 7.173333333333333,
+            "q3": 9.975308641975309
+          },
+          "steps": {
+            "max": 150.0,
+            "median": 150.0,
+            "min": 81.0,
+            "q1": 106.0,
+            "q3": 150.0
+          },
+          "stop_reasons": {
+            "-": 2,
+            "budget": 3
+          },
+          "success_ci95": [
+            0.0,
+            0.434
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 154491.0,
+            "median": 153983.0,
+            "min": 82511.0,
+            "q1": 109345.0,
+            "q3": 154351.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 9.0,
+            "median": 4.0,
+            "min": 2.0,
+            "q1": 3.0,
+            "q3": 4.0
+          }
+        },
+        "scripted": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 26.0,
+            "median": 26.0,
+            "min": 8.0,
+            "q1": 25.0,
+            "q3": 26.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 5,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 1660.0,
+            "median": 1248.0,
+            "min": 527.0,
+            "name": "survived_tics",
+            "q1": 1190.0,
+            "q3": 1257.0
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 193.0,
+            "median": 111.0,
+            "min": 83.0,
+            "q1": 100.0,
+            "q3": 145.0
+          },
+          "stop_reasons": {
+            "-": 2,
+            "gave_up": 3
+          },
+          "success_ci95": [
+            0.0,
+            0.434
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 4.0,
+            "median": 2.0,
+            "min": 1.0,
+            "q1": 2.0,
+            "q3": 3.0
+          }
+        }
+      },
+      "health_gathering_supreme": {
+        "commander": {
+          "commander": {
+            "commander_calls": {
+              "max": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "q1": 0.0,
+              "q3": 0.0
+            },
+            "continue_share": {
+              "max": 0.98,
+              "median": 0.9777777777777777,
+              "min": 0.9642857142857143,
+              "q1": 0.9736842105263158,
+              "q3": 0.9791666666666666
+            },
+            "mode_switches": {
+              "max": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "q1": 0.0,
+              "q3": 0.0
+            },
+            "triggers": {}
+          },
+          "infra_failures": 0,
+          "kills": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "latency_s": {
+            "n": 215,
+            "p50": 0.586,
+            "p95": 1.376
+          },
+          "llm_calls": {
+            "max": 53.0,
+            "median": 46.0,
+            "min": 28.0,
+            "q1": 39.0,
+            "q3": 49.0
+          },
+          "n": 5,
+          "recovered": 6,
+          "recoveries": 6,
+          "rejected": 6,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 5,
+            "NOT_AN_ITEM": 1
+          },
+          "rejection_rate": 0.028,
+          "score": {
+            "max": 1425.0,
+            "median": 1312.0,
+            "min": 1088.0,
+            "name": "survived_tics",
+            "q1": 1293.0,
+            "q3": 1408.0
+          },
+          "score_per_llm_call": {
+            "max": 38.857142857142854,
+            "median": 30.608695652173914,
+            "min": 24.39622641509434,
+            "q1": 26.775510204081634,
+            "q3": 36.53846153846154
+          },
+          "steps": {
+            "max": 53.0,
+            "median": 46.0,
+            "min": 28.0,
+            "q1": 39.0,
+            "q3": 49.0
+          },
+          "stop_reasons": {
+            "-": 5
+          },
+          "success_ci95": [
+            0.0,
+            0.434
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 57034.0,
+            "median": 47304.0,
+            "min": 28700.0,
+            "q1": 42555.0,
+            "q3": 50142.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          }
+        },
+        "random": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 5,
+          "recovered": 12,
+          "recoveries": 14,
+          "rejected": 22,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 22
+          },
+          "rejection_rate": 0.122,
+          "score": {
+            "max": 1344.0,
+            "median": 832.0,
+            "min": 480.0,
+            "name": "survived_tics",
+            "q1": 704.0,
+            "q3": 864.0
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 62.0,
+            "median": 37.0,
+            "min": 7.0,
+            "q1": 25.0,
+            "q3": 50.0
+          },
+          "stop_reasons": {
+            "-": 3,
+            "recovery_exhausted": 2
+          },
+          "success_ci95": [
+            0.0,
+            0.434
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          }
+        },
+        "react_single": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "latency_s": {
+            "n": 307,
+            "p50": 0.693,
+            "p95": 1.495
+          },
+          "llm_calls": {
+            "max": 80.0,
+            "median": 72.0,
+            "min": 24.0,
+            "q1": 51.0,
+            "q3": 80.0
+          },
+          "n": 5,
+          "recovered": 4,
+          "recoveries": 4,
+          "rejected": 4,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 4
+          },
+          "rejection_rate": 0.013,
+          "score": {
+            "max": 2100.0,
+            "median": 2100.0,
+            "min": 835.0,
+            "name": "survived_tics",
+            "q1": 1312.0,
+            "q3": 2100.0
+          },
+          "score_per_llm_call": {
+            "max": 34.791666666666664,
+            "median": 26.25,
+            "min": 25.725490196078432,
+            "q1": 26.25,
+            "q3": 29.166666666666668
+          },
+          "steps": {
+            "max": 80.0,
+            "median": 72.0,
+            "min": 24.0,
+            "q1": 51.0,
+            "q3": 80.0
+          },
+          "stop_reasons": {
+            "-": 4,
+            "budget": 1
+          },
+          "success_ci95": [
+            0.231,
+            0.882
+          ],
+          "successes": 3,
+          "tokens": {
+            "max": 89280.0,
+            "median": 77165.0,
+            "min": 24507.0,
+            "q1": 51899.0,
+            "q3": 85090.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          }
+        },
+        "scripted": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 5,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 2100.0,
+            "median": 1376.0,
+            "min": 1088.0,
+            "name": "survived_tics",
+            "q1": 1123.0,
+            "q3": 1824.0
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 51.0,
+            "median": 38.0,
+            "min": 27.0,
+            "q1": 36.0,
+            "q3": 47.0
+          },
+          "stop_reasons": {
+            "-": 5
+          },
+          "success_ci95": [
+            0.036,
+            0.624
+          ],
+          "successes": 1,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          }
+        }
+      }
+    },
+    "needless_observe": {
+      "commander": {
+        "decisions": 751,
+        "observe": 138,
+        "share": 0.184
+      },
+      "react_single": {
+        "decisions": 954,
+        "observe": 184,
+        "share": 0.193
+      }
+    },
+    "paired": {
+      "basic": {
+        "0": {
+          "commander": 27.0,
+          "random": 27.0,
+          "react_single": 27.0,
+          "scripted": 27.0
+        },
+        "1": {
+          "commander": 51.0,
+          "random": 51.0,
+          "react_single": 51.0,
+          "scripted": 51.0
+        },
+        "2": {
+          "commander": 43.0,
+          "random": 43.0,
+          "react_single": 43.0,
+          "scripted": 43.0
+        },
+        "3": {
+          "commander": 42.0,
+          "random": 42.0,
+          "react_single": 42.0,
+          "scripted": 42.0
+        },
+        "4": {
+          "commander": 52.0,
+          "random": 52.0,
+          "react_single": 52.0,
+          "scripted": 52.0
+        }
+      },
+      "defend_the_center": {
+        "0": {
+          "commander": 1099.0,
+          "random": 346.0,
+          "react_single": 965.0,
+          "scripted": 1248.0
+        },
+        "1": {
+          "commander": 306.0,
+          "random": 280.0,
+          "react_single": 1076.0,
+          "scripted": 527.0
+        },
+        "2": {
+          "commander": 1266.0,
+          "random": 454.0,
+          "react_single": 808.0,
+          "scripted": 1257.0
+        },
+        "3": {
+          "commander": 1319.0,
+          "random": 336.0,
+          "react_single": 1567.0,
+          "scripted": 1190.0
+        },
+        "4": {
+          "commander": 1140.0,
+          "random": 360.0,
+          "react_single": 996.0,
+          "scripted": 1660.0
+        }
+      },
+      "health_gathering_supreme": {
+        "0": {
+          "commander": 1408.0,
+          "random": 864.0,
+          "react_single": 2100.0,
+          "scripted": 1376.0
+        },
+        "1": {
+          "commander": 1312.0,
+          "random": 832.0,
+          "react_single": 835.0,
+          "scripted": 1088.0
+        },
+        "2": {
+          "commander": 1425.0,
+          "random": 1344.0,
+          "react_single": 2100.0,
+          "scripted": 2100.0
+        },
+        "3": {
+          "commander": 1293.0,
+          "random": 704.0,
+          "react_single": 2100.0,
+          "scripted": 1824.0
+        },
+        "4": {
+          "commander": 1088.0,
+          "random": 480.0,
+          "react_single": 1312.0,
+          "scripted": 1123.0
+        }
+      }
+    },
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "provenance": {
+    "frozen": {
+      "hash": "af2ab05f5f7c928d131da176f1ff69102605f27193e58278671b73200953a068",
+      "name": "frozen-v0"
+    },
+    "matches_frozen": true,
+    "test_recipe_hashes": [
+      "af2ab05f5f7c928d131da176f1ff69102605f27193e58278671b73200953a068"
+    ],
+    "traces": {
+      "dev": "traces/eval-dev.tar.gz",
+      "test": "traces/eval-test.tar.gz"
+    }
+  },
+  "test": {
+    "episodes": 120,
+    "groups": {
+      "basic": {
+        "commander": {
+          "commander": {
+            "commander_calls": {
+              "max": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "q1": 0.0,
+              "q3": 0.0
+            },
+            "continue_share": {
+              "max": 0.5,
+              "median": 0.5,
+              "min": 0.5,
+              "q1": 0.5,
+              "q3": 0.5
+            },
+            "mode_switches": {
+              "max": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "q1": 0.0,
+              "q3": 0.0
+            },
+            "triggers": {}
+          },
+          "infra_failures": 0,
+          "kills": {
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 20,
+            "p50": 0.48,
+            "p95": 0.702
+          },
+          "llm_calls": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "n": 10,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 70.0,
+            "median": 58.0,
+            "min": 40.0,
+            "name": "tics",
+            "q1": 45.75,
+            "q3": 65.75
+          },
+          "score_per_llm_call": {
+            "max": 35.0,
+            "median": 29.0,
+            "min": 20.0,
+            "q1": 22.875,
+            "q3": 32.875
+          },
+          "steps": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "stop_reasons": {
+            "-": 10
+          },
+          "success_ci95": [
+            0.722,
+            1.0
+          ],
+          "successes": 10,
+          "tokens": {
+            "max": 1487.0,
+            "median": 1467.5,
+            "min": 1465.0,
+            "q1": 1465.25,
+            "q3": 1481.75,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          }
+        },
+        "random": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 1.0,
+            "median": 1.0,
+            "min": 0.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 10,
+          "recovered": 7,
+          "recoveries": 8,
+          "rejected": 10,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 6,
+            "NO_ENEMY_IN_CONE": 4
+          },
+          "rejection_rate": 0.25,
+          "score": {
+            "max": 300.0,
+            "median": 60.5,
+            "min": 43.0,
+            "name": "tics",
+            "q1": 50.25,
+            "q3": 68.5
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 7.0,
+            "median": 4.0,
+            "min": 2.0,
+            "q1": 3.0,
+            "q3": 5.0
+          },
+          "stop_reasons": {
+            "-": 9,
+            "recovery_exhausted": 1
+          },
+          "success_ci95": [
+            0.596,
+            0.982
+          ],
+          "successes": 9,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          }
+        },
+        "react_single": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 20,
+            "p50": 0.475,
+            "p95": 0.997
+          },
+          "llm_calls": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "n": 10,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 70.0,
+            "median": 58.0,
+            "min": 40.0,
+            "name": "tics",
+            "q1": 45.75,
+            "q3": 65.75
+          },
+          "score_per_llm_call": {
+            "max": 35.0,
+            "median": 29.0,
+            "min": 20.0,
+            "q1": 22.875,
+            "q3": 32.875
+          },
+          "steps": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "stop_reasons": {
+            "-": 10
+          },
+          "success_ci95": [
+            0.722,
+            1.0
+          ],
+          "successes": 10,
+          "tokens": {
+            "max": 1463.0,
+            "median": 1439.5,
+            "min": 1438.0,
+            "q1": 1438.25,
+            "q3": 1440.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          }
+        },
+        "scripted": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 10,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 70.0,
+            "median": 58.0,
+            "min": 40.0,
+            "name": "tics",
+            "q1": 45.75,
+            "q3": 65.75
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 2.0,
+            "median": 2.0,
+            "min": 2.0,
+            "q1": 2.0,
+            "q3": 2.0
+          },
+          "stop_reasons": {
+            "-": 10
+          },
+          "success_ci95": [
+            0.722,
+            1.0
+          ],
+          "successes": 10,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          }
+        }
+      },
+      "defend_the_center": {
+        "commander": {
+          "commander": {
+            "commander_calls": {
+              "max": 24.0,
+              "median": 20.5,
+              "min": 13.0,
+              "q1": 18.0,
+              "q3": 24.0
+            },
+            "continue_share": {
+              "max": 0.9029850746268657,
+              "median": 0.8088861838101035,
+              "min": 0.7777777777777778,
+              "q1": 0.7987394957983194,
+              "q3": 0.8496594551282051
+            },
+            "mode_switches": {
+              "max": 23.0,
+              "median": 19.5,
+              "min": 12.0,
+              "q1": 17.0,
+              "q3": 23.0
+            },
+            "triggers": {
+              "enemy_appeared": 92,
+              "no_ammo": 5,
+              "no_enemy": 94,
+              "start": 10
+            }
+          },
+          "infra_failures": 0,
+          "kills": {
+            "max": 24.0,
+            "median": 19.5,
+            "min": 13.0,
+            "q1": 16.25,
+            "q3": 22.0
+          },
+          "latency_s": {
+            "n": 1427,
+            "p50": 0.494,
+            "p95": 0.86
+          },
+          "llm_calls": {
+            "max": 150.0,
+            "median": 150.0,
+            "min": 101.0,
+            "q1": 144.75,
+            "q3": 150.0
+          },
+          "n": 10,
+          "recovered": 56,
+          "recoveries": 57,
+          "rejected": 57,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 53,
+            "NO_ENEMY_IN_CONE": 4
+          },
+          "rejection_rate": 0.046,
+          "score": {
+            "max": 1413.0,
+            "median": 1080.0,
+            "min": 767.0,
+            "name": "survived_tics",
+            "q1": 975.0,
+            "q3": 1180.0
+          },
+          "score_per_llm_call": {
+            "max": 9.564356435643564,
+            "median": 7.826666666666666,
+            "min": 5.113333333333333,
+            "q1": 6.806666666666667,
+            "q3": 8.923834586466166
+          },
+          "steps": {
+            "max": 137.0,
+            "median": 126.0,
+            "min": 83.0,
+            "q1": 123.0,
+            "q3": 130.5
+          },
+          "stop_reasons": {
+            "-": 3,
+            "budget": 7
+          },
+          "success_ci95": [
+            0.0,
+            0.278
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 137198.0,
+            "median": 131224.5,
+            "min": 86329.0,
+            "q1": 128286.25,
+            "q3": 136412.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 10.0,
+            "median": 4.5,
+            "min": 1.0,
+            "q1": 2.25,
+            "q3": 6.5
+          }
+        },
+        "random": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 7.0,
+            "median": 1.0,
+            "min": 0.0,
+            "q1": 1.0,
+            "q3": 1.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 10,
+          "recovered": 26,
+          "recoveries": 32,
+          "rejected": 48,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 14,
+            "NO_ENEMY_IN_CONE": 34
+          },
+          "rejection_rate": 0.25,
+          "score": {
+            "max": 677.0,
+            "median": 298.5,
+            "min": 218.0,
+            "name": "survived_tics",
+            "q1": 269.0,
+            "q3": 332.5
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 38.0,
+            "median": 17.0,
+            "min": 11.0,
+            "q1": 12.0,
+            "q3": 23.5
+          },
+          "stop_reasons": {
+            "-": 4,
+            "recovery_exhausted": 6
+          },
+          "success_ci95": [
+            0.0,
+            0.278
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 4.0,
+            "median": 2.0,
+            "min": 0.0,
+            "q1": 1.0,
+            "q3": 3.0
+          }
+        },
+        "react_single": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 26.0,
+            "median": 20.0,
+            "min": 5.0,
+            "q1": 15.0,
+            "q3": 23.25
+          },
+          "latency_s": {
+            "n": 1168,
+            "p50": 0.577,
+            "p95": 1.539
+          },
+          "llm_calls": {
+            "max": 150.0,
+            "median": 143.0,
+            "min": 39.0,
+            "q1": 82.0,
+            "q3": 150.0
+          },
+          "n": 10,
+          "recovered": 81,
+          "recoveries": 81,
+          "rejected": 91,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 58,
+            "NO_AMMO": 1,
+            "NO_ENEMY_IN_CONE": 32
+          },
+          "rejection_rate": 0.078,
+          "score": {
+            "max": 1526.0,
+            "median": 1142.0,
+            "min": 555.0,
+            "name": "survived_tics",
+            "q1": 797.25,
+            "q3": 1276.25
+          },
+          "score_per_llm_call": {
+            "max": 14.23076923076923,
+            "median": 9.45463768115942,
+            "min": 6.38,
+            "q1": 8.317083333333333,
+            "q3": 11.16252413127413
+          },
+          "steps": {
+            "max": 150.0,
+            "median": 143.0,
+            "min": 39.0,
+            "q1": 82.0,
+            "q3": 150.0
+          },
+          "stop_reasons": {
+            "-": 6,
+            "budget": 4
+          },
+          "success_ci95": [
+            0.0,
+            0.278
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 154893.0,
+            "median": 146928.0,
+            "min": 38603.0,
+            "q1": 83209.0,
+            "q3": 154069.75,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 11.0,
+            "median": 4.0,
+            "min": 1.0,
+            "q1": 2.25,
+            "q3": 5.75
+          }
+        },
+        "scripted": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 26.0,
+            "median": 26.0,
+            "min": 16.0,
+            "q1": 23.5,
+            "q3": 26.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 10,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 1452.0,
+            "median": 1330.5,
+            "min": 839.0,
+            "name": "survived_tics",
+            "q1": 1255.75,
+            "q3": 1355.5
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 164.0,
+            "median": 114.5,
+            "min": 78.0,
+            "q1": 96.25,
+            "q3": 139.75
+          },
+          "stop_reasons": {
+            "-": 2,
+            "gave_up": 8
+          },
+          "success_ci95": [
+            0.0,
+            0.278
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": 6.0,
+            "median": 3.0,
+            "min": 1.0,
+            "q1": 2.0,
+            "q3": 5.0
+          }
+        }
+      },
+      "health_gathering_supreme": {
+        "commander": {
+          "commander": {
+            "commander_calls": {
+              "max": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "q1": 0.0,
+              "q3": 0.0
+            },
+            "continue_share": {
+              "max": 0.9875,
+              "median": 0.974483204134367,
+              "min": 0.9411764705882353,
+              "q1": 0.9616666666666667,
+              "q3": 0.9830508474576272
+            },
+            "mode_switches": {
+              "max": 0.0,
+              "median": 0.0,
+              "min": 0.0,
+              "q1": 0.0,
+              "q3": 0.0
+            },
+            "triggers": {}
+          },
+          "infra_failures": 0,
+          "kills": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "latency_s": {
+            "n": 451,
+            "p50": 0.556,
+            "p95": 0.861
+          },
+          "llm_calls": {
+            "max": 80.0,
+            "median": 39.5,
+            "min": 17.0,
+            "q1": 27.5,
+            "q3": 59.75
+          },
+          "n": 10,
+          "recovered": 9,
+          "recoveries": 9,
+          "rejected": 9,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 9
+          },
+          "rejection_rate": 0.02,
+          "score": {
+            "max": 2100.0,
+            "median": 1029.0,
+            "min": 398.0,
+            "name": "survived_tics",
+            "q1": 780.5,
+            "q3": 1720.0
+          },
+          "score_per_llm_call": {
+            "max": 32.355932203389834,
+            "median": 25.4375,
+            "min": 21.813953488372093,
+            "q1": 22.383333333333333,
+            "q3": 30.06900452488688
+          },
+          "steps": {
+            "max": 80.0,
+            "median": 39.5,
+            "min": 17.0,
+            "q1": 27.5,
+            "q3": 59.75
+          },
+          "stop_reasons": {
+            "-": 9,
+            "budget": 1
+          },
+          "success_ci95": [
+            0.018,
+            0.404
+          ],
+          "successes": 1,
+          "tokens": {
+            "max": 80127.0,
+            "median": 37363.0,
+            "min": 15802.0,
+            "q1": 27266.25,
+            "q3": 60633.75,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          }
+        },
+        "random": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 10,
+          "recovered": 26,
+          "recoveries": 29,
+          "rejected": 44,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 44
+          },
+          "rejection_rate": 0.138,
+          "score": {
+            "max": 1696.0,
+            "median": 544.0,
+            "min": 288.0,
+            "name": "survived_tics",
+            "q1": 470.75,
+            "q3": 651.5
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 72.0,
+            "median": 29.5,
+            "min": 5.0,
+            "q1": 19.0,
+            "q3": 42.75
+          },
+          "stop_reasons": {
+            "-": 7,
+            "recovery_exhausted": 3
+          },
+          "success_ci95": [
+            0.0,
+            0.278
+          ],
+          "successes": 0,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          }
+        },
+        "react_single": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "latency_s": {
+            "n": 484,
+            "p50": 0.66,
+            "p95": 0.882
+          },
+          "llm_calls": {
+            "max": 80.0,
+            "median": 43.0,
+            "min": 23.0,
+            "q1": 33.75,
+            "q3": 63.0
+          },
+          "n": 10,
+          "recovered": 14,
+          "recoveries": 14,
+          "rejected": 14,
+          "rejected_codes": {
+            "NOTHING_CHANGED": 14
+          },
+          "rejection_rate": 0.029,
+          "score": {
+            "max": 2100.0,
+            "median": 1244.5,
+            "min": 736.0,
+            "name": "survived_tics",
+            "q1": 1056.0,
+            "q3": 1864.5
+          },
+          "score_per_llm_call": {
+            "max": 38.36363636363637,
+            "median": 27.5311004784689,
+            "min": 22.0,
+            "q1": 26.145833333333332,
+            "q3": 33.115530303030305
+          },
+          "steps": {
+            "max": 80.0,
+            "median": 43.0,
+            "min": 23.0,
+            "q1": 33.75,
+            "q3": 63.0
+          },
+          "stop_reasons": {
+            "-": 9,
+            "budget": 1
+          },
+          "success_ci95": [
+            0.057,
+            0.51
+          ],
+          "successes": 2,
+          "tokens": {
+            "max": 86305.0,
+            "median": 44779.5,
+            "min": 23858.0,
+            "q1": 35639.5,
+            "q3": 67484.25,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          }
+        },
+        "scripted": {
+          "infra_failures": 0,
+          "kills": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "latency_s": {
+            "n": 0,
+            "p50": null,
+            "p95": null
+          },
+          "llm_calls": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0
+          },
+          "n": 10,
+          "recovered": 0,
+          "recoveries": 0,
+          "rejected": 0,
+          "rejected_codes": {},
+          "rejection_rate": 0.0,
+          "score": {
+            "max": 2100.0,
+            "median": 1586.0,
+            "min": 384.0,
+            "name": "survived_tics",
+            "q1": 1407.5,
+            "q3": 2000.0
+          },
+          "score_per_llm_call": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          },
+          "steps": {
+            "max": 52.0,
+            "median": 36.0,
+            "min": 8.0,
+            "q1": 30.5,
+            "q3": 48.25
+          },
+          "stop_reasons": {
+            "-": 10
+          },
+          "success_ci95": [
+            0.057,
+            0.51
+          ],
+          "successes": 2,
+          "tokens": {
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q1": 0.0,
+            "q3": 0.0,
+            "unknown": 0
+          },
+          "wasted_shots": {
+            "max": null,
+            "median": null,
+            "min": null,
+            "q1": null,
+            "q3": null
+          }
+        }
+      }
+    },
+    "needless_observe": {
+      "commander": {
+        "decisions": 1697,
+        "observe": 316,
+        "share": 0.186
+      },
+      "react_single": {
+        "decisions": 1672,
+        "observe": 347,
+        "share": 0.208
+      }
+    },
+    "paired": {
+      "basic": {
+        "1000": {
+          "commander": 43.0,
+          "random": 43.0,
+          "react_single": 43.0,
+          "scripted": 43.0
+        },
+        "1001": {
+          "commander": 40.0,
+          "random": 300.0,
+          "react_single": 40.0,
+          "scripted": 40.0
+        },
+        "1002": {
+          "commander": 69.0,
+          "random": 69.0,
+          "react_single": 69.0,
+          "scripted": 69.0
+        },
+        "1003": {
+          "commander": 57.0,
+          "random": 57.0,
+          "react_single": 57.0,
+          "scripted": 57.0
+        },
+        "1004": {
+          "commander": 59.0,
+          "random": 59.0,
+          "react_single": 59.0,
+          "scripted": 59.0
+        },
+        "1005": {
+          "commander": 67.0,
+          "random": 67.0,
+          "react_single": 67.0,
+          "scripted": 67.0
+        },
+        "1006": {
+          "commander": 70.0,
+          "random": 70.0,
+          "react_single": 70.0,
+          "scripted": 70.0
+        },
+        "1007": {
+          "commander": 48.0,
+          "random": 48.0,
+          "react_single": 48.0,
+          "scripted": 48.0
+        },
+        "1008": {
+          "commander": 45.0,
+          "random": 45.0,
+          "react_single": 45.0,
+          "scripted": 45.0
+        },
+        "1009": {
+          "commander": 62.0,
+          "random": 62.0,
+          "react_single": 62.0,
+          "scripted": 62.0
+        }
+      },
+      "defend_the_center": {
+        "1000": {
+          "commander": 1413.0,
+          "random": 334.0,
+          "react_single": 1526.0,
+          "scripted": 1329.0
+        },
+        "1001": {
+          "commander": 1078.0,
+          "random": 298.0,
+          "react_single": 555.0,
+          "scripted": 1356.0
+        },
+        "1002": {
+          "commander": 839.0,
+          "random": 358.0,
+          "react_single": 1494.0,
+          "scripted": 839.0
+        },
+        "1003": {
+          "commander": 767.0,
+          "random": 218.0,
+          "react_single": 957.0,
+          "scripted": 1089.0
+        },
+        "1004": {
+          "commander": 1186.0,
+          "random": 299.0,
+          "react_single": 597.0,
+          "scripted": 1332.0
+        },
+        "1005": {
+          "commander": 1378.0,
+          "random": 262.0,
+          "react_single": 1235.0,
+          "scripted": 1362.0
+        },
+        "1006": {
+          "commander": 966.0,
+          "random": 242.0,
+          "react_single": 744.0,
+          "scripted": 1267.0
+        },
+        "1007": {
+          "commander": 1082.0,
+          "random": 290.0,
+          "react_single": 1282.0,
+          "scripted": 1452.0
+        },
+        "1008": {
+          "commander": 1162.0,
+          "random": 328.0,
+          "react_single": 1259.0,
+          "scripted": 1252.0
+        },
+        "1009": {
+          "commander": 1002.0,
+          "random": 677.0,
+          "react_single": 1049.0,
+          "scripted": 1354.0
+        }
+      },
+      "health_gathering_supreme": {
+        "1000": {
+          "commander": 512.0,
+          "random": 416.0,
+          "react_single": 815.0,
+          "scripted": 704.0
+        },
+        "1001": {
+          "commander": 778.0,
+          "random": 544.0,
+          "react_single": 1056.0,
+          "scripted": 1856.0
+        },
+        "1002": {
+          "commander": 788.0,
+          "random": 608.0,
+          "react_single": 1056.0,
+          "scripted": 2048.0
+        },
+        "1003": {
+          "commander": 398.0,
+          "random": 539.0,
+          "react_single": 1266.0,
+          "scripted": 384.0
+        },
+        "1004": {
+          "commander": 1909.0,
+          "random": 288.0,
+          "react_single": 1223.0,
+          "scripted": 1502.0
+        },
+        "1005": {
+          "commander": 1120.0,
+          "random": 1696.0,
+          "react_single": 2100.0,
+          "scripted": 1638.0
+        },
+        "1006": {
+          "commander": 1312.0,
+          "random": 992.0,
+          "react_single": 2100.0,
+          "scripted": 2100.0
+        },
+        "1007": {
+          "commander": 938.0,
+          "random": 544.0,
+          "react_single": 1410.0,
+          "scripted": 1376.0
+        },
+        "1008": {
+          "commander": 2100.0,
+          "random": 448.0,
+          "react_single": 736.0,
+          "scripted": 1534.0
+        },
+        "1009": {
+          "commander": 1856.0,
+          "random": 666.0,
+          "react_single": 2016.0,
+          "scripted": 2100.0
+        }
+      }
+    },
+    "seeds": [
+      1000,
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008,
+      1009
+    ]
+  },
+  "trial": {
+    "ab": [
+      {
+        "seed": 100,
+        "v0": 704.0,
+        "v1": 448.0
+      },
+      {
+        "seed": 101,
+        "v0": 1088.0,
+        "v1": 416.0
+      },
+      {
+        "seed": 102,
+        "v0": 1438.0,
+        "v1": 736.0
+      },
+      {
+        "seed": 103,
+        "v0": 992.0,
+        "v1": 2100.0
+      },
+      {
+        "seed": 104,
+        "v0": 1041.0,
+        "v1": 960.0
+      }
+    ],
+    "candidate": "v1",
+    "cases": 11,
+    "gate_verdict": "promote",
+    "human_decision": "reject",
+    "human_note": "Passes 7/11 corrections and cut observe 32 to 1, but survival fell on 4 of 5 seeds (median -36%); it traded observe for back-and-forth turning. Gate promoted on one extra success.",
+    "lessons": [
+      "Never call observe: the game is paused so it shows nothing new. Instead, turn to search for medikits or enemies.",
+      "When health is below 50, walk to the nearest visible medikit immediately; do not turn away or look around.",
+      "Aim at the nearest enemy before attacking, and fire only one shot (one hit kills). Never turn away from a visible enemy."
+    ],
+    "parent": "v0",
+    "regression_passed": {
+      "v0": 3,
+      "v1": 7
+    },
+    "scenario": "health_gathering_supreme",
+    "seeds": [
+      100,
+      101,
+      102,
+      103,
+      104
+    ],
+    "variant": "react_single",
+    "worse_seeds": 4
+  }
+}

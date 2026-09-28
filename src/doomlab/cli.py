@@ -18,7 +18,8 @@ COMMANDS: dict[str, str] = {
     "mine": "done",
     "improve": "done",
     "replay": "done",
-    "report": "Day 3",
+    "report": "done",
+    "demo": "done",
 }
 
 
@@ -56,7 +57,12 @@ def build_parser() -> argparse.ArgumentParser:
     improve.add_argument("--override", action="store_true", help="approve although the gate did not say promote")
     replay = sub.add_parser("replay", help="Rebuild a GIF from a saved trace")
     replay.add_argument("trace")
-    sub.add_parser("report", help="Build metrics and charts from saved runs")
+    report = sub.add_parser("report", help="Rebuild results/ (metrics, charts, per-seed tables) from saved traces")
+    report.add_argument("--test", default=None, help="test-split traces (default runs/eval-test)")
+    report.add_argument("--dev", default=None, help="dev-split traces (default runs/eval-dev)")
+    report.add_argument("--out", default=None, help="output folder (default results/)")
+    demo = sub.add_parser("demo", help="Build the static demo page (demo/) from results/ and the test traces")
+    demo.add_argument("--seed", type=int, default=1000, help="test seed shown side by side (default 1000)")
     return parser
 
 
@@ -450,6 +456,58 @@ def _improve(args: argparse.Namespace) -> int:
     return 0
 
 
+def _report(args: argparse.Namespace) -> int:
+    import json
+    from pathlib import Path
+
+    from doomlab.config import REPO_ROOT, RUNS_DIR
+    from doomlab.freeze import load_frozen
+    from doomlab.report.build import ReportError, build_report
+    from doomlab.review.corrections import CORRECTIONS, cases
+
+    test_dir = Path(args.test) if args.test else RUNS_DIR / "eval-test"
+    dev_dir = Path(args.dev) if args.dev else RUNS_DIR / "eval-dev"
+    out = Path(args.out) if args.out else REPO_ROOT / "results"
+    if not any(test_dir.glob("*.jsonl")):
+        print(f"doomlab report: no traces in {test_dir}; run `doomlab eval --split test` first", file=sys.stderr)
+        return 1
+    trial_path = REPO_ROOT / "improve" / "trial-v1" / "gate_result.json"
+    trial = json.loads(trial_path.read_text()) if trial_path.exists() else None
+    try:
+        summary = build_report(test_dir, dev_dir if dev_dir.exists() else None, out, frozen=load_frozen(),
+                               trial=trial, corrections=cases(CORRECTIONS))
+    except ReportError as exc:
+        print(f"doomlab report: {exc}", file=sys.stderr)
+        return 2
+    prov = summary["provenance"]
+    print(f"{summary['test']['episodes']} test episodes, recipe {', '.join(h[:12] for h in prov['test_recipe_hashes'])} "
+          f"({'matches' if prov['matches_frozen'] else 'does NOT match'} the frozen recipe)")
+    for path in sorted(out.rglob("*")):
+        if path.is_file():
+            print(f"  {path.relative_to(out)}  ({path.stat().st_size / 1024:.0f} KB)")
+    return 0
+
+
+def _demo(args: argparse.Namespace) -> int:
+    from doomlab.config import REPO_ROOT, RUNS_DIR
+    from doomlab.report.demo import DemoError, build_demo
+
+    results = REPO_ROOT / "results"
+    if not (results / "summary.json").exists():
+        print("doomlab demo: run `doomlab report` first", file=sys.stderr)
+        return 1
+    try:
+        page = build_demo(results, RUNS_DIR / "eval-test", REPO_ROOT / "demo", seed=args.seed)
+    except DemoError as exc:
+        print(f"doomlab demo: {exc}", file=sys.stderr)
+        return 2
+    for path in sorted(page.parent.rglob("*")):
+        if path.is_file():
+            print(f"  {path.relative_to(REPO_ROOT)}  ({path.stat().st_size / 1e6:.2f} MB)")
+    print(f"open {page}")
+    return 0
+
+
 def _mine(args: argparse.Namespace) -> int:
     import json
     from pathlib import Path
@@ -504,6 +562,10 @@ def main(argv: list[str] | None = None) -> int:
         return _mine(args)
     if args.command == "improve":
         return _improve(args)
+    if args.command == "report":
+        return _report(args)
+    if args.command == "demo":
+        return _demo(args)
     print(f"doomlab {args.command}: not implemented yet ({COMMANDS[args.command]})", file=sys.stderr)
     return 2
 

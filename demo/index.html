@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DoomLab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+:root {
+  --ground: #f2f3f5;
+  --surface: #ffffff;
+  --ink: #15181d;
+  --muted: #5c6370;
+  --rule: #d7dbe1;
+  --accent: #b3261e;
+  --accent-soft: #f6e3e1;
+  --good: #1f7a4d;
+  --a-random: #a4acb6;
+  --a-scripted: #4f5b69;
+  --a-react: #2f6fde;
+  --a-commander: #c7791b;
+  --display: "Chakra Petch", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground: #101216; --surface: #171a20; --ink: #e6e8ec; --muted: #9aa2ae; --rule: #2a2f37;
+    --accent: #f06b5c; --accent-soft: #3a1c1a; --good: #4cc38a;
+    --a-random: #6f7884; --a-scripted: #b9c2cd; --a-react: #6ea2ff; --a-commander: #e39d4a;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #101216; --surface: #171a20; --ink: #e6e8ec; --muted: #9aa2ae; --rule: #2a2f37;
+  --accent: #f06b5c; --accent-soft: #3a1c1a; --good: #4cc38a;
+  --a-random: #6f7884; --a-scripted: #b9c2cd; --a-react: #6ea2ff; --a-commander: #e39d4a;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--ground); color: var(--ink);
+  font: 16px/1.6 var(--body); padding-inline: 16px; padding-block: 0 64px;
+}
+.wrap { max-width: 1040px; margin-inline: auto; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.45rem, 3vw, 1.9rem); font-weight: 600; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+code, .mono { font-family: var(--mono); font-size: 0.88em; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+/* header */
+header.top { display: grid; gap: 14px; padding-block: 40px 28px; }
+header.top h1 { font-size: clamp(2.6rem, 7vw, 4.2rem); font-weight: 700; letter-spacing: -0.01em; }
+header.top h1 span { color: var(--accent); }
+header.top .lede { font-size: 1.12rem; color: var(--ink); max-width: 62ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--muted); font-size: 0.86rem; }
+
+/* the arena */
+.arena { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-block: 8px 10px; }
+.player { margin: 0; display: grid; gap: 8px; align-content: start; }
+.player .screen { background: #000; border-radius: 4px; overflow: hidden; aspect-ratio: 320 / 262; max-width: 100%; }
+.player img { display: block; width: 100%; height: 100%; object-fit: cover; image-rendering: pixelated; }
+.player figcaption { display: grid; gap: 2px; }
+.agent { display: flex; align-items: center; gap: 8px; font-weight: 600; font-family: var(--mono); font-size: 0.92rem; }
+.agent i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; flex: none; }
+.player .score { font-family: var(--display); font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.player .score small { font-family: var(--body); font-size: 0.8rem; font-weight: 400; color: var(--muted); }
+.player .what { color: var(--muted); font-size: 0.86rem; }
+.best .score { color: var(--accent); }
+.arena-note { color: var(--muted); font-size: 0.84rem; }
+
+.dot-random { background: var(--a-random); } .dot-scripted { background: var(--a-scripted); }
+.dot-react_single { background: var(--a-react); } .dot-commander { background: var(--a-commander); }
+
+/* sections */
+section { display: grid; gap: 18px; padding-block: 44px 8px; border-top: 1px solid var(--rule); margin-top: 44px; }
+.intro { display: grid; gap: 10px; }
+.intro p { color: var(--ink); }
+.takeaways { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+.takeaways li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 12px; align-items: baseline; }
+.takeaways b { font-family: var(--display); font-size: 1.35rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); white-space: nowrap; vertical-align: baseline; }
+th { font-family: var(--mono); font-weight: 500; font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+td.win { font-weight: 600; color: var(--accent); }
+td small { color: var(--muted); }
+
+.chart { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 8px; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart .ink { fill: var(--ink); } .chart .muted { fill: var(--muted); }
+.chart .grid { stroke: var(--rule); } .chart .axis { stroke: var(--muted); }
+.chart text { font-family: var(--body); font-size: 12px; } .chart .title { font-size: 14px; font-weight: 600; } .chart .small { font-size: 11px; }
+.chart .v-random { fill: var(--a-random); stroke: var(--a-random); }
+.chart .v-scripted, .chart .v-v0 { fill: var(--a-scripted); stroke: var(--a-scripted); }
+.chart .v-react_single, .chart .v-v1 { fill: var(--a-react); stroke: var(--a-react); }
+.chart .v-commander { fill: var(--a-commander); stroke: var(--a-commander); }
+.chart .m-fight { fill: var(--accent); } .chart .m-navigate { fill: var(--a-scripted); } .chart .kill { stroke: var(--ink); }
+.charts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+
+/* findings */
+.finding { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 28px; align-items: start; }
+.big { font-family: var(--display); font-size: clamp(3rem, 9vw, 5.2rem); font-weight: 700; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.stack { display: grid; gap: 12px; }
+.lessons { margin: 0; padding-left: 1.2rem; display: grid; gap: 8px; }
+.lessons li { max-width: 60ch; }
+.verdicts { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; font-family: var(--mono); font-size: 0.82rem; border: 1px solid var(--rule); background: var(--surface); }
+.chip b { font-weight: 600; }
+.chip.promote b { color: var(--good); } .chip.reject b { color: var(--accent); }
+.quote { border-left: 3px solid var(--accent); padding-left: 14px; color: var(--muted); font-style: italic; max-width: 64ch; }
+
+/* pipeline */
+.pipeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; counter-reset: step; }
+.pipeline li { counter-increment: step; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; display: grid; gap: 4px; align-content: start; }
+.pipeline li::before { content: counter(step, decimal-leading-zero); font-family: var(--mono); font-size: 0.74rem; color: var(--accent); }
+.pipeline b { font-family: var(--display); font-weight: 600; }
+.pipeline span { color: var(--muted); font-size: 0.88rem; }
+
+.caveats { display: grid; gap: 8px; padding-left: 1.2rem; margin: 0; }
+.caveats li { max-width: 72ch; }
+pre.cmd { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; overflow-x: auto; margin: 0; font-family: var(--mono); font-size: 0.86rem; }
+footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.85rem; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+
+@media (max-width: 860px) {
+  .arena { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .finding { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 460px) {
+  .takeaways li { grid-template-columns: 1fr; gap: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">An LLM agent harness, measured</div>
+  <h1>Doom<span>Lab</span></h1>
+  <p class="lede">Four players take the same Doom levels through one harness: random moves, four hand-written rules, one Qwen agent, and a Qwen commander with two specialists. Every decision is a typed, validated tool call, every episode replays exactly, and the numbers below come only from those recordings.</p>
+  <div class="meta"><span>120 held-out episodes</span><span>seeds 1000–1009, never used for tuning</span><span>model qwen3.8:27b, temperature 0</span><span>recipe af2ab05f5f7c</span></div>
+</header>
+
+<div class="arena">
+<figure class="player"><div class="screen"><img src="assets/defend_the_center-s1000-random.webp" width="320" height="262" alt="random playing defend_the_center, seed 1000" loading="eager"></div><figcaption><span class="agent"><i class="dot-random"></i>random</span><span class="score">334 <small>tics · 2 kills</small></span><span class="what">picks any allowed tool at random</span></figcaption></figure>
+<figure class="player"><div class="screen"><img src="assets/defend_the_center-s1000-scripted.webp" width="320" height="262" alt="scripted playing defend_the_center, seed 1000" loading="eager"></div><figcaption><span class="agent"><i class="dot-scripted"></i>scripted</span><span class="score">1,329 <small>tics · 26 kills</small></span><span class="what">four hand-written rules</span></figcaption></figure>
+<figure class="player best"><div class="screen"><img src="assets/defend_the_center-s1000-react_single.webp" width="320" height="262" alt="react_single playing defend_the_center, seed 1000" loading="eager"></div><figcaption><span class="agent"><i class="dot-react_single"></i>react_single</span><span class="score">1,526 <small>tics · 25 kills</small></span><span class="what">one Qwen agent, one tool call per turn</span></figcaption></figure>
+<figure class="player"><div class="screen"><img src="assets/defend_the_center-s1000-commander.webp" width="320" height="262" alt="commander playing defend_the_center, seed 1000" loading="eager"></div><figcaption><span class="agent"><i class="dot-commander"></i>commander</span><span class="score">1,413 <small>tics · 24 kills</small></span><span class="what">a Qwen commander and two specialists</span></figcaption></figure>
+</div>
+<p class="arena-note">The same unseen level (defend_the_center, seed 1000) played by each agent, replayed from its recorded button presses at 2× speed. The strip under each screen shows the decision being carried out. Score: tics survived, higher is better.</p>
+
+<section id="results">
+  <div class="intro">
+    <div class="eyebrow">Held-out results</div>
+    <h2>On 10 unseen levels, simple rules still win</h2>
+    <p>Both Qwen agents play far above the random floor, but neither beats the hand-written scripted agent, and the two-specialist team does not beat the single agent. basic is only a smoke test: every agent that eventually aims and shoots gets the same time.</p>
+  </div>
+  <ul class="takeaways">
+    <li><b>3.8×</b><span>the random floor on defend_the_center for the single Qwen agent (1,142 vs 298.5 tics survived, medians).</span></li>
+    <li><b>1,330.5</b><span>tics survived by the scripted agent on defend_the_center, the best of the four.</span></li>
+    <li><b>2/10</b><span>health_gathering_supreme levels survived to the end by the single Qwen agent; scripted also 2/10, commander 1/10.</span></li>
+  </ul>
+  <div class="table-scroll">
+<table><thead><tr><th>Scenario · median score, levels won</th><th>random</th><th>scripted</th><th>react_single</th><th>commander</th></tr></thead><tbody><tr><td><code>basic</code><br><small>tics to kill, lower is better</small></td><td>60.5 <small>9/10</small></td><td class="win">58 <small>10/10</small></td><td class="win">58 <small>10/10</small></td><td class="win">58 <small>10/10</small></td></tr><tr><td><code>defend_the_center</code><br><small>tics survived, higher is better</small></td><td>298.5 <small>0/10</small></td><td class="win">1,330.5 <small>0/10</small></td><td>1,142 <small>0/10</small></td><td>1,080 <small>0/10</small></td></tr><tr><td><code>health_gathering_supreme</code><br><small>tics survived, higher is better</small></td><td>544 <small>0/10</small></td><td class="win">1,586 <small>2/10</small></td><td>1,244.5 <small>2/10</small></td><td>1,029 <small>1/10</small></td></tr></tbody></table>
+  </div>
+  <div class="charts">
+    <div class="chart"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 370" width="720" height="370" role="img"><text class="ink title" x="16.0" y="22.0" text-anchor="start">Score per unseen level (tick = median)</text><text class="muted small" x="16.0" y="46.0" text-anchor="start">defend_the_center  ·  tics survived (higher is better)</text><line class="grid" x1="150.0" x2="150.0" y1="52.0" y2="156.0"/><line class="grid" x1="275.0" x2="275.0" y1="52.0" y2="156.0"/><line class="grid" x1="400.0" x2="400.0" y1="52.0" y2="156.0"/><line class="grid" x1="525.0" x2="525.0" y1="52.0" y2="156.0"/><line class="grid" x1="650.0" x2="650.0" y1="52.0" y2="156.0"/><text class="ink" x="16.0" y="69.0" text-anchor="start">random</text><circle class="v-random" cx="233.5" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="224.5" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="239.5" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="204.5" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="224.8" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="215.5" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="210.5" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="222.5" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="232.0" cy="65.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="319.2" cy="65.0" r="4.5" fill-opacity="0.55"/><line class="v-random" x1="224.6" x2="224.6" y1="56.0" y2="74.0" stroke-width="3"/><text class="ink small" x="658.0" y="69.0" text-anchor="start">298</text><text class="ink" x="16.0" y="95.0" text-anchor="start">scripted</text><circle class="v-scripted" cx="482.2" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="489.0" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="359.8" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="422.2" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="483.0" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="490.5" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="466.8" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="513.0" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="463.0" cy="91.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="488.5" cy="91.0" r="4.5" fill-opacity="0.55"/><line class="v-scripted" x1="482.6" x2="482.6" y1="82.0" y2="100.0" stroke-width="3"/><text class="ink small" x="658.0" y="95.0" text-anchor="start">1,330</text><text class="ink" x="16.0" y="121.0" text-anchor="start">react_single</text><circle class="v-react_single" cx="531.5" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="288.8" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="523.5" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="389.2" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="299.2" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="458.8" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="336.0" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="470.5" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="464.8" cy="117.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="412.2" cy="117.0" r="4.5" fill-opacity="0.55"/><line class="v-react_single" x1="435.5" x2="435.5" y1="108.0" y2="126.0" stroke-width="3"/><text class="ink small" x="658.0" y="121.0" text-anchor="start">1,142</text><text class="ink" x="16.0" y="147.0" text-anchor="start">commander</text><circle class="v-commander" cx="503.2" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="419.5" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="359.8" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="341.8" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="446.5" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="494.5" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="391.5" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="420.5" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="440.5" cy="143.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="400.5" cy="143.0" r="4.5" fill-opacity="0.55"/><line class="v-commander" x1="420.0" x2="420.0" y1="134.0" y2="152.0" stroke-width="3"/><text class="ink small" x="658.0" y="147.0" text-anchor="start">1,080</text><line class="axis" x1="150.0" x2="650.0" y1="156.0" y2="156.0"/><text class="muted small" x="150.0" y="172.0" text-anchor="middle">0</text><text class="muted small" x="275.0" y="172.0" text-anchor="middle">500</text><text class="muted small" x="400.0" y="172.0" text-anchor="middle">1,000</text><text class="muted small" x="525.0" y="172.0" text-anchor="middle">1,500</text><text class="muted small" x="650.0" y="172.0" text-anchor="middle">2,000</text><text class="muted small" x="16.0" y="214.0" text-anchor="start">health_gathering_supreme  ·  tics survived (higher is better)</text><line class="grid" x1="150.0" x2="150.0" y1="220.0" y2="324.0"/><line class="grid" x1="275.0" x2="275.0" y1="220.0" y2="324.0"/><line class="grid" x1="400.0" x2="400.0" y1="220.0" y2="324.0"/><line class="grid" x1="525.0" x2="525.0" y1="220.0" y2="324.0"/><line class="grid" x1="650.0" x2="650.0" y1="220.0" y2="324.0"/><text class="ink" x="16.0" y="237.0" text-anchor="start">random</text><circle class="v-random" cx="233.2" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="258.8" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="271.6" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="257.8" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="207.6" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="489.2" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="348.4" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="258.8" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="239.6" cy="233.0" r="4.5" fill-opacity="0.55"/><circle class="v-random" cx="283.2" cy="233.0" r="4.5" fill-opacity="0.55"/><line class="v-random" x1="258.8" x2="258.8" y1="224.0" y2="242.0" stroke-width="3"/><text class="ink small" x="658.0" y="237.0" text-anchor="start">544</text><text class="ink" x="16.0" y="263.0" text-anchor="start">scripted</text><circle class="v-scripted" cx="290.8" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="521.2" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="559.6" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="226.8" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="450.4" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="477.6" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="570.0" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="425.2" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="456.8" cy="259.0" r="4.5" fill-opacity="0.55"/><circle class="v-scripted" cx="570.0" cy="259.0" r="4.5" fill-opacity="0.55"/><line class="v-scripted" x1="467.2" x2="467.2" y1="250.0" y2="268.0" stroke-width="3"/><text class="ink small" x="658.0" y="263.0" text-anchor="start">1,586</text><text class="ink" x="16.0" y="289.0" text-anchor="start">react_single</text><circle class="v-react_single" cx="313.0" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="361.2" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="361.2" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="403.2" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="394.6" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="570.0" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="570.0" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="432.0" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="297.2" cy="285.0" r="4.5" fill-opacity="0.55"/><circle class="v-react_single" cx="553.2" cy="285.0" r="4.5" fill-opacity="0.55"/><line class="v-react_single" x1="398.9" x2="398.9" y1="276.0" y2="294.0" stroke-width="3"/><text class="ink small" x="658.0" y="289.0" text-anchor="start">1,244</text><text class="ink" x="16.0" y="315.0" text-anchor="start">commander</text><circle class="v-commander" cx="252.4" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="305.6" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="307.6" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="229.6" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="531.8" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="374.0" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="412.4" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="337.6" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="570.0" cy="311.0" r="4.5" fill-opacity="0.55"/><circle class="v-commander" cx="521.2" cy="311.0" r="4.5" fill-opacity="0.55"/><line class="v-commander" x1="355.8" x2="355.8" y1="302.0" y2="320.0" stroke-width="3"/><text class="ink small" x="658.0" y="315.0" text-anchor="start">1,029</text><line class="axis" x1="150.0" x2="650.0" y1="324.0" y2="324.0"/><text class="muted small" x="150.0" y="340.0" text-anchor="middle">0</text><text class="muted small" x="275.0" y="340.0" text-anchor="middle">625</text><text class="muted small" x="400.0" y="340.0" text-anchor="middle">1,250</text><text class="muted small" x="525.0" y="340.0" text-anchor="middle">1,875</text><text class="muted small" x="650.0" y="340.0" text-anchor="middle">2,500</text></svg></div>
+    <div class="chart"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 202" width="720" height="202" role="img"><text class="ink title" x="16.0" y="22.0" text-anchor="start">Survived to the end, with 95% interval (n = 10)</text><text class="muted small" x="16.0" y="46.0" text-anchor="start">health_gathering_supreme  ·  success rate, 95% interval</text><line class="grid" x1="150.0" x2="150.0" y1="52.0" y2="156.0"/><line class="grid" x1="275.0" x2="275.0" y1="52.0" y2="156.0"/><line class="grid" x1="400.0" x2="400.0" y1="52.0" y2="156.0"/><line class="grid" x1="525.0" x2="525.0" y1="52.0" y2="156.0"/><line class="grid" x1="650.0" x2="650.0" y1="52.0" y2="156.0"/><text class="ink" x="16.0" y="69.0" text-anchor="start">random</text><rect class="v-random" x="150.0" y="59.0" width="0.0" height="12" fill-opacity="0.8"/><line class="v-random" x1="150.0" x2="289.0" y1="65.0" y2="65.0" stroke-width="1.5"/><line class="v-random" x1="150.0" x2="150.0" y1="60.0" y2="70.0" stroke-width="1.5"/><line class="v-random" x1="289.0" x2="289.0" y1="60.0" y2="70.0" stroke-width="1.5"/><text class="ink small" x="658.0" y="69.0" text-anchor="start">0%</text><title>random: 0% (95% interval 0%–28%)</title><text class="ink" x="16.0" y="95.0" text-anchor="start">scripted</text><rect class="v-scripted" x="150.0" y="85.0" width="100.0" height="12" fill-opacity="0.8"/><line class="v-scripted" x1="178.5" x2="405.0" y1="91.0" y2="91.0" stroke-width="1.5"/><line class="v-scripted" x1="178.5" x2="178.5" y1="86.0" y2="96.0" stroke-width="1.5"/><line class="v-scripted" x1="405.0" x2="405.0" y1="86.0" y2="96.0" stroke-width="1.5"/><text class="ink small" x="658.0" y="95.0" text-anchor="start">20%</text><title>scripted: 20% (95% interval 6%–51%)</title><text class="ink" x="16.0" y="121.0" text-anchor="start">react_single</text><rect class="v-react_single" x="150.0" y="111.0" width="100.0" height="12" fill-opacity="0.8"/><line class="v-react_single" x1="178.5" x2="405.0" y1="117.0" y2="117.0" stroke-width="1.5"/><line class="v-react_single" x1="178.5" x2="178.5" y1="112.0" y2="122.0" stroke-width="1.5"/><line class="v-react_single" x1="405.0" x2="405.0" y1="112.0" y2="122.0" stroke-width="1.5"/><text class="ink small" x="658.0" y="121.0" text-anchor="start">20%</text><title>react_single: 20% (95% interval 6%–51%)</title><text class="ink" x="16.0" y="147.0" text-anchor="start">commander</text><rect class="v-commander" x="150.0" y="137.0" width="50.0" height="12" fill-opacity="0.8"/><line class="v-commander" x1="159.0" x2="352.0" y1="143.0" y2="143.0" stroke-width="1.5"/><line class="v-commander" x1="159.0" x2="159.0" y1="138.0" y2="148.0" stroke-width="1.5"/><line class="v-commander" x1="352.0" x2="352.0" y1="138.0" y2="148.0" stroke-width="1.5"/><text class="ink small" x="658.0" y="147.0" text-anchor="start">10%</text><title>commander: 10% (95% interval 2%–40%)</title><line class="axis" x1="150.0" x2="650.0" y1="156.0" y2="156.0"/><text class="muted small" x="150.0" y="172.0" text-anchor="middle">0%</text><text class="muted small" x="275.0" y="172.0" text-anchor="middle">25%</text><text class="muted small" x="400.0" y="172.0" text-anchor="middle">50%</text><text class="muted small" x="525.0" y="172.0" text-anchor="middle">75%</text><text class="muted small" x="650.0" y="172.0" text-anchor="middle">100%</text></svg></div>
+  </div>
+</section>
+
+<section id="observe">
+  <div class="finding">
+    <div class="stack">
+      <div class="eyebrow">Finding 1</div>
+      <div class="big">20%</div>
+      <h2>of LLM decisions looked at a game that was paused</h2>
+    </div>
+    <div class="stack">
+      <p>The game waits between calls and every prompt already contains the current view, so the observe tool can never show anything new. Its description says so. The agents called it anyway: 663 of 3,369 decisions on the test levels, and about one in five on the dev levels too. Episodes that ran out of their call budget had spent a fifth of it here.</p>
+      <div class="table-scroll">
+<table><thead><tr><th>Agent</th><th>observe calls</th><th>share</th><th>blind shots</th></tr></thead><tbody><tr><td><span class="agent"><i class="dot-react_single"></i>react_single</span></td><td>347 of 1,672</td><td>20.8%</td><td>32</td></tr><tr><td><span class="agent"><i class="dot-commander"></i>commander</span></td><td>316 of 1,697</td><td>18.6%</td><td>4</td></tr></tbody></table>
+      </div>
+      <p><a href="https://github.com/Irfan-Firosh/DoomLab/blob/main/findings/2026-09-27-needless-observe.md">Read the write-up</a></p>
+    </div>
+  </div>
+</section>
+
+<section id="trial">
+  <div class="intro">
+    <div class="eyebrow">Finding 2 · the improvement loop</div>
+    <h2>The lesson fixed the metric, not the game</h2>
+    <p>An Analyst LLM read the counted failures and 11 corrected decisions and proposed three lessons for the single agent&#x27;s prompt (policy v1). Offline it looked like a clear win. On five fresh validation levels it survived shorter on most of them: it stopped calling observe and started turning back and forth on the spot instead.</p>
+  </div>
+  <ol class="lessons">
+    <li>Never call observe: the game is paused so it shows nothing new. Instead, turn to search for medikits or enemies.</li>
+    <li>When health is below 50, walk to the nearest visible medikit immediately; do not turn away or look around.</li>
+    <li>Aim at the nearest enemy before attacking, and fire only one shot (one hit kills). Never turn away from a visible enemy.</li>
+  </ol>
+  <div class="finding">
+    <div class="stack">
+      <ul class="takeaways">
+    <li><b>3 → 7</b><span>of 11 corrected decisions answered correctly (asked 3 times each).</span></li>
+    <li><b>4 of 5</b><span>validation levels where the new policy survived for less time.</span></li>
+      </ul>
+      <div class="verdicts">
+        <span class="chip promote">gate <b>promote</b></span>
+        <span class="chip reject">human reviewer <b>reject</b></span>
+      </div>
+      <p class="quote">“Passes 7/11 corrections and cut observe 32 to 1, but survival fell on 4 of 5 seeds (median -36%); it traded observe for back-and-forth turning. Gate promoted on one extra success.”</p>
+      <p><a href="https://github.com/Irfan-Firosh/DoomLab/blob/main/findings/2026-09-27-fixed-the-metric-not-the-game.md">Read the write-up</a></p>
+    </div>
+    <div class="chart"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" width="720" height="320" role="img"><text class="ink title" x="16.0" y="22.0" text-anchor="start">Tics survived per validation level</text><text class="muted small" x="16.0" y="52.0" text-anchor="start">tics survived</text><line class="grid" x1="190.0" x2="530.0" y1="280.0" y2="280.0"/><text class="muted small" x="180.0" y="284.0" text-anchor="end">0</text><line class="grid" x1="190.0" x2="530.0" y1="227.5" y2="227.5"/><text class="muted small" x="180.0" y="231.5" text-anchor="end">625</text><line class="grid" x1="190.0" x2="530.0" y1="175.0" y2="175.0"/><text class="muted small" x="180.0" y="179.0" text-anchor="end">1,250</text><line class="grid" x1="190.0" x2="530.0" y1="122.5" y2="122.5"/><text class="muted small" x="180.0" y="126.5" text-anchor="end">1,875</text><line class="grid" x1="190.0" x2="530.0" y1="70.0" y2="70.0"/><text class="muted small" x="180.0" y="74.0" text-anchor="end">2,500</text><text class="ink" x="250.0" y="304.0" text-anchor="middle">v0 (no lessons)</text><text class="ink" x="470.0" y="304.0" text-anchor="middle">v1 (3 lessons)</text><line class="v-v0" x1="250.0" x2="470.0" y1="220.9" y2="242.4" stroke-width="2" stroke-opacity="0.8"/><circle class="v-v0" cx="250.0" cy="220.9" r="4.5"/><circle class="v-v1" cx="470.0" cy="242.4" r="4.5"/><line class="v-v0" x1="250.0" x2="470.0" y1="188.6" y2="245.1" stroke-width="2" stroke-opacity="0.8"/><circle class="v-v0" cx="250.0" cy="188.6" r="4.5"/><circle class="v-v1" cx="470.0" cy="245.1" r="4.5"/><line class="v-v0" x1="250.0" x2="470.0" y1="159.2" y2="218.2" stroke-width="2" stroke-opacity="0.8"/><circle class="v-v0" cx="250.0" cy="159.2" r="4.5"/><circle class="v-v1" cx="470.0" cy="218.2" r="4.5"/><line class="v-v1" x1="250.0" x2="470.0" y1="196.7" y2="103.6" stroke-width="2" stroke-opacity="0.8"/><circle class="v-v0" cx="250.0" cy="196.7" r="4.5"/><circle class="v-v1" cx="470.0" cy="103.6" r="4.5"/><line class="v-v0" x1="250.0" x2="470.0" y1="192.6" y2="199.4" stroke-width="2" stroke-opacity="0.8"/><circle class="v-v0" cx="250.0" cy="192.6" r="4.5"/><circle class="v-v1" cx="470.0" cy="199.4" r="4.5"/><line class="grid" x1="476.0" x2="506.0" y1="103.6" y2="103.6"/><text class="muted small" x="510.0" y="107.6" text-anchor="start">seed 103: 992 → 2,100</text><line class="grid" x1="476.0" x2="506.0" y1="199.4" y2="199.4"/><text class="muted small" x="510.0" y="203.4" text-anchor="start">seed 104: 1,041 → 960</text><line class="grid" x1="476.0" x2="506.0" y1="218.2" y2="218.2"/><text class="muted small" x="510.0" y="222.2" text-anchor="start">seed 102: 1,438 → 736</text><line class="grid" x1="476.0" x2="506.0" y1="242.4" y2="242.4"/><text class="muted small" x="510.0" y="246.4" text-anchor="start">seed 100: 704 → 448</text><line class="grid" x1="476.0" x2="506.0" y1="245.1" y2="257.4"/><text class="muted small" x="510.0" y="261.4" text-anchor="start">seed 101: 1,088 → 416</text></svg></div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="intro">
+    <div class="eyebrow">Inside one episode</div>
+    <h2>The commander switching jobs</h2>
+    <p>The commander team on the same level: 24 mode choices, 23 switches between the Combat specialist (aim, shoot) and the Navigator (turn to look around), 24 kills, then its health ran out at tic 1,413. The router only asks the commander again when the situation changes; in between, the current specialist keeps going without an extra call.</p>
+  </div>
+  <div class="chart"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 128" width="720" height="128" role="img"><text class="ink title" x="20.0" y="20">Mode over the episode (tics), kills marked above</text><rect class="m-fight" x="24.8" y="56.0" width="13.5" height="26"><title>fight: tic 10–38</title></rect><rect class="m-navigate" x="38.3" y="56.0" width="13.5" height="26"><title>navigate: tic 38–66</title></rect><rect class="m-fight" x="51.8" y="56.0" width="7.2" height="26"><title>fight: tic 66–81</title></rect><rect class="m-navigate" x="59.0" y="56.0" width="13.5" height="26"><title>navigate: tic 81–109</title></rect><rect class="m-fight" x="72.5" y="56.0" width="23.6" height="26"><title>fight: tic 109–158</title></rect><rect class="m-navigate" x="96.0" y="56.0" width="13.5" height="26"><title>navigate: tic 158–186</title></rect><rect class="m-fight" x="109.5" y="56.0" width="21.2" height="26"><title>fight: tic 186–230</title></rect><rect class="m-navigate" x="130.7" y="56.0" width="26.0" height="26"><title>navigate: tic 230–284</title></rect><rect class="m-fight" x="156.7" y="56.0" width="42.8" height="26"><title>fight: tic 284–373</title></rect><rect class="m-navigate" x="199.5" y="56.0" width="26.0" height="26"><title>navigate: tic 373–427</title></rect><rect class="m-fight" x="225.5" y="56.0" width="58.2" height="26"><title>fight: tic 427–548</title></rect><rect class="m-navigate" x="283.7" y="56.0" width="13.5" height="26"><title>navigate: tic 548–576</title></rect><rect class="m-fight" x="297.2" y="56.0" width="11.5" height="26"><title>fight: tic 576–600</title></rect><rect class="m-navigate" x="308.7" y="56.0" width="13.5" height="26"><title>navigate: tic 600–628</title></rect><rect class="m-fight" x="322.2" y="56.0" width="13.0" height="26"><title>fight: tic 628–655</title></rect><rect class="m-navigate" x="335.2" y="56.0" width="13.5" height="26"><title>navigate: tic 655–683</title></rect><rect class="m-fight" x="348.7" y="56.0" width="13.5" height="26"><title>fight: tic 683–711</title></rect><rect class="m-navigate" x="362.2" y="56.0" width="13.5" height="26"><title>navigate: tic 711–739</title></rect><rect class="m-fight" x="375.6" y="56.0" width="21.2" height="26"><title>fight: tic 739–783</title></rect><rect class="m-navigate" x="396.8" y="56.0" width="13.5" height="26"><title>navigate: tic 783–811</title></rect><rect class="m-fight" x="410.3" y="56.0" width="37.5" height="26"><title>fight: tic 811–889</title></rect><rect class="m-navigate" x="447.8" y="56.0" width="13.5" height="26"><title>navigate: tic 889–917</title></rect><rect class="m-fight" x="461.3" y="56.0" width="34.2" height="26"><title>fight: tic 917–988</title></rect><rect class="m-navigate" x="495.5" y="56.0" width="204.5" height="26"><title>navigate: tic 988–1,413</title></rect><line class="kill" x1="38.3" x2="38.3" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="59.0" x2="59.0" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="82.1" x2="82.1" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="96.0" x2="96.0" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="121.1" x2="121.1" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="130.7" x2="130.7" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="167.3" x2="167.3" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="177.8" x2="177.8" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="189.9" x2="189.9" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="199.5" x2="199.5" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="233.2" x2="233.2" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="251.5" x2="251.5" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="260.6" x2="260.6" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="283.7" x2="283.7" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="308.7" x2="308.7" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="335.2" x2="335.2" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="362.2" x2="362.2" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="383.3" x2="383.3" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="396.8" x2="396.8" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="433.4" x2="433.4" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="447.8" x2="447.8" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="470.9" x2="470.9" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="483.4" x2="483.4" y1="44.0" y2="53.0" stroke-width="1.5"/><line class="kill" x1="495.5" x2="495.5" y1="44.0" y2="53.0" stroke-width="1.5"/><text class="muted small" x="20.0" y="100.0" text-anchor="middle">0</text><text class="muted small" x="140.3" y="100.0" text-anchor="middle">250</text><text class="muted small" x="260.6" y="100.0" text-anchor="middle">500</text><text class="muted small" x="380.9" y="100.0" text-anchor="middle">750</text><text class="muted small" x="501.2" y="100.0" text-anchor="middle">1,000</text><text class="muted small" x="621.6" y="100.0" text-anchor="middle">1,250</text><rect class="m-fight" x="20.0" y="111.0" width="12" height="12"/><text class="muted small" x="38.0" y="121.0">fight (Combat specialist)</text><rect class="m-navigate" x="210.0" y="111.0" width="12" height="12"/><text class="muted small" x="228.0" y="121.0">navigate (Navigator)</text><line class="kill" x1="400.0" x2="400.0" y1="111.0" y2="123.0" stroke-width="1.5"/><text class="muted small" x="408.0" y="121.0">kill</text></svg></div>
+</section>
+
+<section id="how">
+  <div class="intro">
+    <div class="eyebrow">How it works</div>
+    <h2>One harness, four players, every step on record</h2>
+  </div>
+  <ol class="pipeline">
+    <li><b>Perceive</b><span>vizDoom state becomes facts: what is visible, where, how far, health and ammo.</span></li>
+    <li><b>Decide</b><span>An agent picks one typed tool call: random, hand-written rules, one Qwen agent, or a Qwen commander with two specialists.</span></li>
+    <li><b>Validate and act</b><span>One executor checks every call and is the only code that presses buttons. Bad calls are rejected with a reason.</span></li>
+    <li><b>Route and recover</b><span>A small state graph decides what happens next; three rejections in a row end the agent's turn.</span></li>
+    <li><b>Record</b><span>Every step goes to a trace that replays the game exactly, frame for frame.</span></li>
+    <li><b>Evaluate</b><span>Seeds split into dev, validation and a locked test set; scores come from traces only.</span></li>
+    <li><b>Improve</b><span>Mined failures and reviewed corrections become proposed lessons, tested and gated, then a human decides.</span></li>
+  </ol>
+</section>
+
+<section id="caveats">
+  <div class="intro">
+    <div class="eyebrow">Read before quoting</div>
+    <h2>Caveats</h2>
+  </div>
+  <ul class="caveats">
+    <li>One model (qwen3.8:27b through Purdue GenAI Studio), three vizDoom scenarios, 10 test levels per cell: the 95% intervals are wide and most differences are pilot-sized.</li>
+    <li>Scores on defend_the_center are survival within an equal budget of 150 LLM calls; both LLM agents ran out on some levels and then stood still.</li>
+    <li>Of the 11 corrections behind the improvement trial, 2 were written by a human reviewer and 9 were drafted by an AI assistant from the ViZDoom scenario docs; they are labelled as such.</li>
+    <li>A hosted model is not fully repeatable at temperature 0; regression cases are asked three times for that reason.</li>
+  </ul>
+  <pre class="cmd">uv run doomlab eval --split test   # needs a Purdue GenAI Studio key
+uv run doomlab report              # rebuilds every number on this page from the traces</pre>
+</section>
+
+<footer>
+  <span>Built by Irfan</span>
+  <span>Recipe <code>af2ab05f5f7c</code></span>
+  <a href="https://github.com/Irfan-Firosh/DoomLab">Source on GitHub</a>
+</footer>
+</div>
+
+</body>
+</html>
