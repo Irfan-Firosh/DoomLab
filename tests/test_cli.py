@@ -4,7 +4,7 @@ from doomlab.cli import COMMANDS, build_parser, main
 
 
 def test_cli_exposes_planned_commands():
-    assert set(COMMANDS) == {"preflight", "freeze", "run", "eval", "review", "regress", "mine", "improve", "replay", "report"}
+    assert set(COMMANDS) == {"preflight", "freeze", "run", "eval", "review", "regress", "mine", "improve", "replay", "report", "demo"}
 
 
 def test_run_accepts_variant_scenario_seed():
@@ -17,9 +17,8 @@ def test_unknown_variant_rejected():
         build_parser().parse_args(["run", "--variant", "nope", "--scenario", "basic"])
 
 
-def test_unimplemented_command_exits_2(capsys):
-    assert main(["report"]) == 2
-    assert "not implemented yet" in capsys.readouterr().err
+def test_every_planned_command_is_implemented():
+    assert {name for name, status in COMMANDS.items() if status != "done"} == set()
 
 
 @pytest.mark.parametrize(("text", "seeds"), [("3", [3]), ("0-4", [0, 1, 2, 3, 4]), ("0,2,5", [0, 2, 5]), ("0-2,7", [0, 1, 2, 7])])
