@@ -48,7 +48,7 @@ The full tables, per-seed scores with episode ids, and the raw traces are in [`r
 
 **[The lesson fixed the metric, not the game.](findings/2026-09-27-fixed-the-metric-not-the-game.md)** I built an improvement loop: mine the common failures, correct a handful of bad decisions, let an "Analyst" LLM write up to three lessons for the prompt, then test the new prompt against the old one. Its lessons were sensible, and it went from 3/11 to 7/11 on the corrected decisions. `observe` calls dropped from 41 to 3. But in actual games it survived shorter on 4 of 5 validation levels, because it replaced looking around with turning back and forth on the spot. My promotion gate still said PROMOTE (it counted one extra win too heavily), and I rejected it by hand. The gate rules got an extra guard afterwards. The original verdict stays on record.
 
-One honesty note: of the 11 corrected decisions, 2 were mine and 9 were drafted by an AI assistant from the ViZDoom docs. They're labelled that way in `corrections/corrections.jsonl`.
+I reviewed all 11 corrections: I wrote two, and AI drafted the other nine. The AI drafts were based on the ViZDoom scenario docs, and each one is labelled with its author in `corrections/corrections.jsonl`.
 
 ## Running it
 

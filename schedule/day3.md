@@ -14,7 +14,7 @@ References: master schedule `docs/superpowers/plans/2026-09-23-doomlab-schedule.
 | Runtime | State-graph runner: STOP → RECOVER → CONTINUE → PLAN; recovery with `recovery_exhausted` after 3 rejections |
 | Evals | `doomlab eval --split …`: resumable, scored from traces only, Wilson 95% CIs, per-seed paired tables |
 | Limits (measured) | Purdue refuses the 21st request in any ~60 s window → client paces at **18/min**; budgets **20 / 150 / 80** calls (basic / defend / supreme) |
-| Commits | `0998e0e` (blocks 1–5), `ccb94cd` (rate limit + budgets) |
+| Commits | `d071b0e` (blocks 1–5), `f9bcf55` (rate limit + budgets) |
 
 **Dev pilot (seeds 0–4, 60 episodes, 0 LLM errors), median score:**
 
@@ -106,11 +106,11 @@ gate: PROMOTE | REJECT | INCONCLUSIVE because …   → your decision? [a]pprove
 
 - [x] Frozen config + hash in every trace; tag `frozen-v0` (block 0: `report_back` dropped, budgets 20/150/80 kept, policy v0 with no lessons; `doomlab eval` prints the recipe hash, refuses to mix recipes in a folder, and runs the test split only on the frozen recipe)
 - [x] Test-split metrics: 10 seeds (120 episodes, recipe `af2ab05f5f7c`)
-- [x] ~10 corrections → regression suite (block 2: 11 cases — 2 typed by Irfan, 9 AI-drafted from the ViZDoom scenario docs and marked `author: assistant`; v0 passes 4/11 on one ask each). Block 3: `doomlab mine` (observe_loop is 322 of 1,712 dev decisions, 19%) and gate rules frozen in `improve/gate_rules.json` before any candidate exists
+- [x] ~10 corrections → regression suite (block 2: 11 cases. Irfan reviewed all 11: he wrote two, and AI drafted the other nine from the ViZDoom scenario docs, marked `author: assistant`; v0 passes 4/11 on one ask each). Block 3: `doomlab mine` (observe_loop is 322 of 1,712 dev decisions, 19%) and gate rules frozen in `improve/gate_rules.json` before any candidate exists
 - [x] `gate_result.json` (promote / reject / inconclusive) + your decision — trial-v1: gate PROMOTE (one extra success), Irfan REJECTED (worse on 4/5 seeds, turn oscillation); gate rules v2 adds `no_broad_decline` for later trials
 - [x] `results/metrics.md` website block; charts (block 5: `doomlab report`, deterministic, traces archived in `results/traces/`)
 - [ ] Demo page link, 3+ GIFs, README with repro commands; tag `v0.1`
-- [ ] Carry-overs: CodeRabbit review of `d37d4bf` → `ccb94cd`+; `git push`; Day 1 Lucid diagram still says `qwen3.6`
+- [ ] Carry-overs: CodeRabbit review of `250a16b` → `f9bcf55`+; `git push`; Day 1 Lucid diagram still says `qwen3.6`
 
 ## 7. Cut lines
 
