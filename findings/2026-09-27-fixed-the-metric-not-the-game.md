@@ -19,7 +19,7 @@ All numbers come from committed files (`improve/trial-v1/gate_result.json`, `pol
 ## The loop
 
 1. **Mine:** deterministic rules count failure patterns over 30 dev episodes (1,705 decisions). The top one was calling `observe` in a paused game (322 times).
-2. **Correct:** 11 flagged decisions were corrected with what the agent should have done: 2 typed by the human reviewer and 9 drafted by an AI assistant from the ViZDoom scenario docs, marked as such.
+2. **Correct:** 11 flagged decisions were corrected with what the agent should have done. I reviewed all 11 corrections: I wrote two, and AI drafted the other nine. The AI drafts came from the ViZDoom scenario docs and are labelled with their author.
 3. **Propose:** the Analyst (`qwen3.8:27b`) wrote at most 3 lessons, each required to cite its evidence. Code checked length, evidence and generality before accepting them.
 4. **Test:** v0 and v1 each answered the 11 correction cases 3 times (a case passes on 2 of 3), then played `health_gathering_supreme` on validation seeds 100–104, alternating policies seed by seed.
 5. **Gate, then a human:** rules committed before v1 existed produced a verdict, and a human made the final call.
@@ -97,4 +97,4 @@ Gate rules **version 2** add a guard: a candidate may score lower than its paren
 3. **Promotion rules need a "did anything get broadly worse" guard,** especially with few seeds and rare successes.
 4. **The human step earned its place.** The automatic verdict and the right decision differed, and the reason was visible in the trace.
 
-**Caveats.** One scenario (`health_gathering_supreme`), one agent (`react_single`), one proposal, 5 validation seeds, one model at temperature 0 (which a hosted endpoint does not make fully repeatable). 9 of the 11 correction cases were AI-drafted rather than human-written, and they are labelled as such everywhere.
+**Caveats.** One scenario (`health_gathering_supreme`), one agent (`react_single`), one proposal, 5 validation seeds, one model at temperature 0 (which a hosted endpoint does not make fully repeatable). I reviewed all 11 corrections: I wrote two, and AI drafted the other nine.

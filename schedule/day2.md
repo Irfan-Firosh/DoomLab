@@ -6,7 +6,7 @@ References: schedule `docs/superpowers/plans/2026-09-23-doomlab-schedule.md` · 
 
 ---
 
-## 1. Starting point (end of Day 1, commit `d37d4bf`)
+## 1. Starting point (end of Day 1, commit `250a16b`)
 
 | Piece | Status |
 |---|---|
@@ -95,7 +95,7 @@ wrote runs/eval-dev-…/episodes.csv, summary.json
 - [x] `random` baseline (block 4: seeded, schema-valid calls, no LLM; dev seeds 0-4 — basic 5/5 at the same tics as scripted, defend median 346 survived, supreme median 832)
 - [x] `doomlab eval --split dev` → `episodes.csv` + `summary.json` (pilot, clearly labeled) — block 5 built and checked on the free variants (`runs/eval-dev-free/`: 30 episodes, numbers match `doomlab run` seed for seed, rerun resumes in 0.3 s); the LLM half runs in block 6
 - [x] Frozen config (prompt, budget and model hashes) committed — done as Day 3 block 0 (`configs/frozen.json`, tag `frozen-v0`)
-- [ ] Carry-overs from Day 1: CodeRabbit review of `d37d4bf`; `git push`
+- [ ] Carry-overs from Day 1: CodeRabbit review of `250a16b`; `git push`
 
 ## 7. Cut lines
 

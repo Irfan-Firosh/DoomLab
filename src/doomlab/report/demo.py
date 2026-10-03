@@ -167,9 +167,8 @@ def _fields(summary: dict[str, Any], scenario: str, seed: int, scores: dict[str,
             "the 95% intervals are wide and most differences are pilot-sized.",
             "Scores on defend_the_center are survival within an equal budget of 150 LLM calls; both LLM agents ran out "
             "on some levels and then stood still.",
-            f"Of the 11 corrections behind the improvement trial, {summary['corrections']['human']} were written by a "
-            f"human reviewer and {summary['corrections']['assistant_drafted']} were drafted by an AI assistant from the "
-            "ViZDoom scenario docs; they are labelled as such.",
+            f"I reviewed all {summary['corrections']['total']} corrections behind the improvement trial: I wrote "
+            f"{summary['corrections']['human']}, and AI drafted the other {summary['corrections']['assistant_drafted']}.",
             "A hosted model is not fully repeatable at temperature 0; regression cases are asked three times for that reason.",
         )),
         "recipe": prov["frozen"]["hash"][:12] if prov["frozen"] else "–",

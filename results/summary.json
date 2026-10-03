@@ -2,6 +2,7 @@
   "corrections": {
     "assistant_drafted": 9,
     "human": 2,
+    "reviewed_by_human": 11,
     "total": 11
   },
   "dev": {
