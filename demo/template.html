@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#faf9f6" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Notes on building an LLM agent harness for Doom: 120 held-out episodes, the rules that beat the agents, and an automated improvement that failed."
+    />
+    <meta
+      property="og:title"
+      content="DoomLab"
+    />
+    <meta
+      property="og:description"
+      content="Four agents, one harness, and the evidence behind what worked and what didn’t. A project report by Irfan."
+    />
+    <meta property="og:type" content="article" />
+    <title>DoomLab</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="assets/space-grotesk-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem("doomlab-theme");
+          const preference = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme = saved || preference;
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to the report</a>
+    <header class="masthead">
+      <a href="#" class="site-name">Irfan <span>/ project notes</span></a>
+      <div class="masthead-actions">
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Switch to dark theme"
+          aria-pressed="false"
+          title="Switch color theme"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"
+            />
+          </svg>
+          <span>Theme</span>
+        </button>
+        <a
+          href="https://github.com/Irfan-Firosh/DoomLab"
+          target="_blank"
+          rel="noreferrer"
+          >Source on GitHub ↗</a
+        >
+      </div>
+    </header>
+
+    <main id="main">
+      <nav class="toc" aria-label="On this page">
+        <ol>
+          <li><a href="#main">Introduction</a></li>
+          <li><a href="#why-doom">Why Doom</a></li>
+          <li><a href="#arena">Four agents, the same level</a></li>
+          <li><a href="#results">Held-out results</a></li>
+          <li><a href="#findings">Finding 1: needless observe calls</a></li>
+          <li>
+            <a href="#trial">Finding 2: the failed improvement</a>
+            <ol>
+              <li><a href="#trial-lessons">The proposed lessons</a></li>
+              <li><a href="#trial-check">How a bad action gets caught</a></li>
+              <li><a href="#trial-gate">The gate and my decision</a></li>
+            </ol>
+          </li>
+          <li><a href="#commander">Inside one multi-agent episode</a></li>
+          <li><a href="#harness">The harness</a></li>
+          <li><a href="#lessons-learned">What I learned</a></li>
+          <li><a href="#limits">Limits</a></li>
+          <li><a href="#reproduce">Reproduce it</a></li>
+        </ol>
+      </nav>
+      <article>
+        <header class="article-header banner wide">
+          <img
+            class="banner-image"
+            src="assets/banner.webp"
+            alt=""
+            width="1448"
+            height="1086"
+            fetchpriority="high"
+          />
+          <p class="banner-credit">Illustration, not a game recording.</p>
+          <div class="banner-card">
+            <h1>DoomLab</h1>
+            <p class="subtitle">
+              What I learned building and evaluating an LLM agent.
+            </p>
+            <p class="byline">
+              By
+              <a
+                href="https://github.com/Irfan-Firosh"
+                target="_blank"
+                rel="noreferrer"
+                >Irfan</a
+              >
+              <span aria-hidden="true">·</span> September 27, 2026
+            </p>
+          </div>
+        </header>
+
+        <p>
+          I designed and built DoomLab end to end: a harness that lets LLM
+          agents play Doom through typed tool calls, records their decisions,
+          compares them against baselines, and tests whether lessons from their
+          mistakes actually improve play.
+        </p>
+        <p>
+          Four players take the same levels through one harness: random moves,
+          four hand-written rules, one Qwen language-model agent, and a Qwen
+          coordinator with Combat and Navigation specialists. Every decision is
+          a typed, checked tool call.
+        </p>
+        <h2 class="tldr-heading">In short</h2>
+        <ul class="tldr">
+          <li>
+            <strong>Simple rules won overall.</strong> The LLM agents outlasted
+            random in the survival tests, but the multi-agent team did not beat
+            the single agent.
+          </li>
+          <li>
+            About one in five LLM decisions called <code>observe</code> on a
+            paused game. It could not show anything new.
+          </li>
+          <li>
+            A proposed improvement passed more correction cases but survived for
+            less time on 4 of 5 validation seeds. The gate said PROMOTE. I
+            rejected it.
+          </li>
+          <li>
+            The most useful part of the project was tracing those failures back
+            to specific decisions.
+          </li>
+        </ul>
+        <p class="experiment-note">
+          120 held-out episodes · test seeds 1000–1009, never used for
+          tuning.<br />Model <code>qwen3.8:27b</code>, temperature 0 · settings
+          locked before testing · settings ID <code>af2ab05f5f7c</code>.
+        </p>
+        <nav class="contents" aria-label="Report contents">
+          <a href="#why-doom">Why Doom</a><span aria-hidden="true">/</span
+          ><a href="#arena">Replays</a><span aria-hidden="true">/</span
+          ><a href="#results">Results</a><span aria-hidden="true">/</span
+          ><a href="#findings">Findings</a><span aria-hidden="true">/</span
+          ><a href="#harness">The harness</a><span aria-hidden="true">/</span
+          ><a href="#reproduce">Reproduce</a>
+        </nav>
+
+        <section id="why-doom" aria-labelledby="why-doom-title">
+          <h2 id="why-doom-title">Why Doom</h2>
+          <p>
+            I wanted a benchmark where an agent has to act, not just answer a
+            question. Doom, through the ViZDoom research platform, gave me that,
+            along with a few things text benchmarks could not:
+          </p>
+          <ul class="why-list">
+            <li>
+              <strong>Every level comes from a seed.</strong> I can replay the
+              exact same episode and keep a set of levels hidden until the final
+              test.
+            </li>
+            <li>
+              <strong>The game waits while the model thinks.</strong> A slow
+              model is judged on its decisions, not on its speed.
+            </li>
+            <li>
+              <strong>Each level has a plain score,</strong> like how long the
+              player survived, so nobody has to grade a transcript by hand.
+            </li>
+            <li>
+              <strong>Decisions add up.</strong> One bad habit can cost a whole
+              episode, which is exactly what the failed improvement trial below
+              shows.
+            </li>
+            <li>
+              <strong>It is well studied and cheap.</strong> It is a common
+              reinforcement learning testbed, and it runs on a laptop, so every
+              result can be rerun.
+            </li>
+          </ul>
+          <p>
+            The agents read facts about the screen rather than the pixels, so
+            this measures decision making, not vision.
+          </p>
+        </section>
+
+        <section id="arena" aria-labelledby="arena-title">
+          <h2 id="arena-title">Four agents, the same level</h2>
+          <p>
+            This is <em>Hold the center</em>, on a level none of the agents saw
+            while I was building them. The player stands in the middle of a
+            round room and can only turn and shoot. Five monsters keep closing
+            in from every side, one shot kills, and there are only 26 bullets,
+            so nobody survives forever. Lasting longer means the agent kept
+            picking the nearest threat and wasted fewer shots.
+          </p>
+          <p>
+            It is one level, so it shows how each agent plays rather than who
+            wins overall.
+          </p>
+          <figure class="replays wide">
+            <div class="agent-grid">__AGENT_CARDS__</div>
+            <figcaption>
+              The single agent survived longest. Hand-written rules made one more
+              kill on this level.
+            </figcaption>
+          </figure>
+          <p id="replay-status" class="sr-only" role="status"></p>
+        </section>
+
+        <section id="results" aria-labelledby="results-title">
+          <h2 id="results-title">
+            On 10 unseen levels, simple rules still win.
+          </h2>
+          <p>
+            These results come from 10 levels the agents never saw while I was
+            building and tuning them. I locked the model, prompt, tools and call
+            budgets before running those levels, so nothing here was adjusted to
+            make the numbers look better.
+          </p>
+          <dl class="scenario-notes">
+            <div>
+              <dt>Hold the center</dt>
+              <dd>
+                The agent cannot move, only turn and shoot, while monsters close
+                in from all sides with 26 bullets to go around. Tics survived
+                are scored, and higher is better. A high score means it kept
+                choosing the right target and did not waste shots. Each
+                language-model player had the same 150-call budget.
+              </dd>
+            </div>
+            <div>
+              <dt>Find medikits</dt>
+              <dd>
+                The floor slowly drains health, medikits are scarce, and poison
+                vials hurt. Tics survived are scored, higher is better, and
+                surviving to the end (2,100 tics) counts as a win. A high score
+                means it kept finding medikits and moving instead of standing
+                still.
+              </dd>
+            </div>
+          </dl>
+          <p>
+            The table shows median scores across the held-out seeds. Below each
+            score are the levels won out of 10 and the 95% Wilson interval for
+            the success rate. With n = 10 per cell, those intervals are wide.
+          </p>
+          <div
+            class="table-scroll"
+            tabindex="0"
+            role="region"
+            aria-label="Held-out results and success intervals"
+          >
+            <table class="score-table">
+              <caption>
+                Median score, then levels won out of 10 (95% success interval).
+                Best medians in bold.
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Scenario</th>
+                  <th scope="col">Random</th>
+                  <th scope="col">Hand-written rules</th>
+                  <th scope="col">Single agent</th>
+                  <th scope="col">Multi-agent team</th>
+                </tr>
+              </thead>
+              <tbody>
+                __SCORE_ROWS__
+              </tbody>
+            </table>
+          </div>
+          <p>
+            The single Qwen agent survived <strong>~3.8×</strong> as long as
+            random on Hold the center: 1,142 vs 298.5 median tics survived
+            (higher is better). Hand-written rules survived 1,330.5 tics. The
+            multi-agent team did not beat the single agent. Simple rules won
+            overall.
+          </p>
+          <figure class="distributions">
+            __DISTRIBUTIONS__
+            <figcaption>
+              Each dot is one held-out episode. Each vertical tick is the exact
+              median.
+              <a
+                href="https://github.com/Irfan-Firosh/DoomLab/blob/main/results/per_seed.md"
+                target="_blank"
+                rel="noreferrer"
+                >Every score and episode ID</a
+              >.
+            </figcaption>
+            <p id="chart-detail" class="chart-detail" role="status">
+              Hover or focus a dot to inspect its seed.
+            </p>
+          </figure>
+        </section>
+
+        <section id="findings" aria-labelledby="observe-title">
+          <h2 id="observe-title">
+            1 in 5 LLM decisions looked at a paused game
+          </h2>
+          <p>
+            The traces made this visible. The game pauses between decisions, and
+            every prompt already includes the current view. A separate observe
+            action cannot show anything new, and its own description says so.
+            The model called it anyway.
+          </p>
+          <p>
+            On test, <strong>663 of 3,369 decisions (19.7%)</strong> were
+            needless observations. On dev, measured first, it was 322 of 1,705
+            (18.9%). The same habit carried into unseen data.
+          </p>
+          <div
+            class="table-scroll"
+            tabindex="0"
+            role="region"
+            aria-label="Needless observations and blind shots"
+          >
+            <table class="observation-table">
+              <thead>
+                <tr>
+                  <th scope="col">Test agent</th>
+                  <th scope="col">Needless observe</th>
+                  <th scope="col">Share</th>
+                  <th scope="col">Blind shots<small>lower is better</small></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Single agent</th>
+                  <td>347 / 1,672</td>
+                  <td>20.8%</td>
+                  <td>32</td>
+                </tr>
+                <tr>
+                  <th scope="row">Multi-agent team</th>
+                  <td>316 / 1,697</td>
+                  <td>18.6%</td>
+                  <td>4</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Episodes that ran out of LLM budget had spent about 20% of it here.
+            Narrow roles did cut blind shots (shooting with nothing lined up)
+            from 32 to 4 on test. That improvement still did not make the team
+            score higher.
+          </p>
+          <p class="source-note">
+            <a
+              href="https://github.com/Irfan-Firosh/DoomLab/blob/main/findings/2026-09-27-needless-observe.md"
+              target="_blank"
+              rel="noreferrer"
+              >Full finding: needless observe calls</a
+            >
+          </p>
+        </section>
+
+        <section id="trial" aria-labelledby="trial-title">
+          <h2 id="trial-title">The lesson fixed the metric, not the game</h2>
+          <p>
+            This was the most useful failure in the project. I had an
+            improvement process that could count mistakes, propose lessons, and
+            test updated instructions. It produced something that looked better
+            in individual decisions and played worse over full episodes.
+          </p>
+          <p>
+            I started by counting recurring mistakes in development episodes,
+            then corrected 11 bad decisions.
+            <strong
+              >I reviewed all 11 corrections: I wrote two, and AI drafted the
+              other nine.</strong
+            >
+            The direction of the tuning was simple: stop wasting calls on
+            observe, walk to a medikit when health runs low, and aim before
+            firing a single shot. An LLM used that evidence to propose three
+            lessons for v1.
+          </p>
+          <h3 id="trial-lessons">The proposed lessons, verbatim</h3>
+          <ol class="lessons">
+            __LESSONS__
+          </ol>
+          <p>
+            Offline, v1 passed <strong>7/11</strong> reviewed corrected
+            decisions, compared with <strong>3/11</strong> for v0 (higher is
+            better). Across the validation episodes, observe calls fell from
+            <strong>41 to 3</strong> (lower is better).
+          </p>
+          <p>
+            Then I compared full episodes on validation seeds 100–104.
+            <strong>Survival fell on 4 of 5 seeds.</strong>
+          </p>
+          <div
+            class="table-scroll"
+            tabindex="0"
+            role="region"
+            aria-label="Policy v0 and v1 survival by validation seed"
+          >
+            <table class="trial-table">
+              <caption>
+                Single agent · Find medikits<br />Tics survived · higher is
+                better
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Validation seed</th>
+                  <th scope="col">v0</th>
+                  <th scope="col">v1</th>
+                </tr>
+              </thead>
+              <tbody>
+                __TRIAL_PAIRS__
+              </tbody>
+            </table>
+          </div>
+          <figure class="trial-replays">
+            <div class="trial-replay-grid">
+              <figure>
+                <video
+                  muted
+                  playsinline
+                  autoplay
+                  loop
+                  preload="auto"
+                  poster="assets/health-gathering-s101-v0-poster.webp"
+                  data-replay-group="trial"
+                  tabindex="0"
+                  role="button"
+                  aria-label="Automatically replay validation seed 101 before the prompt change"
+                >
+                  <source
+                    src="assets/health-gathering-s101-v0.mp4"
+                    type="video/mp4"
+                  />
+                </video>
+                <figcaption>
+                  Before v1 · 1,088 tics survived (higher is better) ·
+                  <a href="assets/health-gathering-s101-v0.mp4">Open replay</a>
+                </figcaption>
+              </figure>
+              <figure>
+                <video
+                  muted
+                  playsinline
+                  autoplay
+                  loop
+                  preload="auto"
+                  poster="assets/health-gathering-s101-v1-poster.webp"
+                  data-replay-group="trial"
+                  tabindex="0"
+                  role="button"
+                  aria-label="Automatically replay validation seed 101 after the prompt change"
+                >
+                  <source
+                    src="assets/health-gathering-s101-v1.mp4"
+                    type="video/mp4"
+                  />
+                </video>
+                <figcaption>
+                  After v1 · 416 tics survived (higher is better) ·
+                  <a href="assets/health-gathering-s101-v1.mp4">Open replay</a>
+                </figcaption>
+              </figure>
+            </div>
+            <figcaption>
+              Recorded full episodes on the same validation seed. Select either
+              clip to pause or resume this pair.
+            </figcaption>
+          </figure>
+          <p>
+            The agent had replaced looking with turning back and forth on the
+            spot. Direction reversals with nothing in view rose from
+            <strong>1 to 17</strong> (lower is better). A test of one decision
+            cannot see a failure that only exists across a sequence of
+            decisions.
+          </p>
+          <h3 id="trial-check">How a bad action gets caught</h3>
+          <p>
+            On a held-out level the agent tried to shoot with nothing lined up.
+            The harness refused before any button was pressed:
+          </p>
+          __REJECTION_EXAMPLE__
+          <h3 id="trial-gate">The gate said PROMOTE. I said REJECT.</h3>
+          <p>
+            The gate promoted v1 for one extra success on seed 103. I rejected
+            it with this note, quoted exactly:
+          </p>
+          <div class="reviewer-note">
+            <blockquote>“__HUMAN_NOTE__”</blockquote>
+          </div>
+          <p class="annotation">
+            The note counted four seeds. Across all five, observe calls fell
+            from 41 to 3.
+          </p>
+          <p>
+            Since then the gate has a “no broad decline” guard for future
+            trials. The original verdict stays on record.
+            <strong
+              >Checks on single decisions cannot catch a failure that builds up
+              over a whole episode.</strong
+            >
+          </p>
+          <p class="source-note">
+            <a
+              href="https://github.com/Irfan-Firosh/DoomLab/blob/main/findings/2026-09-27-fixed-the-metric-not-the-game.md"
+              target="_blank"
+              rel="noreferrer"
+              >Full finding: the failed improvement trial</a
+            >
+          </p>
+        </section>
+
+        <section id="commander" aria-labelledby="commander-title">
+          <h2 id="commander-title">Inside one multi-agent episode</h2>
+          <p>
+            On Hold the center, seed 1000, the multi-agent team made 24 mode
+            choices and switched 23 times between Combat (aim and shoot) and
+            Navigation (turn to look around). It made 24 kills and died at tic
+            1,413. Kills and tics survived: higher is better.
+          </p>
+          <figure class="commander-figure">
+            <div class="timeline-key">
+              <span><i class="combat" aria-hidden="true"></i>Combat</span
+              ><span><i class="navigator" aria-hidden="true"></i>Navigator</span
+              ><span><i class="kill-key" aria-hidden="true"></i>Kill</span>
+            </div>
+            <div
+              class="timeline-scroll"
+              tabindex="0"
+              role="region"
+              aria-label="Commander mode over game time"
+            >
+              __TIMELINE__
+            </div>
+            <figcaption>
+              Mode over game time, in tics. Marks above the timeline are
+              recorded kills.
+              <a href="data/commander-trace.jsonl" download
+                >Download the episode trace</a
+              >.
+            </figcaption>
+          </figure>
+          <p>
+            The coordinator only asks for a new assignment when the situation
+            changes. Otherwise, the current specialist keeps going with no extra
+            LLM call.
+          </p>
+          <p>
+            One issue I wrote down during development was “flickering” between
+            roles: an enemy enters and leaves view, and control bounces between
+            a specialist and the coordinator. I had to think about the handoff
+            conditions as carefully as the specialist prompts. Each unnecessary
+            handoff uses the same limited LLM budget.
+          </p>
+          <p>
+            I also removed a rarely used handoff action before saving the test
+            settings. It was almost never used in the pilot, and the coordinator
+            already covered the situations where control needed to return. The
+            runs did not justify keeping it.
+          </p>
+        </section>
+
+        <section id="harness" aria-labelledby="harness-title">
+          <h2 id="harness-title">The harness, from state to score</h2>
+          <p>
+            The harness is the shared system around the game and the players. It
+            turns the current game state into readable facts, asks for one
+            action, checks that action, runs it, and records the result. The
+            game is paused while a language model decides. Code, not the model,
+            presses the buttons.
+          </p>
+          <figure class="harness-diagram">
+            <img
+              src="assets/harness-flow.svg"
+              alt="Flowchart of the shared DoomLab harness: read game state, route to a rules player or language model, validate actions, execute buttons, check the outcome, and save an exact trace."
+              loading="lazy"
+            />
+            <figcaption>
+              The single agent chooses actions directly. The multi-agent setup
+              adds a coordinator that chooses Combat or Navigation, and a
+              specialist continues until the situation changes.
+              <a href="harness.mmd">View Mermaid source</a>.
+            </figcaption>
+          </figure>
+          <p>
+            The model can choose an action, but one executor is the only code
+            allowed to press buttons. It checks the tool, arguments, visible
+            targets, and preconditions before acting. A rejected call comes back
+            with a reason.
+          </p>
+          <p>
+            That separation let me change prompts and agent layouts while
+            keeping the action path consistent. I turn the game’s visible labels
+            and state into facts for the agent, then record the call, button
+            presses, and outcome together.
+          </p>
+          <p>The request and action loop is:</p>
+          <ol class="pipeline">
+            <li>
+              <strong>Perceive.</strong> Game state becomes facts about enemies,
+              items, health, ammo, and bearings.
+            </li>
+            <li>
+              <strong>Decide.</strong> The agent returns one typed tool call.
+            </li>
+            <li>
+              <strong>Validate & act.</strong> One executor is the only code
+              that presses buttons. Bad calls are rejected with a reason.
+            </li>
+            <li>
+              <strong>Route & recover.</strong> A state graph routes control.
+              Three rejections in a row end the agent’s turn.
+            </li>
+            <li>
+              <strong>Record.</strong> Decisions and button presses become
+              traces that replay exactly.
+            </li>
+            <li>
+              <strong>Evaluate.</strong> Dev, validation, and locked test seeds
+              stay separate. Scores come only from traces.
+            </li>
+            <li>
+              <strong>Improve.</strong> Recorded mistakes and reviewed
+              corrections lead to proposed lessons, tests, a gate verdict, and
+              my decision.
+            </li>
+          </ol>
+          <p class="source-note">
+            <a
+              href="https://github.com/Irfan-Firosh/DoomLab/tree/main/src/doomlab"
+              target="_blank"
+              rel="noreferrer"
+              >Browse the harness code</a
+            >
+          </p>
+        </section>
+
+        <section id="lessons-learned" aria-labelledby="lessons-title">
+          <h2 id="lessons-title">What I learned</h2>
+          <p>
+            <strong>Agent routing needs to earn its cost.</strong> I started
+            with the multi-agent design, then had to inspect when control
+            actually changed hands. The team cut blind shots, but its overall
+            results still trailed the single agent. Removing a rarely used
+            handoff action was part of that lesson.
+          </p>
+          <p>
+            <strong>The scoring rule belongs in the prompt.</strong> In a pilot
+            episode, stating how the agent was scored and that one hit usually
+            kills changed its burst attacks to single shots. That gave me useful
+            feedback for the prompt. I made those changes on the pilot, then
+            saved the run settings before the held-out test.
+          </p>
+          <p>
+            <strong>I needed to learn how to read a small sample.</strong> A
+            success rate of 2/10 has a 95% Wilson interval of 6–51%. Putting
+            that interval next to the score changed how I read the results. I
+            kept the individual seeds visible, too, because a median can hide a
+            lot.
+          </p>
+          <p>
+            <strong>A passing check only answers the question it asks.</strong>
+            The corrected decisions tested one move at a time. They could not
+            catch the turning pattern that emerged across a whole episode. The
+            failed improvement trial is where that distinction became concrete
+            for me.
+          </p>
+        </section>
+
+        <section id="limits" aria-labelledby="limits-title">
+          <h2 id="limits-title">What this does and doesn’t establish</h2>
+          <ul class="caveats">
+            <li>
+              One model, three game types, and 10 test levels per comparison.
+              The intervals are wide.
+            </li>
+            <li>
+              Hold the center measures survival within the same budget of 150
+              LLM calls for each LLM agent. Both ran out on some levels.
+            </li>
+            <li>
+              I reviewed all 11 corrections: I wrote two, and AI drafted the
+              other nine.
+            </li>
+            <li>
+              A hosted model is not fully repeatable at temperature 0.
+              Regression cases are asked three times.
+            </li>
+          </ul>
+          <p>
+            These results might change with further testing. Next I plan to try
+            a different agent architecture and stronger models, and I think
+            benchmarking something like JEPA would be interesting too.
+          </p>
+        </section>
+
+        <section id="reproduce" aria-labelledby="reproduce-title">
+          <h2 id="reproduce-title">Reproduce it</h2>
+          <p>Re-run the evaluation with a Purdue key, then build the report:</p>
+          <div class="code-block">
+            <button id="copy-commands" aria-label="Copy reproduction commands">
+              Copy
+            </button>
+            <pre><code>uv run doomlab eval --split test
+uv run doomlab report</code></pre>
+          </div>
+          <p id="copy-status" class="copy-status" role="status"></p>
+          <p>
+            Every reported score is tied to an episode ID and a trace. The
+            source files are here:
+          </p>
+          <ul class="references">
+            <li>
+              <a
+                href="https://github.com/Irfan-Firosh/DoomLab"
+                target="_blank"
+                rel="noreferrer"
+                >GitHub repository</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/Irfan-Firosh/DoomLab/blob/main/results/metrics.md"
+                target="_blank"
+                rel="noreferrer"
+                >Metrics report</a
+              >: aggregate results and success intervals
+            </li>
+            <li>
+              <a
+                href="https://github.com/Irfan-Firosh/DoomLab/blob/main/results/per_seed.md"
+                target="_blank"
+                rel="noreferrer"
+                >Per-seed results</a
+              >: every score next to its episode ID
+            </li>
+            <li>
+              <a
+                href="https://github.com/Irfan-Firosh/DoomLab/tree/main/results/traces"
+                target="_blank"
+                rel="noreferrer"
+                >Raw episode traces</a
+              >
+            </li>
+            <li>
+              <a href="data/summary.json" download>Download summary.json</a>
+            </li>
+          </ul>
+        </section>
+        <footer class="article-footer">
+          <span
+            >Built by
+            <a
+              href="https://github.com/Irfan-Firosh"
+              target="_blank"
+              rel="noreferrer"
+              >Irfan</a
+            >.</span
+          ><a href="#">Back to top ↑</a>
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>

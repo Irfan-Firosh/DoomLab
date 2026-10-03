@@ -1,0 +1,17 @@
+{
+  "name": "doomlab-demo",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 4173 --bind 127.0.0.1",
+    "build": "python3 build.py",
+    "check": "node check.mjs",
+    "format": "prettier --write template.html styles.css app.js check.mjs package.json",
+    "diagram": "node render_diagram.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "mermaid": "^12.0.0",
+    "playwright": "^1.55.0",
+    "prettier": "^3.9.9"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "v0": {
+    "source": "trial-v0-seed101.jsonl",
+    "matches": true,
+    "score": 1088.0,
+    "outcome": "died",
+    "kills": 0,
+    "file": "health-gathering-s101-v0.webp"
+  },
+  "v1": {
+    "source": "trial-v1-seed101.jsonl",
+    "matches": true,
+    "score": 416.0,
+    "outcome": "died",
+    "kills": 0,
+    "file": "health-gathering-s101-v1.webp"
+  },
+  "rejected_action": {
+    "episode": "defend_the_center-s1001-react_single.jsonl",
+    "seed": 1001,
+    "step": 8
+  }
+}

@@ -1,0 +1,40 @@
+flowchart TD
+    accTitle: How DoomLab turns a decision into a measured game action
+    accDescr: All players share the same observations, action checks, execution, recordings and scoring. A single agent chooses an action directly. A multi-agent coordinator chooses a combat or navigation specialist. Invalid actions return an explanation to the same player. The game advances only when the executor presses buttons.
+
+    START(["Start a level<br/>Load saved settings and seed"]) --> SEE["Read the visible game state<br/>Code turns it into facts"]
+    SEE --> ROUTE{"Next step?<br/>Fixed rules in code"}
+    ROUTE -->|"Finished or budget exhausted"| STOP(["Stop the player; finish the episode<br/>Score the actual game outcome"])
+    ROUTE -->|"Choose a player"| SETUP{"Player setup"}
+    SETUP -->|"Baseline"| RULES["Random or hand-written rules<br/>Code chooses an action"]
+    SETUP -->|"Single agent"| SINGLE["Single LLM<br/>Choose one action"]
+    SETUP -->|"Multi-agent"| LEAD["Coordinator LLM<br/>Choose the specialist"]
+    LEAD --> ROLE{"Selected role"}
+    ROUTE -->|"Keep the current specialist"| ROLE
+    ROLE -->|"Combat"| FIGHT["Combat LLM<br/>Aim and shoot"]
+    ROLE -->|"Navigation"| WALK["Navigator LLM<br/>Look around and find items"]
+    RULES --> CHECK{"Is the action valid?<br/>Check arguments, target and conditions"}
+    SINGLE --> CHECK
+    FIGHT --> CHECK
+    WALK --> CHECK
+    CHECK -->|"No"| RECOVER["Explain the rejection<br/>Ask the same player to try again"]
+    RECOVER -->|"New action"| CHECK
+    RECOVER -->|"3 rejections in a row"| STOP
+    CHECK -->|"Yes"| EXECUTE["Execute the action<br/>The only code that presses buttons"]
+    EXECUTE --> GAME["Doom advances<br/>Then pauses for the next decision"]
+    GAME --> VERIFY["Check the real result<br/>Health, ammo, position and kills"]
+    VERIFY --> MEMORY["Keep recent actions and results"]
+    MEMORY --> SEE
+    VERIFY -.-> RECORD[("Save the trace<br/>Observations, decisions, buttons and results")]
+    RECOVER -.-> RECORD
+
+    classDef code fill:#edf1f6,stroke:#a8b6c6,color:#292824,stroke-width:1px
+    classDef llm fill:#f5ebf0,stroke:#c7aaba,color:#292824,stroke-width:1px
+    classDef choice fill:#f5eee4,stroke:#c9b596,color:#292824,stroke-width:1px
+    classDef evidence fill:#edf3ed,stroke:#a4b8a4,color:#292824,stroke-width:1px
+    classDef recovery fill:#f6ece7,stroke:#c9aea0,color:#292824,stroke-width:1px
+    class START,SEE,RULES,EXECUTE,VERIFY,MEMORY code
+    class SINGLE,LEAD,FIGHT,WALK llm
+    class ROUTE,SETUP,ROLE,CHECK choice
+    class GAME,STOP,RECORD evidence
+    class RECOVER recovery
