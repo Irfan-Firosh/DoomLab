@@ -115,7 +115,8 @@ def _trial_summary(trial: dict[str, Any]) -> dict[str, Any]:
 
 def _corrections(cases: list[dict[str, Any]]) -> dict[str, int]:
     human = sum(c.get("author", "human") == "human" for c in cases)
-    return {"total": len(cases), "human": human, "assistant_drafted": len(cases) - human}
+    reviewed = sum(c.get("approved_by_human", c.get("author", "human") == "human") for c in cases)
+    return {"total": len(cases), "human": human, "assistant_drafted": len(cases) - human, "reviewed_by_human": reviewed}
 
 
 # ------------------------------------------------------------------ files
@@ -243,8 +244,7 @@ def _metrics_md(summary: dict[str, Any], test: list[dict[str, Any]]) -> str:
     if summary["trial"]:
         tr, c = summary["trial"], summary["corrections"]
         lines += ["", "## Improvement trial", "",
-                  f"- **Corrections:** {c['total']} regression cases ({c['human']} written by a human reviewer, "
-                  f"{c['assistant_drafted']} AI-drafted from the ViZDoom scenario docs and labelled as such).",
+                  f"- **Corrections:** {c['total']} regression cases. {_authorship(c)}",
                   f"- **Candidate {tr['candidate']}:** {len(tr['lessons'])} lessons proposed by an Analyst LLM from mined failure patterns.",
                   f"- **Offline:** correction cases passed {tr['regression_passed'][tr['parent']]}/{tr['cases']} ({tr['parent']}) → "
                   f"{tr['regression_passed'][tr['candidate']]}/{tr['cases']} ({tr['candidate']}).",
@@ -261,6 +261,14 @@ def _metrics_md(summary: dict[str, Any], test: list[dict[str, Any]]) -> str:
               "- Reproduce: `uv run doomlab eval --split test` (needs the frozen recipe and a Purdue key), then `uv run doomlab report`.",
               ""]
     return "\n".join(lines)
+
+
+def _authorship(c: dict[str, int]) -> str:
+    if c["reviewed_by_human"] == c["total"]:
+        return (f"I reviewed all {c['total']} corrections: I wrote {c['human']}, and AI drafted the other "
+                f"{c['assistant_drafted']} from the ViZDoom scenario docs.")
+    return (f"I wrote {c['human']} and reviewed {c['reviewed_by_human']} of {c['total']}. AI drafted "
+            f"{c['assistant_drafted']} from the ViZDoom scenario docs.")
 
 
 def _per_seed_md(episodes: list[dict[str, Any]], split: str) -> str:
