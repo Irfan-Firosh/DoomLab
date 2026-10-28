@@ -1,8 +1,8 @@
 <p align="center">
   <img src="demo/assets/doomlab-icon.svg" alt="DoomLab icon: a pixel-art lab flask with a horned demon face in the liquid" width="112">
+  <br>
+  <img src="demo/assets/doomlab-title.svg" alt="DoomLab" width="240">
 </p>
-
-<h1 align="center">DoomLab</h1>
 
 I wanted to know what it actually takes to make an LLM agent play a game well, and how to measure that honestly. So I built a small harness around vizDoom where an LLM (Qwen, served by Purdue's GenAI Studio) plays by calling typed tools, and every decision gets validated, recorded and scored.
 
