@@ -44,11 +44,11 @@ The full tables, per-seed scores with episode ids, and the raw traces are in [`r
 
 ## Two things I found
 
-**[One LLM call in five was spent looking at a paused game.](findings/2026-09-27-needless-observe.md)** The agents have an `observe` tool, but the game is paused between calls and every prompt already contains the current view, so it can never show anything new. The tool's description even says so. The model called it anyway: 19.7% of all decisions on the test split, and about the same on the dev split. Episodes that ran out of their call budget had spent a fifth of it there.
+**[1 in 5 LLM decisions looked at a paused game.](findings/2026-09-27-needless-observe.md)** The game pauses between decisions and every prompt already includes the current view, so `observe` can never show anything new. The model called it anyway: 663 of 3,369 test decisions (19.7%), and 18.9% on dev. The commander's narrow roles cut blind shots from 32 to 4, but the team still didn't score higher.
 
-**[The lesson fixed the metric, not the game.](findings/2026-09-27-fixed-the-metric-not-the-game.md)** I built an improvement loop: mine the common failures, correct a handful of bad decisions, let an "Analyst" LLM write up to three lessons for the prompt, then test the new prompt against the old one. Its lessons were sensible, and it went from 3/11 to 7/11 on the corrected decisions. `observe` calls dropped from 41 to 3. But in actual games it survived shorter on 4 of 5 validation levels, because it replaced looking around with turning back and forth on the spot. My promotion gate still said PROMOTE (it counted one extra win too heavily), and I rejected it by hand. The gate rules got an extra guard afterwards. The original verdict stays on record.
+**[The lesson fixed the metric, not the game.](findings/2026-09-27-fixed-the-metric-not-the-game.md)** I corrected 11 bad decisions and had an LLM propose three prompt lessons for a v1 policy. Offline, v1 looked better: it passed 7/11 corrected decisions (v0 passed 3/11) and `observe` calls fell from 41 to 3. In full games it survived shorter on 4 of 5 validation seeds, because it swapped looking for turning back and forth on the spot. The gate said PROMOTE on one extra win. I rejected it, and the gate now has a "no broad decline" guard. A check on single decisions can't catch a failure that builds up over a whole episode.
 
-I reviewed all 11 corrections: I wrote two, and AI drafted the other nine. The AI drafts were based on the ViZDoom scenario docs, and each one is labelled with its author in `corrections/corrections.jsonl`.
+I reviewed all 11 corrections: I wrote two, and AI drafted the other nine. Each one is labelled with its author in `corrections/corrections.jsonl`.
 
 ## Running it
 
