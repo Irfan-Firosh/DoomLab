@@ -39,9 +39,9 @@ def test_charts_are_valid_svg_with_one_mark_per_value():
     assert lines.count("<line") >= 2
 
 
-def test_standalone_svg_carries_light_and_dark_styles():
+def test_standalone_svg_is_dark_with_a_background():
     svg = standalone(dot_plot({"basic": {"random": [1.0]}}, title="t", higher_is_better=True))
-    assert "prefers-color-scheme: dark" in svg and "<rect" in svg
+    assert ".bg{fill:#12161c}" in svg and "prefers-color-scheme" not in svg and "<rect" in svg
 
 
 # ------------------------------------------------------------ the report

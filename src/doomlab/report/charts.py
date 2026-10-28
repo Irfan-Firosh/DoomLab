@@ -1,5 +1,5 @@
 """Small hand-written SVG charts (no plotting dependency). Colours come from CSS classes, so the same markup
-works standalone (`standalone()` adds a light/dark style block) and inline in a themed page (the page styles
+works standalone (`standalone()` adds a dark style block) and inline in a themed page (the page styles
 the classes). Numbers in labels are formatted for people; coordinates use one decimal.
 """
 
@@ -18,22 +18,17 @@ HEADER_H = 34
 AXIS_H = 26
 
 STYLE = """
-.bg{fill:#ffffff}.ink{fill:#1d2430}.muted{fill:#5b6573}.grid{stroke:#dde2e8}.axis{stroke:#9aa3ad}
-.v-random{fill:#a4acb6;stroke:#a4acb6}.v-scripted{fill:#4f5b69;stroke:#4f5b69}
-.v-react_single{fill:#2f6fde;stroke:#2f6fde}.v-commander{fill:#c7791b;stroke:#c7791b}
-.v-v0{fill:#4f5b69;stroke:#4f5b69}.v-v1{fill:#2f6fde;stroke:#2f6fde}
-text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:12px}
-.title{font-size:14px;font-weight:600}.small{font-size:11px}
-@media (prefers-color-scheme: dark){
 .bg{fill:#12161c}.ink{fill:#e4e8ee}.muted{fill:#9aa4b0}.grid{stroke:#2a313a}.axis{stroke:#56606b}
 .v-random{fill:#6f7884;stroke:#6f7884}.v-scripted{fill:#b9c2cd;stroke:#b9c2cd}
 .v-react_single{fill:#6ea2ff;stroke:#6ea2ff}.v-commander{fill:#e39d4a;stroke:#e39d4a}
-.v-v0{fill:#b9c2cd;stroke:#b9c2cd}.v-v1{fill:#6ea2ff;stroke:#6ea2ff}}
+.v-v0{fill:#b9c2cd;stroke:#b9c2cd}.v-v1{fill:#6ea2ff;stroke:#6ea2ff}
+text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:12px}
+.title{font-size:14px;font-weight:600}.small{font-size:11px}
 """
 
 
 def standalone(svg: str) -> str:
-    """A self-contained SVG file: adds the style block and a background that follows light/dark mode."""
+    """A self-contained SVG file: adds the style block and a dark background, so it reads the same on any page."""
     head, rest = svg.split(">", 1)
     return f'{head}><style>{STYLE}</style><rect class="bg" x="0" y="0" width="100%" height="100%"/>{rest}'
 
