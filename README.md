@@ -1,5 +1,9 @@
 # DoomLab
 
+<img src="demo/assets/banner.webp" alt="Pixel-art first-person view of a shotgun facing demons charging down a corridor" width="640">
+
+<sub>Illustration, not a game recording.</sub>
+
 I wanted to know what it actually takes to make an LLM agent play a game well, and how to measure that honestly. So I built a small harness around vizDoom where an LLM (Qwen, served by Purdue's GenAI Studio) plays by calling typed tools, and every decision gets validated, recorded and scored.
 
 It turned into more of an evaluation project than a game-playing one. The short version: the LLM agents play far better than random, they still lose to four hand-written rules, and my own automated "improvement" step made the agent worse while every offline test said it was better. I wrote both of those up below.
@@ -23,6 +27,21 @@ game state -> facts -> agent picks a tool call -> executor validates -> buttons 
                                   |____________ router / recovery _______________|
 ```
 
+Here are all four on the same unseen `defend_the_center` level (test seed 1000). The caption under each frame is the tool call that agent made.
+
+<table>
+  <tr>
+    <td align="center"><img src="demo/assets/defend_the_center-s1000-random.webp" alt="random agent replay" width="320"><br><code>random</code>: 334 tics</td>
+    <td align="center"><img src="demo/assets/defend_the_center-s1000-scripted.webp" alt="scripted agent replay" width="320"><br><code>scripted</code>: 1,329 tics</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="demo/assets/defend_the_center-s1000-react_single.webp" alt="react_single agent replay" width="320"><br><code>react_single</code>: 1,526 tics</td>
+    <td align="center"><img src="demo/assets/defend_the_center-s1000-commander.webp" alt="commander agent replay" width="320"><br><code>commander</code>: 1,413 tics</td>
+  </tr>
+</table>
+
+On this one seed both LLM agents outlasted the scripted rules. Over all ten test seeds they didn't (see below).
+
 ## Results
 
 Held-out test split: 10 seeds the agents never saw during development, 120 episodes, everything run on one frozen recipe (`frozen-v0`, hash `af2ab05f5f7c`). Median score, with levels won in brackets.
@@ -40,6 +59,8 @@ A few things worth saying about that table:
 - The two-specialist commander team didn't beat the single agent. Its combat specialist almost never fired blind (4 times vs 32), but that didn't turn into a better score.
 - n = 10 per cell, so the success-rate intervals are wide. `results/metrics.md` has them.
 
+<img src="results/charts/scores_test.svg" alt="Score per seed for each agent on the three test scenarios, with the median marked" width="720">
+
 The full tables, per-seed scores with episode ids, and the raw traces are in [`results/`](results/). `uv run doomlab report` rebuilds all of it from the traces.
 
 ## Two things I found
@@ -47,6 +68,15 @@ The full tables, per-seed scores with episode ids, and the raw traces are in [`r
 **[1 in 5 LLM decisions looked at a paused game.](findings/2026-09-27-needless-observe.md)** The game pauses between decisions and every prompt already includes the current view, so `observe` can never show anything new. The model called it anyway: 663 of 3,369 test decisions (19.7%), and 18.9% on dev. The commander's narrow roles cut blind shots from 32 to 4, but the team still didn't score higher.
 
 **[The lesson fixed the metric, not the game.](findings/2026-09-27-fixed-the-metric-not-the-game.md)** I corrected 11 bad decisions and had an LLM propose three prompt lessons for a v1 policy. Offline, v1 looked better: it passed 7/11 corrected decisions (v0 passed 3/11) and `observe` calls fell from 41 to 3. In full games it survived shorter on 4 of 5 validation seeds, because it swapped looking for turning back and forth on the spot. The gate said PROMOTE on one extra win. I rejected it, and the gate now has a "no broad decline" guard. A check on single decisions can't catch a failure that builds up over a whole episode.
+
+<table>
+  <tr>
+    <td align="center"><img src="demo/assets/health-gathering-s101-v0.webp" alt="v0 policy replay on validation seed 101" width="320"><br>v0 (no lessons): 1,088 tics</td>
+    <td align="center"><img src="demo/assets/health-gathering-s101-v1.webp" alt="v1 policy replay on validation seed 101" width="320"><br>v1 (3 lessons): 416 tics</td>
+  </tr>
+</table>
+
+<img src="results/charts/trial_v1.svg" alt="Tics survived for v0 and v1 on validation seeds 100 to 104, worse on four of five" width="640">
 
 I reviewed all 11 corrections: I wrote two, and AI drafted the other nine. Each one is labelled with its author in `corrections/corrections.jsonl`.
 
