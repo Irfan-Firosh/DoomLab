@@ -29,7 +29,7 @@ game state -> facts -> agent picks a tool call -> executor validates -> buttons 
 
 Here are all four on the same unseen `defend_the_center` level (test seed 1000). The caption under each frame is the tool call that agent made.
 
-<table>
+<table align="center">
   <tr>
     <td align="center"><img src="demo/assets/defend_the_center-s1000-random.webp" alt="random agent replay" width="320"><br><code>random</code>: 334 tics</td>
     <td align="center"><img src="demo/assets/defend_the_center-s1000-scripted.webp" alt="scripted agent replay" width="320"><br><code>scripted</code>: 1,329 tics</td>
@@ -59,7 +59,9 @@ A few things worth saying about that table:
 - The two-specialist commander team didn't beat the single agent. Its combat specialist almost never fired blind (4 times vs 32), but that didn't turn into a better score.
 - n = 10 per cell, so the success-rate intervals are wide. `results/metrics.md` has them.
 
-<img src="results/charts/scores_test.svg" alt="Score per seed for each agent on the three test scenarios, with the median marked" width="720">
+<p align="center">
+  <img src="results/charts/scores_test.svg" alt="Score per seed for each agent on the three test scenarios, with the median marked" width="720">
+</p>
 
 The full tables, per-seed scores with episode ids, and the raw traces are in [`results/`](results/). `uv run doomlab report` rebuilds all of it from the traces.
 
@@ -69,14 +71,16 @@ The full tables, per-seed scores with episode ids, and the raw traces are in [`r
 
 **[The lesson fixed the metric, not the game.](findings/2026-09-27-fixed-the-metric-not-the-game.md)** I corrected 11 bad decisions and had an LLM propose three prompt lessons for a v1 policy. Offline, v1 looked better: it passed 7/11 corrected decisions (v0 passed 3/11) and `observe` calls fell from 41 to 3. In full games it survived shorter on 4 of 5 validation seeds, because it swapped looking for turning back and forth on the spot. The gate said PROMOTE on one extra win. I rejected it, and the gate now has a "no broad decline" guard. A check on single decisions can't catch a failure that builds up over a whole episode.
 
-<table>
+<table align="center">
   <tr>
     <td align="center"><img src="demo/assets/health-gathering-s101-v0.webp" alt="v0 policy replay on validation seed 101" width="320"><br>v0 (no lessons): 1,088 tics</td>
     <td align="center"><img src="demo/assets/health-gathering-s101-v1.webp" alt="v1 policy replay on validation seed 101" width="320"><br>v1 (3 lessons): 416 tics</td>
   </tr>
 </table>
 
-<img src="results/charts/trial_v1.svg" alt="Tics survived for v0 and v1 on validation seeds 100 to 104, worse on four of five" width="640">
+<p align="center">
+  <img src="results/charts/trial_v1.svg" alt="Tics survived for v0 and v1 on validation seeds 100 to 104, worse on four of five" width="640">
+</p>
 
 I reviewed all 11 corrections: I wrote two, and AI drafted the other nine. Each one is labelled with its author in `corrections/corrections.jsonl`.
 
